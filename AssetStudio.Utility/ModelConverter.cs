@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 
@@ -23,6 +24,7 @@ namespace AssetStudio
         private Dictionary<Texture2D, string> textureNameDictionary = new Dictionary<Texture2D, string>();
         private Dictionary<Transform, ImportedFrame> transformDictionary = new Dictionary<Transform, ImportedFrame>();
         Dictionary<uint, string> morphChannelNames = new Dictionary<uint, string>();
+        Dictionary<string, string> additionalMeshes = new Dictionary<string, string>();
 
         public ModelConverter(GameObject m_GameObject, Options options, AnimationClip[] animationList = null)
         {
@@ -148,13 +150,34 @@ namespace AssetStudio
                 CreateBonePathHash(m_Transform);
             }
 
+            if (options.game.Type == GameType.GirlsFrontline)
+            {
+                foreach (var i in m_GameObject.m_Components)
+                {
+                    if (i.TryGet<MonoBehaviour>(out var comp))
+                    {
+                        var type = comp.ToType();
+                        var script = type["m_Script"] as OrderedDictionary;
+                        long pathID = (long)script["m_PathID"];
+                        if (pathID == 2502299941378094616L || comp.Name == "RoleMeshRes")
+                        {
+                            var list = type["MeshResList"] as List<object>;
+                            foreach (OrderedDictionary entry in list)
+                            {
+                                string transformPath = (string)entry["TransfromPath"];
+                                string resPath = (string)entry["MeshResPath"];
+                                additionalMeshes[transformPath] = resPath;
+                            }
+                        }
+                    }
+                }
+            }
             ConvertMeshRenderer(m_Transform);
         }
 
         private void ConvertMeshRenderer(Transform m_Transform)
         {
             m_Transform.m_GameObject.TryGet(out var m_GameObject);
-
             if (m_GameObject.m_MeshRenderer != null)
             {
                 ConvertMeshRenderer(m_GameObject.m_MeshRenderer);
@@ -266,11 +289,39 @@ namespace AssetStudio
             }
         }
 
+        Object FindMesh(AssetsManager am, string name)
+        {
+            foreach(var i in am.assetsFileList)
+            {
+                foreach(var j in i.Objects)
+                {
+                    if (j.type == ClassIDType.Mesh)
+                    {
+                        if (j.Name == name)
+                            return j;
+                    }
+                }
+            }
+            return null;
+        }
+
         private void ConvertMeshRenderer(Renderer meshR)
         {
             var mesh = GetMesh(meshR);
             if (mesh == null)
-                return;
+            {
+                if (meshR.m_GameObject.TryGet(out var go))
+                {
+                    if (additionalMeshes.TryGetValue(go.Name, out var res))
+                    {
+                        mesh = FindMesh(meshR.assetsFile.assetsManager, System.IO.Path.GetFileNameWithoutExtension(res)) as Mesh;
+                        if (mesh == null)
+                            return;
+                    }
+                }
+                else
+                    return;
+            }
             var iMesh = new ImportedMesh();
             meshR.m_GameObject.TryGet(out var m_GameObject2);
             iMesh.Path = GetTransformPath(m_GameObject2.m_Transform);
