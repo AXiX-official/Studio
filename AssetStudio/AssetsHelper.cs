@@ -344,6 +344,7 @@ namespace AssetStudio
             var mihoyoBinDataNames = new List<(PPtr<Object>, string)>();
             var objectAssetItemDic = new Dictionary<Object, AssetEntry>();
             var animators = new List<(PPtr<Object>, AssetEntry)>();
+            Dictionary<GameObject, AssetEntry> pendingGameObjects = new Dictionary<GameObject, AssetEntry>();
             foreach (var assetsFile in assetsManager.assetsFileList)
             {
                 foreach (var objInfo in assetsFile.m_Objects)
@@ -389,7 +390,20 @@ namespace AssetStudio
                                 var gameObject = new GameObject(objectReader);
                                 obj = gameObject;
                                 asset.Name = gameObject.m_Name;
-                                exportable = ClassIDType.GameObject.CanExport();
+                                bool isRoot = false;
+                                foreach (var j in gameObject.m_Components)
+                                {
+                                    if (j.TryGet(out Transform t))
+                                    {
+                                        isRoot = t.m_Father.IsNull;
+                                        break;
+                                    }
+                                }
+                                if (ClassIDType.GameObject.CanExport())
+                                {
+                                    pendingGameObjects.Add(gameObject, asset);
+                                }
+                                exportable = false;
                                 break;
                             case ClassIDType.Shader when ClassIDType.Shader.CanParse():
                                 asset.Name = objectReader.ReadAlignedString();
@@ -436,6 +450,9 @@ namespace AssetStudio
                                 asset.Name = objectReader.ReadAlignedString();
                                 exportable = true;
                                 break;
+                            case ClassIDType.Transform when ClassIDType.Transform.CanParse():
+                                obj = new Transform(objectReader);
+                                break;
                             default:
                                 asset.Name = objectReader.type.ToString();
                                 exportable = !Minimal;
@@ -462,6 +479,24 @@ namespace AssetStudio
                     {
                         matches.Add(asset);
                     }
+                }
+            }
+            foreach(var i in pendingGameObjects)
+            {
+                var go = i.Key;
+
+                bool isRoot = false;
+                foreach (var j in go.m_Components)
+                {
+                    if (j.TryGet(out Transform t))
+                    {
+                        isRoot = t.m_Father.IsNull;
+                        break;
+                    }
+                }
+                if (isRoot)
+                {
+                    matches.Add(i.Value);
                 }
             }
             foreach ((var pptr, var asset) in animators)
