@@ -318,6 +318,8 @@ namespace AssetStudio
                         if (mesh == null)
                             return;
                     }
+                    else
+                        return;
                 }
                 else
                     return;
