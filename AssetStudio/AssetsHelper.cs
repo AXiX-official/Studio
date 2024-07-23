@@ -373,6 +373,15 @@ namespace AssetStudio
                                 var assetBundle = new AssetBundle(objectReader);
                                 foreach (var m_Container in assetBundle.m_Container)
                                 {
+                                    if (m_Container.Key.EndsWith(".unity"))
+                                    {
+                                        AssetEntry sceneEntry = new AssetEntry();
+                                        sceneEntry.Name = Path.GetFileName(m_Container.Key);
+                                        sceneEntry.Container = m_Container.Key;
+                                        sceneEntry.Source = file;
+                                        sceneEntry.Type = ClassIDType.SceneAsset;
+                                        assets.Add(sceneEntry);
+                                    }
                                     var preloadIndex = m_Container.Value.preloadIndex;
                                     var preloadSize = m_Container.Value.preloadSize;
                                     var preloadEnd = preloadIndex + preloadSize;
@@ -449,6 +458,13 @@ namespace AssetStudio
                             case ClassIDType.AnimationClip when ClassIDType.AnimationClip.CanExport():
                                 asset.Name = objectReader.ReadAlignedString();
                                 exportable = true;
+                                break;
+                            case ClassIDType.AnimatorController when ClassIDType.AnimatorController.CanExport():
+                                asset.Name = objectReader.ReadAlignedString();
+                                exportable = true;
+                                break;
+                            case ClassIDType.SceneAsset:
+                                asset.Name = objectReader.ReadAlignedString();
                                 break;
                             case ClassIDType.Transform when ClassIDType.Transform.CanParse():
                                 obj = new Transform(objectReader);
