@@ -769,6 +769,7 @@ namespace AssetStudio
                     iMat.Textures.Add(texture);
 
                     int dest = -1;
+                    bool isNormal = false;
                     if (options.texs.TryGetValue(texEnv.Key, out var target))
                         dest = target;
                     else if (texEnv.Key == "_MainTex")
@@ -779,7 +780,8 @@ namespace AssetStudio
                         dest = 2;
                     else if (texEnv.Key.Contains("Normal"))
                         dest = 1;
-
+                    if (dest == 1 || (dest == 3 && options.game.Type == GameType.GirlsFrontline))
+                        isNormal = true;
                     texture.Dest = dest;
 
                     var ext = $".{options.imageFormat.ToString().ToLower()}";
@@ -808,7 +810,7 @@ namespace AssetStudio
 
                     texture.Offset = texEnv.Value.m_Offset;
                     texture.Scale = texEnv.Value.m_Scale;
-                    ConvertTexture2D(m_Texture2D, texture.Name);
+                    ConvertTexture2D(m_Texture2D, texture.Name, isNormal);
                 }
 
                 MaterialList.Add(iMat);
@@ -820,7 +822,7 @@ namespace AssetStudio
             return iMat;
         }
 
-        private void ConvertTexture2D(Texture2D m_Texture2D, string name)
+        private void ConvertTexture2D(Texture2D m_Texture2D, string name, bool isNormal)
         {
             var iTex = ImportedHelpers.FindTexture(name, TextureList);
             if (iTex != null)
@@ -828,7 +830,7 @@ namespace AssetStudio
                 return;
             }
 
-            var stream = m_Texture2D.ConvertToStream(options.imageFormat, true);
+            var stream = m_Texture2D.ConvertToStream(options.imageFormat, true, isNormal);
             if (stream != null)
             {
                 using (stream)
