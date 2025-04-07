@@ -623,6 +623,7 @@ namespace AssetStudio
                             break;
                         }
                     case CompressionType.Lz4Inv when Game.Type.IsArknightsEndfield():
+                    case CompressionType.Lzham when Game.Type.IsArknights():
                         {
                             var compressedSize = (int)blockInfo.compressedSize;
                             var uncompressedSize = (int)blockInfo.uncompressedSize;
@@ -636,7 +637,7 @@ namespace AssetStudio
                             try
                             {
                                 reader.Read(compressedBytesSpan);
-                                if (i == 0)
+                                if (i == 0 && Game.Type.IsArknightsEndfield())
                                 {
                                     FairGuardUtils.Decrypt(compressedBytesSpan);
                                 }
