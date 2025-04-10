@@ -3,9 +3,9 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
 	<ApplicationIcon>Resources\as.ico</ApplicationIcon>
-	<Version>1.38.04</Version>
-	<AssemblyVersion>1.38.04</AssemblyVersion>
-	<FileVersion>1.38.04</FileVersion>
+	<Version>1.38.05</Version>
+	<AssemblyVersion>1.38.05</AssemblyVersion>
+	<FileVersion>1.38.05</FileVersion>
 	<Copyright>Copyright © Razmoth 2022; Copyright © Perfare 2018-2022</Copyright>
 	<BaseOutputPath>..\AssetStudio.GUI\bin</BaseOutputPath>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>

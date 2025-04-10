@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
-    <Version>1.38.04</Version>
-    <AssemblyVersion>1.38.04</AssemblyVersion>
-    <FileVersion>1.38.04</FileVersion>
+    <Version>1.38.05</Version>
+    <AssemblyVersion>1.38.05</AssemblyVersion>
+    <FileVersion>1.38.05</FileVersion>
     <Copyright>Copyright © Razmoth 2022; Copyright © Perfare 2018-2022</Copyright>
     <DebugType>embedded</DebugType>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
