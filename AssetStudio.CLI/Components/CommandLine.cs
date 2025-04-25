@@ -39,7 +39,6 @@ namespace AssetStudio.CLI
                 optionsBinder.DummyDllFolder,
                 optionsBinder.Input,
                 optionsBinder.Output,
-                optionsBinder.LuaScriptPath,
                 optionsBinder.AutoDetectMultipleBundle,
             };
 
@@ -68,7 +67,6 @@ namespace AssetStudio.CLI
         public DirectoryInfo DummyDllFolder { get; set; }
         public FileInfo Input { get; set; }
         public DirectoryInfo Output { get; set; }
-        public String LuaScriptPath { get; set; }
         public bool AutoDetectMultipleBundle { get; set; }
     }
 
@@ -92,7 +90,6 @@ namespace AssetStudio.CLI
         public readonly Option<DirectoryInfo> DummyDllFolder;
         public readonly Argument<FileInfo> Input;
         public readonly Argument<DirectoryInfo> Output;
-        public readonly Option<string> LuaScriptPath;
         public readonly Option<bool> AutoDetectMultipleBundle;
 
         public OptionsBinder()
@@ -174,7 +171,6 @@ namespace AssetStudio.CLI
             DummyDllFolder = new Option<DirectoryInfo>("--dummy_dlls", "Specify DummyDll path.").LegalFilePathsOnly();
             Input = new Argument<FileInfo>("input_path", "Input file/folder.").LegalFilePathsOnly();
             Output = new Argument<DirectoryInfo>("output_path", "Output folder.").LegalFilePathsOnly();
-            LuaScriptPath = new Option<string>("--lua_script", "Specify Lua script path.");
             AutoDetectMultipleBundle = new Option<bool>("--auto_detect_multiple_bundle", "Auto detect multiple bundle.");
             
             Key = new Option<byte>("--key", result =>
@@ -266,7 +262,6 @@ namespace AssetStudio.CLI
             DummyDllFolder = bindingContext.ParseResult.GetValueForOption(DummyDllFolder),
             Input = bindingContext.ParseResult.GetValueForArgument(Input),
             Output = bindingContext.ParseResult.GetValueForArgument(Output),
-            LuaScriptPath = bindingContext.ParseResult.GetValueForOption(LuaScriptPath),
             AutoDetectMultipleBundle = bindingContext.ParseResult.GetValueForOption(AutoDetectMultipleBundle),
         };
     }
