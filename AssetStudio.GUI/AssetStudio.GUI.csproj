@@ -2,12 +2,12 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net8.0-windows</TargetFramework>
+		<TargetFrameworks>net8.0-windows;net9.0-windows</TargetFrameworks>
 		<UseWindowsForms>true</UseWindowsForms>
 		<ApplicationIcon>Resources\as.ico</ApplicationIcon>
-		<Version>1.38.05</Version>
-		<AssemblyVersion>1.38.05</AssemblyVersion>
-		<FileVersion>1.38.05</FileVersion>
+		<Version>1.38.06</Version>
+		<AssemblyVersion>1.38.06</AssemblyVersion>
+		<FileVersion>1.38.06</FileVersion>
 		<Copyright>Copyright © Razmoth 2022; Copyright © Perfare 2018-2022</Copyright>
 		<DebugType>embedded</DebugType>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
@@ -127,11 +127,6 @@
 	<Target Name="CopyExtraFiles" AfterTargets="AfterBuild">
 		<Copy SourceFiles="$(SolutionDir)AssetStudio.FBXNative\bin\Win32\$(Configuration)\AssetStudio.FBXNative.dll" DestinationFolder="$(TargetDir)x86" ContinueOnError="true" />
 		<Copy SourceFiles="$(SolutionDir)AssetStudio.FBXNative\bin\x64\$(Configuration)\AssetStudio.FBXNative.dll" DestinationFolder="$(TargetDir)x64" ContinueOnError="true" />
-		<Exec Command="if exist &quot;$(TargetDir)LuaScripts&quot; rd /s /q &quot;$(TargetDir)LuaScripts&quot;" />
-		<Exec Command="git clone https://github.com/AXiX-official/AssetStudio-LuaScripts $(TargetDir)AssetStudio-LuaScripts" />
-		<Exec Command="if not exist &quot;$(TargetDir)LuaScripts&quot; mkdir &quot;$(TargetDir)LuaScripts&quot;" />
-		<Exec Command="xcopy /y /e $(TargetDir)AssetStudio-LuaScripts\Scripts\* $(TargetDir)LuaScripts" />
-		<Exec Command="rd /s /q $(TargetDir)AssetStudio-LuaScripts" />
 	</Target>
 
 	<Target Name="PublishExtraFiles" AfterTargets="Publish">

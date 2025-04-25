@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFrameworks>net8.0-windows;net9.0-windows</TargetFrameworks>
 	<ApplicationIcon>Resources\as.ico</ApplicationIcon>
-	<Version>1.38.05</Version>
-	<AssemblyVersion>1.38.05</AssemblyVersion>
-	<FileVersion>1.38.05</FileVersion>
+	<Version>1.38.06</Version>
+	<AssemblyVersion>1.38.06</AssemblyVersion>
+	<FileVersion>1.38.06</FileVersion>
 	<Copyright>Copyright © Razmoth 2022; Copyright © Perfare 2018-2022</Copyright>
 	<BaseOutputPath>..\AssetStudio.GUI\bin</BaseOutputPath>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
