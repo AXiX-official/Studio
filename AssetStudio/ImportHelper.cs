@@ -1190,7 +1190,7 @@ namespace AssetStudio
 
             var key = data[51];
             
-            for (int i = 50; i < 120; i++)
+            for (int i = 50; i < 117; i++)
             {
                 data[i] ^= key;
             }
