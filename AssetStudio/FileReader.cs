@@ -181,6 +181,7 @@ namespace AssetStudio
                         break;
                     case GameType.OPFP:
                     case GameType.FakeHeader:
+                    case GameType.UnityCNWithFakeHeader:
                     case GameType.ShiningNikki:
                         reader = ParseFakeHeader(reader);
                         break;
