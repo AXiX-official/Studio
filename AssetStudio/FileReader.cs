@@ -239,6 +239,9 @@ namespace AssetStudio
                     case GameType.XinYueTongXing:
                         reader = DecryptXinYueTongXing(reader);
                         break;
+                    case GameType.MagicalNutIkuno:
+                        reader = DecryptMagicalNutIkuno(reader);
+                        break;
                 }
             }
             if (autoDetectMultipleBundle || reader.FileType == FileType.BundleFile && game.Type.IsBlockFile() || reader.FileType == FileType.ENCRFile || reader.FileType == FileType.BlbFile)

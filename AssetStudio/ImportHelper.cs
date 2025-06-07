@@ -1225,37 +1225,64 @@ namespace AssetStudio
                 }
                 byte[] key = hashder.Take(32).ToArray();
 
-                using (Aes aes = Aes.Create())
+                using Aes aes = Aes.Create();
+                aes.Key = key;
+                aes.Mode = CipherMode.ECB;
+                aes.Padding = PaddingMode.None;
+
+                byte[] counter = new byte[16];
+                Array.Copy(salt, 0, counter, 0, Math.Min(salt.Length, 16));
+
+                using MemoryStream ms = new MemoryStream();
+                using CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write);
+                cs.Write(counter, 0, counter.Length);
+                cs.FlushFinalBlock();
+                byte[] encryptedCounter = ms.ToArray();
+                byte[] decryptedData = new byte[data.Length];
+
+                for (int i = 0; i < data.Length; i++)
                 {
-                    aes.Key = key;
-                    aes.Mode = CipherMode.ECB; // AES CTR模式在.NET中没有直接支持，需要手动实现
-                    aes.Padding = PaddingMode.None;
-
-                    byte[] counter = new byte[16];
-                    Array.Copy(salt, 0, counter, 0, Math.Min(salt.Length, 16));
-
-                    using (MemoryStream ms = new MemoryStream())
-                    {
-                        using (CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
-                        {
-                            cs.Write(counter, 0, counter.Length);
-                            cs.FlushFinalBlock();
-                        }
-                        byte[] encryptedCounter = ms.ToArray();
-                        byte[] decryptedData = new byte[data.Length];
-
-                        for (int i = 0; i < data.Length; i++)
-                        {
-                            decryptedData[i] = (byte)(data[i] ^ encryptedCounter[i % 16]);
-                        }
-
-                        MemoryStream resultStream = new MemoryStream();
-                        resultStream.Write(decryptedData, 0, decryptedData.Length);
-                        resultStream.Position = 0;
-                        return new FileReader(reader.FullPath, resultStream);
-                    }
+                    decryptedData[i] = (byte)(data[i] ^ encryptedCounter[i % 16]);
                 }
+
+                MemoryStream resultStream = new MemoryStream();
+                resultStream.Write(decryptedData, 0, decryptedData.Length);
+                resultStream.Position = 0;
+                return new FileReader(reader.FullPath, resultStream);
             }
+        }
+
+        public static FileReader DecryptMagicalNutIkuno(FileReader reader)
+        {
+            Logger.Verbose($"Attempting to decrypt file {reader.FileName} with MagicalNutIkuno encryption");
+            
+            var sign = reader.ReadBytes(7);
+            if (Encoding.UTF8.GetString(sign) == "UnityFS")
+            {
+                Logger.Verbose("File is not encrypted, returning original reader");
+                reader.Position = 0;
+                return reader;
+            }
+            
+            reader.Position = 0;
+            var data = reader.ReadBytes((int)reader.Remaining);
+            byte[] encryptedData = Convert.FromBase64CharArray(Encoding.ASCII.GetChars(data),0, data.Length);
+
+            using Aes aes = Aes.Create();
+            aes.Key = Encoding.UTF8.GetBytes("a65376ecf86139e3");
+            aes.IV = Encoding.UTF8.GetBytes("740c13ccc6f5e61d");
+            aes.Mode = CipherMode.CBC;
+            aes.Padding = PaddingMode.PKCS7;
+            var encryptor = aes.CreateDecryptor();
+
+            using MemoryStream ms = new MemoryStream(encryptedData);
+            using CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Read);
+            byte[] decryptedData = new byte[encryptedData.Length];
+            int bytesRead = cs.Read(decryptedData, 0, decryptedData.Length);
+            MemoryStream resultStream = new MemoryStream();
+            resultStream.Write(decryptedData, 0, decryptedData.Length);
+            resultStream.Position = 0;
+            return new FileReader(reader.FullPath, resultStream);
         }
     }
 }
