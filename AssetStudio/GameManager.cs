@@ -35,13 +35,13 @@ namespace AssetStudio
             Games.Add(index++, new Game(GameType.ShiningNikki));
             Games.Add(index++, new Game(GameType.HelixWaltz2));
             Games.Add(index++, new Game(GameType.NetEase));
-            Games.Add(index++, new Game(GameType.AnchorPanic));
+            Games.Add(index++, new Game("锚点降临", GameType.AnchorPanic));
             Games.Add(index++, new Game(GameType.DreamscapeAlbireo));
             Games.Add(index++, new Game(GameType.ImaginaryFest));
             Games.Add(index++, new Game(GameType.AliceGearAegis));
             Games.Add(index++, new Game(GameType.ProjectSekai));
             Games.Add(index++, new Game(GameType.CodenameJump));
-            Games.Add(index++, new Game(GameType.GirlsFrontline));
+            Games.Add(index++, new Game("少女前线2:追放", GameType.GirlsFrontline));
             Games.Add(index++, new Game(GameType.Reverse1999));
             Games.Add(index++, new Game(GameType.ArknightsEndfield));
             Games.Add(index++, new Game(GameType.JJKPhantomParade));
@@ -49,13 +49,13 @@ namespace AssetStudio
             Games.Add(index++, new Game(GameType.PartyAnimals));
             Games.Add(index++, new Game(GameType.LoveAndDeepspace));
             Games.Add(index++, new Game(GameType.SchoolGirlStrikers));
-            Games.Add(index++, new Game(GameType.ExAstris));
-            Games.Add(index++, new Game(GameType.PerpetualNovelty));
-            Games.Add(index++, new Game(GameType.GuiLongChao));
+            Games.Add(index++, new Game("来自星尘", GameType.ExAstris));
+            Games.Add(index++, new Game("物华弥新", GameType.PerpetualNovelty));
+            Games.Add(index++, new Game("归龙潮", GameType.GuiLongChao));
             Games.Add(index++, new Game(GameType.CounterSide));
-            Games.Add(index++, new Game(GameType.XinYueTongXing));
+            Games.Add(index++, new Game("新月同行", GameType.XinYueTongXing));
             Games.Add(index++, new Game(GameType.Arknights));
-            Games.Add(index++, new Game(GameType.MagicalNutIkuno));
+            Games.Add(index++, new Game("魔栗少女\u2606依久乃", GameType.MagicalNutIkuno));
         }
         public static Game GetGame(GameType gameType) => GetGame((int)gameType);
         public static Game GetGame(int index)
@@ -79,9 +79,11 @@ namespace AssetStudio
         public string Name { get; set; }
         public GameType Type { get; }
 
-        public Game(GameType type)
+        public Game(GameType type) : this(type.ToString(), type) {}
+        
+        public Game(string name, GameType type)
         {
-            Name = type.ToString();
+            Name = name;
             Type = type;
         }
 
