@@ -1,6 +1,15 @@
-[<img src="https://api.gitsponsors.com/api/badge/img?id=759364618" height="20">](https://api.gitsponsors.com/api/badge/link?p=iQu49g1SSosgAGIECJ1g4EJ7TtB0VX0Xbm2H/qKEljL9qZFyOJh+3hFAVhu7GzctRJbY9C/q2zv/LhWkjGbh34Gg6BKvJdCv+cUfVvWWwXwh8p3l3yHltaaVoMrrPSfAD2TJEr/Uz1wNKVupGnLXVg==)
+# Attention
 
+This is a fork of [Razmoth](https://github.com/Razmoth)‘s [Stduio](https://github.com/RazTools/Studio),
+Check out original project for more information.
 
+This fork is mainly for self-use so so there will be tons of low quality code, 
+wont-fix bugs and all sorts of issues. 
+
+**All in all, I don't recommend this fork nor do I guarantee any maintenance.**
+
+<details>
+<summary>original readme perhaps</summary>
 # Studio
 Check out the [original AssetStudio project](https://github.com/Perfare/AssetStudio) for more information.
 
@@ -35,7 +44,6 @@ Options:
   --no_index_object                                       Exclude IndexObject/MiHoYoBinData from AssetMap/Export.
   --xor_key <xor_key>                                     XOR key to decrypt MiHoYoBinData.
   --ai_file <ai_file>                                     Specify asset_index json file path (to recover GI containers).
-  --lua_script <lua_script>                               Specify Lua script path.
   --version                                               Show version information
   -?, -h, --help                                          Show help and usage information
 ```
@@ -53,3 +61,5 @@ Special Thank to:
 - Ds5678: [AssetRipper](https://github.com/AssetRipper/AssetRipper)[[discord](https://discord.gg/XqXa53W2Yh)] for information about Asset Formats & Parsing.
 - mafaca: [uTinyRipper](https://github.com/mafaca/UtinyRipper) for `YAML` and `AnimationClipConverter`. 
 - SiMaLaoShi: [AssetStudio_Tuanjie](https://github.com/SiMaLaoShi/AssetStudio_Tuanjie) for `TuanJie Engine` support.
+
+</details>
