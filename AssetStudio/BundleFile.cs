@@ -1,10 +1,8 @@
 ﻿using ZstdSharp;
 using System;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Buffers;
 
@@ -50,7 +48,7 @@ namespace AssetStudio
             public string signature;
             public uint version;
             public string unityVersion;
-            public string unityRevision;
+            public UnityVersion unityRevision;
             public long size;
             public uint compressedBlocksInfoSize;
             public uint uncompressedBlocksInfoSize;
@@ -381,12 +379,12 @@ namespace AssetStudio
             Logger.Verbose($"Attempting to decrypt file {reader.FileName} with UnityCN encryption");
             ArchiveFlags mask;
 
-            var version = ParseVersion();
+            var version = m_Header.unityRevision;
             //Flag changed it in these versions
-            if (version[0] < 2020 || //2020 and earlier
-                (version[0] == 2020 && version[1] == 3 && version[2] <= 34) || //2020.3.34 and earlier
-                (version[0] == 2021 && version[1] == 3 && version[2] <= 2) || //2021.3.2 and earlier
-                (version[0] == 2022 && version[1] == 3 && version[2] <= 1)) //2022.3.1 and earlier
+            if (version < "2020" || //2020 and earlier
+                (version >= "2020.3" && version <= "2020.3.34") || //2020.3.34 and earlier
+                (version >= "2021.3" && version <= "2021.3.2") || //2021.3.2 and earlier
+                (version >= "2022.3" && version <= "2022.3.1")) //2022.3.1 and earlier
             {
                 mask = ArchiveFlags.BlockInfoNeedPaddingAtStart;
                 HasBlockInfoNeedPaddingAtStart = false;
@@ -416,12 +414,12 @@ namespace AssetStudio
         private void ReadBlocksInfoAndDirectory(FileReader reader)
         {
             byte[] blocksInfoBytes;
-            var version = ParseVersion();
+            var version = m_Header.unityRevision;
             if (m_Header.version >= 7 && !Game.Type.IsSRGroup())
             {
                 reader.AlignStream(16);
             }
-            else if (version[0] == 2019 && version[1] == 4)
+            else if (version is { Major: 2019, Minor: 4 })
             {
                 var p = reader.Position;
                 var len = 16 - p % 16;
@@ -728,12 +726,6 @@ namespace AssetStudio
                 }
             }
             blocksStream.Position = 0;
-        }
-
-        public int[] ParseVersion()
-        {
-            var versionSplit = Regex.Replace(m_Header.unityRevision, @"\D", ".").Split(new[] { "." }, StringSplitOptions.RemoveEmptyEntries);
-            return versionSplit.Select(int.Parse).ToArray();
         }
     }
 }

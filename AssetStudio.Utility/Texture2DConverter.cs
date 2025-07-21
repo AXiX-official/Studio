@@ -11,7 +11,7 @@ namespace AssetStudio
         private int m_Width;
         private int m_Height;
         private TextureFormat m_TextureFormat;
-        private int[] version;
+        private UnityVersion version;
         private BuildTarget platform;
         private int outPutSize;
 
@@ -694,7 +694,7 @@ namespace AssetStudio
 
         private bool UnpackCrunch(byte[] image_data, out byte[] result)
         {
-            if (version[0] > 2017 || (version[0] == 2017 && version[1] >= 3) //2017.3 and up
+            if (version >= "2017.3" //2017.3 and up
                 || m_TextureFormat == TextureFormat.ETC_RGB4Crunched
                 || m_TextureFormat == TextureFormat.ETC2_RGBA8Crunched)
             {

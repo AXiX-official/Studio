@@ -12,7 +12,7 @@ namespace AssetStudio
         [JsonIgnore]
         public long m_PathID;
         [JsonIgnore]
-        public int[] version;
+        public UnityVersion version;
         [JsonIgnore]
         protected BuildType buildType;
         [JsonIgnore]
@@ -33,7 +33,7 @@ namespace AssetStudio
             assetsFile = reader.assetsFile;
             type = reader.type;
             m_PathID = reader.m_PathID;
-            version = reader.version;
+            version = reader.unityVersion;
             buildType = reader.buildType;
             platform = reader.platform;
             serializedType = reader.serializedType;

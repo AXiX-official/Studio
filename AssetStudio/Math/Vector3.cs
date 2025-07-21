@@ -87,7 +87,7 @@ namespace AssetStudio
             return X * X + Y * Y + Z * Z;
         }
 
-        public YAMLNode ExportYAML(int[] version)
+        public YAMLNode ExportYAML(UnityVersion version)
         {
             var node = new YAMLMappingNode();
             node.Style = MappingStyle.Flow;

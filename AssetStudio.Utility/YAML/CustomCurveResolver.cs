@@ -1,7 +1,6 @@
 ﻿using System;
 using SevenZip;
 using System.Linq;
-using System.Xml.Linq;
 
 namespace AssetStudio
 {
@@ -584,7 +583,7 @@ namespace AssetStudio
 
         public static string FindBlendShapeNameByCRC(this Mesh mesh, uint crc)
         {
-            if (mesh.version[0] > 4 || (mesh.version[0] == 4 && mesh.version[1] >= 3))
+            if (mesh.version >= "4.3")
             {
                 return mesh.m_Shapes.FindShapeNameByCRC(crc);
             }

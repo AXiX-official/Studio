@@ -14,11 +14,10 @@ namespace AssetStudio
         public SerializedType serializedType;
         public BuildTarget platform;
         public SerializedFileFormatVersion m_Version;
-
-        public int[] version => assetsFile.version;
+        
         public BuildType buildType => assetsFile.buildType;
         
-        public string unityVersion = "2.5.0f5";
+        public UnityVersion unityVersion = "2.5.0f5";
 
         public bool IsTuanJie = false;
 
@@ -42,7 +41,7 @@ namespace AssetStudio
             m_Version = assetsFile.header.m_Version;
             unityVersion = assetsFile.unityVersion;
 
-            IsTuanJie = unityVersion.Contains("t");
+            IsTuanJie = unityVersion.Extra.Contains("t");
 
             Logger.Verbose($"Initialized reader for {type} object with {m_PathID} in file {assetsFile.fileName} !!");
         }
@@ -65,7 +64,7 @@ namespace AssetStudio
 
         public Vector3 ReadVector3()
         {
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 4))
+            if (unityVersion >= "5.4")
             {
                 return new Vector3(ReadSingle(), ReadSingle(), ReadSingle());
             }

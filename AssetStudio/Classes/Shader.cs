@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace AssetStudio
@@ -248,7 +247,7 @@ namespace AssetStudio
 
         public SerializedShaderState(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
             m_Name = reader.ReadAlignedString();
             rtBlend = new List<SerializedShaderRTBlendState>();
@@ -258,14 +257,14 @@ namespace AssetStudio
             }
             rtSeparateBlend = reader.ReadBoolean();
             reader.AlignStream();
-            if (version[0] > 2017 || (version[0] == 2017 && version[1] >= 2)) //2017.2 and up
+            if (version >= "2017.2") //2017.2 and up
             {
                 zClip = new SerializedShaderFloatValue(reader);
             }
             zTest = new SerializedShaderFloatValue(reader);
             zWrite = new SerializedShaderFloatValue(reader);
             culling = new SerializedShaderFloatValue(reader);
-            if (version[0] >= 2020) //2020.1 and up
+            if (version.Major >= 2020) //2020.1 and up
             {
                 conservative = new SerializedShaderFloatValue(reader);
             }
@@ -386,12 +385,12 @@ namespace AssetStudio
 
         public TextureParameter(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
             m_NameIndex = reader.ReadInt32();
             m_Index = reader.ReadInt32();
             m_SamplerIndex = reader.ReadInt32();
-            if (version[0] > 2017 || (version[0] == 2017 && version[1] >= 3)) //2017.3 and up
+            if (version >= "2017.3") //2017.3 and up
             {
                 var m_MultiSampled = reader.ReadBoolean();
             }
@@ -408,11 +407,11 @@ namespace AssetStudio
 
         public BufferBinding(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
             m_NameIndex = reader.ReadInt32();
             m_Index = reader.ReadInt32();
-            if (version[0] >= 2020) //2020.1 and up
+            if (version.Major >= 2020) //2020.1 and up
             {
                 m_ArraySize = reader.ReadInt32();
             }
@@ -431,7 +430,7 @@ namespace AssetStudio
 
         public ConstantBuffer(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
             m_NameIndex = reader.ReadInt32();
 
@@ -448,7 +447,7 @@ namespace AssetStudio
             {
                 m_VectorParams.Add(new VectorParameter(reader));
             }
-            if (version[0] > 2017 || (version[0] == 2017 && version[1] >= 3)) //2017.3 and up
+            if (version >= "2017.3") //2017.3 and up
             {
                 int numStructParams = reader.ReadInt32();
                 m_StructParams = new List<StructParameter>();
@@ -459,11 +458,8 @@ namespace AssetStudio
             }
             m_Size = reader.ReadInt32();
 
-            if ((version[0] == 2020 && version[1] > 3) ||
-               (version[0] == 2020 && version[1] == 3 && version[2] >= 2) || //2020.3.2f1 and up
-               (version[0] > 2021) ||
-               (version[0] == 2021 && version[1] > 1) ||
-               (version[0] == 2021 && version[1] == 1 && version[2] >= 4)) //2021.1.4f1 and up
+            if ((version.Major == 2020 && version >= "2020.3.2") || //2020.3.2f1 and up
+               version >= "2021.1.4") //2021.1.4f1 and up
             {
                 if (reader.IsTuanJie)
                     m_totalParameterCount = reader.ReadInt32();
@@ -618,7 +614,7 @@ namespace AssetStudio
 
         public SerializedSubProgram(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
             
             if (reader.Game.Type.IsLoveAndDeepspace())
             {
@@ -633,7 +629,7 @@ namespace AssetStudio
             }
             m_Channels = new ParserBindChannels(reader);
 
-            if ((version[0] >= 2019 && version[0] < 2021) || (version[0] == 2021 && version[1] < 2) || HasGlobalLocalKeywordIndices(reader.serializedType)) //2019 ~2021.1
+            if ((version.Major >= 2019 && version < "2021.2") || HasGlobalLocalKeywordIndices(reader.serializedType)) //2019 ~2021.1
             {
                 var m_GlobalKeywordIndices = reader.ReadUInt16Array();
                 reader.AlignStream();
@@ -643,7 +639,7 @@ namespace AssetStudio
             else
             {
                 m_KeywordIndices = reader.ReadUInt16Array();
-                if (version[0] >= 2017) //2017 and up
+                if (version.Major >= 2017) //2017 and up
                 {
                     reader.AlignStream();
                 }
@@ -664,11 +660,8 @@ namespace AssetStudio
                 reader.AlignStream();
             }
 
-            if ((version[0] == 2020 && version[1] > 3) ||
-               (version[0] == 2020 && version[1] == 3 && version[2] >= 2) || //2020.3.2f1 and up
-               (version[0] > 2021) ||
-               (version[0] == 2021 && version[1] > 1) ||
-               (version[0] == 2021 && version[1] == 1 && version[2] >= 1)) //2021.1.1f1 and up
+            if ((version.Major == 2020 && version >= "2020.3.2") || //2020.3.2f1 and up
+               version >= "2021.1.1") //2021.1.1f1 and up
             {
                 m_Parameters = new SerializedProgramParameters(reader);
             }
@@ -723,7 +716,7 @@ namespace AssetStudio
                     m_UAVParams.Add(new UAVParameter(reader));
                 }
 
-                if (version[0] >= 2017) //2017 and up
+                if (version.Major >= 2017) //2017 and up
                 {
                     int numSamplers = reader.ReadInt32();
                     m_Samplers = new List<SamplerParameter>();
@@ -734,9 +727,9 @@ namespace AssetStudio
                 }
             }
 
-            if (version[0] > 2017 || (version[0] == 2017 && version[1] >= 2)) //2017.2 and up
+            if (version >= "2017.2") //2017.2 and up
             {
-                if (version[0] >= 2021) //2021.1 and up
+                if (version.Major >= 2021) //2021.1 and up
                 {
                     var m_ShaderRequirements = reader.ReadInt64();
                 }
@@ -788,7 +781,7 @@ namespace AssetStudio
 
         public SerializedProgram(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
             int numSubPrograms = reader.ReadInt32();
             m_SubPrograms = new List<SerializedSubProgram>();
@@ -797,10 +790,8 @@ namespace AssetStudio
                 m_SubPrograms.Add(new SerializedSubProgram(reader));
             }
 
-            if ((version[0] == 2021 && version[1] > 3) ||
-               version[0] == 2021 && version[1] == 3 && version[2] >= 10 || //2021.3.10f1 and up
-               (version[0] == 2022 && version[1] > 1) ||
-               version[0] == 2022 && version[1] == 1 && version[2] >= 13) //2022.1.13f1 and up
+            if ((version.Major == 2021 && version >= "2021.3.10") || //2021.3.10f1 and up
+               version >= "2022.1.13") //2022.1.13f1 and up
             {
                 int numPlayerSubPrograms = reader.ReadInt32();
                 m_PlayerSubPrograms = new List<List<SerializedPlayerSubProgram>>();
@@ -817,16 +808,13 @@ namespace AssetStudio
                 m_ParameterBlobIndices = reader.ReadUInt32ArrayArray();
             }
 
-            if ((version[0] == 2020 && version[1] > 3) ||
-               (version[0] == 2020 && version[1] == 3 && version[2] >= 2) || //2020.3.2f1 and up
-               (version[0] > 2021) ||
-               (version[0] == 2021 && version[1] > 1) ||
-               (version[0] == 2021 && version[1] == 1 && version[2] >= 1)) //2021.1.1f1 and up
+            if ((version.Major == 2020 && version >= "2020.3.2") || //2020.3.2f1 and up
+               version >= "2021.1.1") //2021.1.1f1 and up
             {
                 m_CommonParameters = new SerializedProgramParameters(reader);
             }
 
-            if (version[0] > 2022 || (version[0] == 2022 && version[1] >= 1)) //2022.1 and up
+            if (version >= "2020.1") //2022.1 and up
             {
                 m_SerializedKeywordStateMask = reader.ReadUInt16Array();
                 reader.AlignStream();
@@ -866,9 +854,9 @@ namespace AssetStudio
 
         public SerializedPass(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
-            if (version[0] > 2020 || (version[0] == 2020 && version[1] >= 2)) //2020.2 and up
+            if (version >= "2020.2") //2020.2 and up
             {
                 int numEditorDataHash = reader.ReadInt32();
                 m_EditorDataHash = new List<Hash128>();
@@ -879,7 +867,7 @@ namespace AssetStudio
                 reader.AlignStream();
                 m_Platforms = reader.ReadUInt8Array();
                 reader.AlignStream();
-                if (version[0] < 2021 || (version[0] == 2021 && version[1] < 2)) //2021.1 and down
+                if (version < "2021.2") //2021.1 and down
                 {
                     m_LocalKeywordMask = reader.ReadUInt16Array();
                     reader.AlignStream();
@@ -903,12 +891,12 @@ namespace AssetStudio
             progGeometry = new SerializedProgram(reader);
             progHull = new SerializedProgram(reader);
             progDomain = new SerializedProgram(reader);
-            if (version[0] > 2019 || (version[0] == 2019 && version[1] >= 3)) //2019.3 and up
+            if (version >= "2019.3") //2019.3 and up
             {
                 progRayTracing = new SerializedProgram(reader);
             }
             m_HasInstancingVariant = reader.ReadBoolean();
-            if (version[0] >= 2018) //2018 and up
+            if (version.Major >= 2018) //2018 and up
             {
                 var m_HasProceduralInstancingVariant = reader.ReadBoolean();
             }
@@ -917,7 +905,7 @@ namespace AssetStudio
             m_Name = reader.ReadAlignedString();
             m_TextureName = reader.ReadAlignedString();
             m_Tags = new SerializedTagMap(reader);
-            if (version[0] == 2021 && version[1] >= 2) //2021.2 ~2021.x
+            if (version.Major == 2021 && version.Minor >= 2) //2021.2 ~2021.x
             {
                 m_SerializedKeywordStateMask = reader.ReadUInt16Array();
                 reader.AlignStream();
@@ -999,7 +987,7 @@ namespace AssetStudio
 
         public SerializedShader(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
             m_PropInfo = new SerializedProperties(reader);
 
@@ -1010,7 +998,7 @@ namespace AssetStudio
                 m_SubShaders.Add(new SerializedSubShader(reader));
             }
 
-            if (version[0] > 2021 || (version[0] == 2021 && version[1] >= 2)) //2021.2 and up
+            if (version >= "2021.2") //2021.2 and up
             {
                 m_KeywordNames = reader.ReadStringArray();
                 m_KeywordFlags = reader.ReadUInt8Array();
@@ -1028,7 +1016,7 @@ namespace AssetStudio
                 m_Dependencies.Add(new SerializedShaderDependency(reader));
             }
 
-            if (version[0] >= 2021) //2021.1 and up
+            if (version.Major >= 2021) //2021.1 and up
             {
                 int m_CustomEditorForRenderPipelinesSize = reader.ReadInt32();
                 m_CustomEditorForRenderPipelines = new List<SerializedCustomEditorForRenderPipeline>();
@@ -1092,11 +1080,11 @@ namespace AssetStudio
 
         public Shader(ObjectReader reader) : base(reader)
         {
-            if (version[0] == 5 && version[1] >= 5 || version[0] > 5) //5.5 and up
+            if (version >= "5.5") //5.5 and up
             {
                 m_ParsedForm = new SerializedShader(reader);
                 platforms = reader.ReadUInt32Array().Select(x => (ShaderCompilerPlatform)x).ToArray();
-                if (version[0] > 2019 || (version[0] == 2019 && version[1] >= 3)) //2019.3 and up
+                if (version >= "2019.3") //2019.3 and up
                 {
                     offsets = reader.ReadUInt32ArrayArray();
                     compressedLengths = reader.ReadUInt32ArrayArray();
@@ -1128,10 +1116,8 @@ namespace AssetStudio
                     reader.AlignStream();
                 }
 
-                if ((version[0] == 2021 && version[1] > 3) ||
-                    version[0] == 2021 && version[1] == 3 && version[2] >= 12 || //2021.3.12f1 and up
-                    (version[0] == 2022 && version[1] > 1) ||
-                    version[0] == 2022 && version[1] == 1 && version[2] >= 21) //2022.1.21f1 and up
+                if ((version.Major == 2021 && version >= "2021.3.12") || //2021.3.12f1 and up
+                    version >= "2022.1.21") //2022.1.21f1 and up
                 {
                     stageCounts = reader.ReadUInt32Array();
                 }
@@ -1142,7 +1128,7 @@ namespace AssetStudio
                     new PPtr<Shader>(reader);
                 }
 
-                if (version[0] >= 2018)
+                if (version.Major >= 2018)
                 {
                     var m_NonModifiableTexturesCount = reader.ReadInt32();
                     for (int i = 0; i < m_NonModifiableTexturesCount; i++)
@@ -1160,7 +1146,7 @@ namespace AssetStudio
                 m_Script = reader.ReadUInt8Array();
                 reader.AlignStream();
                 var m_PathName = reader.ReadAlignedString();
-                if (version[0] == 5 && version[1] >= 3) //5.3 - 5.4
+                if (version.Major == 5 && version.Minor >= 3) //5.3 - 5.4
                 {
                     decompressedSize = reader.ReadUInt32();
                     m_SubProgramBlob = reader.ReadUInt8Array();

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace AssetStudio
 {
@@ -33,7 +32,7 @@ namespace AssetStudio
             value = readerFunc();
             inSlope = readerFunc();
             outSlope = readerFunc();
-            if (reader.version[0] >= 2018) //2018 and up
+            if (reader.unityVersion >= "2018") //2018 and up
             {
                 weightedMode = reader.ReadInt32();
                 inWeight = readerFunc();
@@ -41,7 +40,7 @@ namespace AssetStudio
             }
         }
 
-        public YAMLNode ExportYAML(int[] version)
+        public YAMLNode ExportYAML(UnityVersion version)
         {
             var node = new YAMLMappingNode();
             node.AddSerializedVersion(ToSerializedVersion(version));
@@ -49,7 +48,7 @@ namespace AssetStudio
             node.Add(nameof(value), value.ExportYAML(version));
             node.Add(nameof(inSlope), inSlope.ExportYAML(version));
             node.Add(nameof(outSlope), outSlope.ExportYAML(version));
-            if (version[0] >= 2018) //2018 and up
+            if (version.Major >= 2018) //2018 and up
             {
                 node.Add(nameof(weightedMode), weightedMode);
                 node.Add(nameof(inWeight), inWeight.ExportYAML(version));
@@ -58,13 +57,13 @@ namespace AssetStudio
             return node;
         }
 
-        private int ToSerializedVersion(int[] version)
+        private int ToSerializedVersion(UnityVersion version)
         {
-            if (version[0] >= 2018) //2018 and up
+            if (version.Major >= 2018) //2018 and up
             {
                 return 3;
             }
-            else if (version[0] > 5 || (version[0] == 5 && version[1] >= 5))
+            else if (version >= "5.5")
             {
                 return 2;
             }
@@ -89,7 +88,7 @@ namespace AssetStudio
 
         public AnimationCurve(ObjectReader reader, Func<T> readerFunc)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
             int numCurves = reader.ReadInt32();
             m_Curve = new List<Keyframe<T>>();
             for (int i = 0; i < numCurves; i++)
@@ -99,29 +98,29 @@ namespace AssetStudio
 
             m_PreInfinity = reader.ReadInt32();
             m_PostInfinity = reader.ReadInt32();
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 3))//5.3 and up
+            if (version >= "5.3")//5.3 and up
             {
                 m_RotationOrder = reader.ReadInt32();
             }
         }
 
-        public YAMLNode ExportYAML(int[] version)
+        public YAMLNode ExportYAML(UnityVersion version)
         {
             var node = new YAMLMappingNode();
             node.AddSerializedVersion(ToSerializedVersion(version));
             node.Add(nameof(m_Curve), m_Curve.ExportYAML(version));
             node.Add(nameof(m_PreInfinity), m_PreInfinity);
             node.Add(nameof(m_PostInfinity), m_PostInfinity);
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 3))//5.3 and up
+            if (version >= "5.3")//5.3 and up
             {
                 node.Add(nameof(m_RotationOrder), m_RotationOrder);
             }
             return node;
         }
 
-        private int ToSerializedVersion(int[] version)
+        private int ToSerializedVersion(UnityVersion version)
         {
-            if (version[0] > 2 || (version[0] == 2 && version[1] >= 1))
+            if (version >= "2.1")
             {
                 return 2;
             }
@@ -146,7 +145,7 @@ namespace AssetStudio
             path = reader.ReadAlignedString();
         }
 
-        public YAMLNode ExportYAML(int[] version)
+        public YAMLNode ExportYAML(UnityVersion version)
         {
             YAMLMappingNode node = new YAMLMappingNode();
             node.Add(nameof(curve), curve.ExportYAML(version));
@@ -195,7 +194,7 @@ namespace AssetStudio
             reader.AlignStream();
         }
 
-        public YAMLNode ExportYAML(int[] version)
+        public YAMLNode ExportYAML(UnityVersion version)
         {
             var node = new YAMLMappingNode();
             node.Add(nameof(m_NumItems), m_NumItems);
@@ -262,7 +261,7 @@ namespace AssetStudio
             m_BitSize = reader.ReadByte();
             reader.AlignStream();
         }
-        public YAMLNode ExportYAML(int[] version)
+        public YAMLNode ExportYAML(UnityVersion version)
         {
             var node = new YAMLMappingNode();
             node.Add(nameof(m_NumItems), m_NumItems);
@@ -313,7 +312,7 @@ namespace AssetStudio
             reader.AlignStream();
         }
 
-        public YAMLNode ExportYAML(int[] version)
+        public YAMLNode ExportYAML(UnityVersion version)
         {
             var node = new YAMLMappingNode();
             node.Add(nameof(m_NumItems), m_NumItems);
@@ -405,7 +404,7 @@ namespace AssetStudio
             m_PostInfinity = reader.ReadInt32();
         }
 
-        public YAMLNode ExportYAML(int[] version)
+        public YAMLNode ExportYAML(UnityVersion version)
         {
             var node = new YAMLMappingNode();
             node.Add(nameof(m_Path), m_Path);
@@ -435,7 +434,7 @@ namespace AssetStudio
             path = reader.ReadAlignedString();
         }
 
-        public YAMLNode ExportYAML(int[] version)
+        public YAMLNode ExportYAML(UnityVersion version)
         {
             YAMLMappingNode node = new YAMLMappingNode();
             node.Add(nameof(curve), curve.ExportYAML(version));
@@ -484,27 +483,27 @@ namespace AssetStudio
 
         public FloatCurve(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
             curve = new AnimationCurve<Float>(reader, reader.ReadFloat);
             attribute = reader.ReadAlignedString();
             path = reader.ReadAlignedString();
             classID = (ClassIDType)reader.ReadInt32();
             script = new PPtr<MonoScript>(reader);
-            if (version[0] == 2022 && version[1] >= 2) //2022.2 and up
+            if (version >= "2022.2") //2022.2 and up
             {
                 flags = reader.ReadInt32();
             }
         }
 
-        public YAMLNode ExportYAML(int[] version)
+        public YAMLNode ExportYAML(UnityVersion version)
         {
             YAMLMappingNode node = new YAMLMappingNode();
             node.Add(nameof(curve), curve.ExportYAML(version));
             node.Add(nameof(attribute), attribute);
             node.Add(nameof(path), path);
             node.Add(nameof(classID), (int)classID);
-            if (version[0] >= 2)
+            if (version.Major >= 2)
             {
                 node.Add(nameof(script), script.ExportYAML(version));
             }
@@ -548,7 +547,7 @@ namespace AssetStudio
             time = reader.ReadSingle();
             value = new PPtr<Object>(reader);
         }
-        public YAMLNode ExportYAML(int[] version)
+        public YAMLNode ExportYAML(UnityVersion version)
         {
             var node = new YAMLMappingNode();
             node.Add(nameof(time), time);
@@ -578,7 +577,7 @@ namespace AssetStudio
 
         public PPtrCurve(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
             int numCurves = reader.ReadInt32();
             curve = new List<PPtrKeyframe>();
@@ -591,13 +590,13 @@ namespace AssetStudio
             path = reader.ReadAlignedString();
             classID = reader.ReadInt32();
             script = new PPtr<MonoScript>(reader);
-            if (version[0] == 2022 && version[1] >= 2) //2022.2 and up
+            if (version >= "2022.2") //2022.2 and up
             {
                 flags = reader.ReadInt32();
             }
         }
 
-        public YAMLNode ExportYAML(int[] version)
+        public YAMLNode ExportYAML(UnityVersion version)
         {
             YAMLMappingNode node = new YAMLMappingNode();
             node.Add(nameof(curve), curve.ExportYAML(version));
@@ -644,7 +643,7 @@ namespace AssetStudio
             m_Extent = reader.ReadVector3();
         }
 
-        public YAMLNode ExportYAML(int[] version)
+        public YAMLNode ExportYAML(UnityVersion version)
         {
             var node = new YAMLMappingNode();
             node.Add(nameof(m_Center), m_Center.ExportYAML(version));
@@ -699,13 +698,13 @@ namespace AssetStudio
 
         public HumanGoal(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
             m_X = reader.ReadXForm();
             m_WeightT = reader.ReadSingle();
             m_WeightR = reader.ReadSingle();
-            if (version[0] >= 5)//5.0 and up
+            if (version >= "5.0")//5.0 and up
             {
-                m_HintT = version[0] > 5 || (version[0] == 5 && version[1] >= 4) ? reader.ReadVector3() : (Vector3)reader.ReadVector4();//5.4 and up
+                m_HintT = version >= "5.4" ? reader.ReadVector3() : (Vector3)reader.ReadVector4();//5.4 and up
                 m_HintWeightT = reader.ReadSingle();
             }
         }
@@ -742,9 +741,9 @@ namespace AssetStudio
 
         public HumanPose(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
             m_RootX = reader.ReadXForm();
-            m_LookAtPosition = version[0] > 5 || (version[0] == 5 && version[1] >= 4) ? reader.ReadVector3() : (Vector3)reader.ReadVector4();//5.4 and up
+            m_LookAtPosition = version >= "5.4" ? reader.ReadVector3() : (Vector3)reader.ReadVector4();//5.4 and up
             m_LookAtWeight = reader.ReadVector4();
 
             int numGoals = reader.ReadInt32();
@@ -759,7 +758,7 @@ namespace AssetStudio
 
             m_DoFArray = reader.ReadSingleArray();
 
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 2))//5.2 and up
+            if (version >= "5.2")//5.2 and up
             {
                 m_TDoFArray = reader.ReadVector3Array();
             }
@@ -767,7 +766,7 @@ namespace AssetStudio
 
         public static HumanPose ParseGI(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
             var humanPose = new HumanPose();
 
             humanPose.m_RootX = reader.ReadXForm4();
@@ -1277,9 +1276,9 @@ namespace AssetStudio
 
         public ValueConstant(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
             m_ID = reader.ReadUInt32();
-            if (version[0] < 5 || (version[0] == 5 && version[1] < 5))//5.5 down
+            if (version < "5.5")//5.5 down
             {
                 m_TypeID = reader.ReadUInt32();
             }
@@ -1314,7 +1313,7 @@ namespace AssetStudio
 
         public Clip(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
             m_StreamedClip = new StreamedClip(reader);
             if (reader.Game.Type.IsArknightsEndfield() || reader.Game.Type.IsExAstris())
             {
@@ -1329,7 +1328,7 @@ namespace AssetStudio
                 m_ACLClip = new MHYACLClip();
                 m_ACLClip.Read(reader);
             }
-            if (version[0] > 4 || (version[0] == 4 && version[1] >= 3)) //4.3 and up
+            if (version >= "4.3") //4.3 and up
             {
                 m_ConstantClip = new ConstantClip(reader);
             }
@@ -1343,7 +1342,7 @@ namespace AssetStudio
                 m_ACLClip = new LnDACLClip();
                 m_ACLClip.Read(reader);
             }
-            if (version[0] < 2018 || (version[0] == 2018 && version[1] < 3)) //2018.3 down
+            if (version < "2018.3") //2018.3 down
             {
                 m_Binding = new ValueArrayConstant(reader);
             }
@@ -1464,11 +1463,11 @@ namespace AssetStudio
 
         public ClipMuscleConstant(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
             if (reader.Game.Type.IsLoveAndDeepspace())
             {
                 m_StartX = reader.ReadXForm();
-                if (version[0] > 5 || (version[0] == 5 && version[1] >= 5))//5.5 and up
+                if (version >= "5.5")//5.5 and up
                 {
                     m_StopX = reader.ReadXForm();
                 }
@@ -1477,19 +1476,19 @@ namespace AssetStudio
             {
                 m_DeltaPose = new HumanPose(reader);
                 m_StartX = reader.ReadXForm();
-                if (version[0] > 5 || (version[0] == 5 && version[1] >= 5))//5.5 and up
+                if (version >= "5.5")//5.5 and up
                 {
                     m_StopX = reader.ReadXForm();
                 }
                 m_LeftFootStartX = reader.ReadXForm();
                 m_RightFootStartX = reader.ReadXForm();
-                if (version[0] < 5)//5.0 down
+                if (version < "5.0")//5.0 down
                 {
                     m_MotionStartX = reader.ReadXForm();
                     m_MotionStopX = reader.ReadXForm();
                 }
             }
-            m_AverageSpeed = version[0] > 5 || (version[0] == 5 && version[1] >= 4) ? reader.ReadVector3() : (Vector3)reader.ReadVector4();//5.4 and up
+            m_AverageSpeed = version > "5.4" ? reader.ReadVector3() : (Vector3)reader.ReadVector4();//5.4 and up
             m_Clip = new Clip(reader);
             m_StartTime = reader.ReadSingle();
             m_StopTime = reader.ReadSingle();
@@ -1506,7 +1505,7 @@ namespace AssetStudio
             {
                 m_IndexArray = reader.ReadInt32Array();
             }
-            if (version[0] < 4 || (version[0] == 4 && version[1] < 3)) //4.3 down
+            if (version < "4.3") //4.3 down
             {
                 var m_AdditionalCurveIndexArray = reader.ReadInt32Array();
             }
@@ -1516,13 +1515,13 @@ namespace AssetStudio
             {
                 m_ValueArrayDelta.Add(new ValueDelta(reader));
             }
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 3))//5.3 and up
+            if (version >= "5.3")//5.3 and up
             {
                 m_ValueArrayReferencePose = reader.ReadSingleArray();
             }
 
             m_Mirror = reader.ReadBoolean();
-            if (version[0] > 4 || (version[0] == 4 && version[1] >= 3)) //4.3 and up
+            if (version >= "4.3") //4.3 and up
             {
                 m_LoopTime = reader.ReadBoolean();
             }
@@ -1530,7 +1529,7 @@ namespace AssetStudio
             m_LoopBlendOrientation = reader.ReadBoolean();
             m_LoopBlendPositionY = reader.ReadBoolean();
             m_LoopBlendPositionXZ = reader.ReadBoolean();
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 5))//5.5 and up
+            if (version >= "5.5")//5.5 and up
             {
                 m_StartAtOrigin = reader.ReadBoolean();
             }
@@ -1542,7 +1541,6 @@ namespace AssetStudio
         }
         public static ClipMuscleConstant ParseGI(ObjectReader reader)
         {
-            var version = reader.version;
             var clipMuscleConstant = new ClipMuscleConstant();
 
             clipMuscleConstant.m_DeltaPose = HumanPose.ParseGI(reader);
@@ -1611,7 +1609,7 @@ namespace AssetStudio
 
             return clipMuscleConstant;
         }
-        public YAMLNode ExportYAML(int[] version)
+        public YAMLNode ExportYAML(UnityVersion version)
         {
             var node = new YAMLMappingNode();
             node.AddSerializedVersion(ToSerializedVersion(version));
@@ -1632,13 +1630,13 @@ namespace AssetStudio
             node.Add(nameof(m_Mirror), m_Mirror);
             return node;
         }
-        private int ToSerializedVersion(int[] version)
+        private int ToSerializedVersion(UnityVersion version)
         {
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 6))
+            if (version >= "5.6")
             {
                 return 3;
             }
-            else if (version[0] > 4 || (version[0] == 4 && version[1] >= 3))
+            else if (version >= "4.3")
             {
                 return 2;
             }
@@ -1648,7 +1646,7 @@ namespace AssetStudio
 
     public class GenericBinding : IYAMLExportable
     {
-        public int[] version;
+        public UnityVersion version;
         public uint path;
         public uint attribute;
         public PPtr<Object> script;
@@ -1662,11 +1660,11 @@ namespace AssetStudio
 
         public GenericBinding(ObjectReader reader)
         {
-            version = reader.version;
+            version = reader.unityVersion;
             path = reader.ReadUInt32();
             attribute = reader.ReadUInt32();
             script = new PPtr<Object>(reader);
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 6)) //5.6 and up
+            if (version >= "5.6") //5.6 and up
             {
                 typeID = (ClassIDType)reader.ReadInt32();
             }
@@ -1676,14 +1674,14 @@ namespace AssetStudio
             }
             customType = reader.ReadByte();
             isPPtrCurve = reader.ReadByte();
-            if (version[0] > 2022 || (version[0] == 2022 && version[1] >= 1)) //2022.1 and up
+            if (version >= "2022.1") //2022.1 and up
             {
                 isIntCurve = reader.ReadByte();
             }
             reader.AlignStream();
         }
 
-        public YAMLNode ExportYAML(int[] version)
+        public YAMLNode ExportYAML(UnityVersion version)
         {
             var node = new YAMLMappingNode();
             node.Add(nameof(path), path);
@@ -1720,7 +1718,7 @@ namespace AssetStudio
             }
         }
 
-        public YAMLNode ExportYAML(int[] version)
+        public YAMLNode ExportYAML(UnityVersion version)
         {
             var node = new YAMLMappingNode();
             node.Add(nameof(genericBindings), genericBindings.ExportYAML(version));
@@ -1776,21 +1774,21 @@ namespace AssetStudio
 
         public AnimationEvent(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
             time = reader.ReadSingle();
             functionName = reader.ReadAlignedString();
             data = reader.ReadAlignedString();
             objectReferenceParameter = new PPtr<Object>(reader);
             floatParameter = reader.ReadSingle();
-            if (version[0] >= 3) //3 and up
+            if (version.Major >= 3) //3 and up
             {
                 intParameter = reader.ReadInt32();
             }
             messageOptions = reader.ReadInt32();
         }
 
-        public YAMLNode ExportYAML(int[] version)
+        public YAMLNode ExportYAML(UnityVersion version)
         {
             var node = new YAMLMappingNode();
             node.Add(nameof(time), time);
@@ -1837,11 +1835,11 @@ namespace AssetStudio
 
         public AnimationClip(ObjectReader reader) : base(reader)
         {
-            if (version[0] >= 5)//5.0 and up
+            if (version.Major >= 5)//5.0 and up
             {
                 m_Legacy = reader.ReadBoolean();
             }
-            else if (version[0] >= 4)//4.0 and up
+            else if (version.Major >= 4)//4.0 and up
             {
                 m_AnimationType = (AnimationType)reader.ReadInt32();
                 if (m_AnimationType == AnimationType.Legacy)
@@ -1865,7 +1863,7 @@ namespace AssetStudio
                 var m_aclScalarTrackId2CurveId = reader.ReadUInt32Array();
             }
             m_Compressed = reader.ReadBoolean();
-            if (version[0] > 4 || (version[0] == 4 && version[1] >= 3))//4.3 and up
+            if (version >= "4.3")//4.3 and up
             {
                 m_UseHighQualityCurve = reader.ReadBoolean();
             }
@@ -1897,7 +1895,7 @@ namespace AssetStudio
             }
             else
             {
-                if (version[0] > 5 || (version[0] == 5 && version[1] >= 3))//5.3 and up
+                if (version >= "5.3")//5.3 and up
                 {
                     int numEulerCurves = reader.ReadInt32();
                     m_EulerCurves = new List<Vector3Curve>();
@@ -1929,7 +1927,7 @@ namespace AssetStudio
                 m_FloatCurves.Add(new FloatCurve(reader));
             }
 
-            if (version[0] > 4 || (version[0] == 4 && version[1] >= 3)) //4.3 and up
+            if (version >= "4.3") //4.3 and up
             {
                 int numPtrCurves = reader.ReadInt32();
                 m_PPtrCurves = new List<PPtrCurve>();
@@ -1945,12 +1943,12 @@ namespace AssetStudio
             {
                 var m_aclType = reader.ReadInt32();
             }
-            if (version[0] > 3 || (version[0] == 3 && version[1] >= 4)) //3.4 and up
+            if (version >= "3.4") //3.4 and up
             {
                 m_Bounds = new AABB(reader);
             }
             
-            if (version[0] >= 4)//4.0 and up
+            if (version.Major >= 4)//4.0 and up
             {
                 if (reader.Game.Type.IsGI())
                 {
@@ -2000,11 +1998,11 @@ namespace AssetStudio
                 var m_AclRange = new KeyValuePair<float, float>(reader.ReadSingle(), reader.ReadSingle());
             }
             
-            if (version[0] > 4 || (version[0] == 4 && version[1] >= 3)) //4.3 and up
+            if (version >= "4.3") //4.3 and up
             {
                 m_ClipBindingConstant = new AnimationClipBindingConstant(reader);
             }
-            if (version[0] > 2018 || (version[0] == 2018 && version[1] >= 3)) //2018.3 and up
+            if (version >= "2018.3") //2018.3 and up
             {
                 var m_HasGenericRootTransform = reader.ReadBoolean();
                 var m_HasMotionFloatCurves = reader.ReadBoolean();
@@ -2016,7 +2014,7 @@ namespace AssetStudio
             {
                 m_Events.Add(new AnimationEvent(reader));
             }
-            if (version[0] >= 2017) //2017 and up
+            if (version.Major >= 2017) //2017 and up
             {
                 reader.AlignStream();
             }

@@ -209,7 +209,7 @@ namespace AssetStudio
 			return node;
 		}
 
-        public static YAMLNode ExportYAML<T>(this IEnumerable<T> _this, int[] version)
+        public static YAMLNode ExportYAML<T>(this IEnumerable<T> _this, UnityVersion version)
             where T : IYAMLExportable
         {
             YAMLSequenceNode node = new YAMLSequenceNode(SequenceStyle.Block);
@@ -220,7 +220,7 @@ namespace AssetStudio
             return node;
         }
 
-        public static YAMLNode ExportYAML<T>(this IEnumerable<IEnumerable<T>> _this, int[] version)
+        public static YAMLNode ExportYAML<T>(this IEnumerable<IEnumerable<T>> _this, UnityVersion version)
             where T : IYAMLExportable
         {
             YAMLSequenceNode node = new YAMLSequenceNode(SequenceStyle.Block);
@@ -231,7 +231,7 @@ namespace AssetStudio
             return node;
         }
 
-        public static YAMLNode ExportYAML<T>(this IEnumerable<Tuple<string, T>> _this, int[] version)
+        public static YAMLNode ExportYAML<T>(this IEnumerable<Tuple<string, T>> _this, UnityVersion version)
             where T : IYAMLExportable
         {
             YAMLSequenceNode node = new YAMLSequenceNode();
@@ -244,7 +244,7 @@ namespace AssetStudio
             return node;
         }
 
-        public static YAMLNode ExportYAML<T1, T2>(this IEnumerable<Tuple<T1, T2>> _this, Func<T1, int> converter, int[] version)
+        public static YAMLNode ExportYAML<T1, T2>(this IEnumerable<Tuple<T1, T2>> _this, Func<T1, int> converter, UnityVersion version)
             where T2 : IYAMLExportable
         {
             YAMLSequenceNode node = new YAMLSequenceNode();
@@ -257,7 +257,7 @@ namespace AssetStudio
             return node;
         }
 
-        public static YAMLNode ExportYAML<T>(this IEnumerable<KeyValuePair<string, T>> _this, int[] version)
+        public static YAMLNode ExportYAML<T>(this IEnumerable<KeyValuePair<string, T>> _this, UnityVersion version)
             where T : IYAMLExportable
         {
             YAMLSequenceNode node = new YAMLSequenceNode();

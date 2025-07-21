@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 
 namespace AssetStudio
 {
@@ -30,7 +29,7 @@ namespace AssetStudio
             var m_ProxyHeight = reader.ReadUInt32();
             var Width = reader.ReadUInt32();
             var Height = reader.ReadUInt32();
-            if (version[0] > 2017 || (version[0] == 2017 && version[1] >= 2)) //2017.2 and up
+            if (version >= "2017.2") //2017.2 and up
             {
                 var m_PixelAspecRatioNum = reader.ReadUInt32();
                 var m_PixelAspecRatioDen = reader.ReadUInt32();
@@ -42,7 +41,7 @@ namespace AssetStudio
             reader.AlignStream();
             var m_AudioSampleRate = reader.ReadUInt32Array();
             var m_AudioLanguage = reader.ReadStringArray();
-            if (version[0] >= 2020) //2020.1 and up
+            if (version.Major >= 2020) //2020.1 and up
             {
                 var m_VideoShadersSize = reader.ReadInt32();
                 var m_VideoShaders = new List<PPtr<Shader>>();
@@ -53,7 +52,7 @@ namespace AssetStudio
             }
             m_ExternalResources = new StreamedResource(reader);
             var m_HasSplitAlpha = reader.ReadBoolean();
-            if (version[0] >= 2020) //2020.1 and up
+            if (version.Major >= 2020) //2020.1 and up
             {
                 var m_sRGB = reader.ReadBoolean();
             }

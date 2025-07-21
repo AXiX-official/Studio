@@ -244,7 +244,7 @@ namespace AssetStudio
             }
         }
 
-        private void LoadAssetsFromMemory(FileReader reader, string originalPath, string unityVersion = null, long originalOffset = 0)
+        private void LoadAssetsFromMemory(FileReader reader, string originalPath, UnityVersion? unityVersion = null, long originalOffset = 0)
         {
             Logger.Verbose($"Loading asset file {reader.FileName} with version {unityVersion} from {originalPath} at offset 0x{originalOffset:X8}");
             if (!assetsFileListHash.Contains(reader.FileName))
@@ -254,9 +254,9 @@ namespace AssetStudio
                     var assetsFile = new SerializedFile(reader, this);
                     assetsFile.originalPath = originalPath;
                     assetsFile.offset = originalOffset;
-                    if (!string.IsNullOrEmpty(unityVersion) && assetsFile.header.m_Version < SerializedFileFormatVersion.Unknown_7)
+                    if (unityVersion != null && assetsFile.header.m_Version < SerializedFileFormatVersion.Unknown_7)
                     {
-                        assetsFile.SetVersion(unityVersion);
+                        assetsFile.unityVersion = unityVersion;
                     }
                     CheckStrippedVersion(assetsFile);
                     assetsFileList.Add(assetsFile);
@@ -615,7 +615,7 @@ namespace AssetStudio
             }
             if (!string.IsNullOrEmpty(SpecifyUnityVersion))
             {
-                assetsFile.SetVersion(SpecifyUnityVersion);
+                assetsFile.unityVersion = SpecifyUnityVersion;
             }
         }
 

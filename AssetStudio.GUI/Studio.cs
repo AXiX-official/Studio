@@ -497,7 +497,7 @@ namespace AssetStudio.GUI
                     Logger.Info("Processing class structure been cancelled !!");
                     return new Dictionary<string, SortedDictionary<int, TypeTreeItem>>();
                 }
-                if (typeMap.TryGetValue(assetsFile.unityVersion, out var curVer))
+                if (typeMap.TryGetValue(assetsFile.unityVersion.ToString(), out var curVer))
                 {
                     foreach (var type in assetsFile.m_Types.Where(x => x.m_Type != null))
                     {
@@ -521,7 +521,7 @@ namespace AssetStudio.GUI
                         }
                         items[key] = new TypeTreeItem(key, type.m_Type);
                     }
-                    typeMap.Add(assetsFile.unityVersion, items);
+                    typeMap.Add(assetsFile.unityVersion.ToString(), items);
                 }
             }
 

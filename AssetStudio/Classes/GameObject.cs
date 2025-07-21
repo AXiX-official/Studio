@@ -1,9 +1,6 @@
-﻿using AssetStudio;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Metrics;
 using System.Linq;
-using System.Text;
 
 namespace AssetStudio
 {
@@ -26,7 +23,7 @@ namespace AssetStudio
             m_Components = new List<PPtr<Component>>();
             for (int i = 0; i < m_Component_size; i++)
             {
-                if ((version[0] == 5 && version[1] < 5) || version[0] < 5) //5.5 down
+                if (version < "5.5") //5.5 down
                 {
                     int first = reader.ReadInt32();
                 }
@@ -34,7 +31,7 @@ namespace AssetStudio
             }
 
             var m_Layer = reader.ReadInt32();
-            if (reader.IsTuanJie && reader.version[3] >= 13)
+            if (reader.IsTuanJie && int.Parse(reader.unityVersion.Extra.Substring(1)) >= 13)
             {
                 bool m_HasEditorInfo = reader.ReadBoolean();
                 reader.AlignStream();

@@ -16,7 +16,7 @@ namespace AssetStudio
 			return new YAMLScalarNode(sb.ToString(), true);
 		}
 
-        public static YAMLNode ExportYAML<T>(this T[][] _this, int[] version)
+        public static YAMLNode ExportYAML<T>(this T[][] _this, UnityVersion version)
 			where T : IYAMLExportable
 		{
             return ((IEnumerable<IEnumerable<T>>)_this).ExportYAML(version);

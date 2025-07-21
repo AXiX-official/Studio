@@ -2,6 +2,6 @@
 {
     public interface IYAMLExportable
     {
-        YAMLNode ExportYAML(int[] version);
+        YAMLNode ExportYAML(UnityVersion version);
     }
 }

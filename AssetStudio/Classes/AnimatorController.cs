@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace AssetStudio
 {
@@ -13,11 +10,11 @@ namespace AssetStudio
 
         public HumanPoseMask(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
             word0 = reader.ReadUInt32();
             word1 = reader.ReadUInt32();
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 2)) //5.2 and up
+            if (version >= "5.2") //5.2 and up
             {
                 word2 = reader.ReadUInt32();
             }
@@ -65,7 +62,7 @@ namespace AssetStudio
 
         public LayerConstant(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
             m_StateMachineIndex = reader.ReadUInt32();
             m_StateMachineMotionSetIndex = reader.ReadUInt32();
@@ -77,12 +74,12 @@ namespace AssetStudio
             }
             m_Binding = reader.ReadUInt32();
             m_LayerBlendingMode = reader.ReadInt32();
-            if (version[0] > 4 || (version[0] == 4 && version[1] >= 2)) //4.2 and up
+            if (version >= "4.2") //4.2 and up
             {
                 m_DefaultWeight = reader.ReadSingle();
             }
             m_IKPass = reader.ReadBoolean();
-            if (version[0] > 4 || (version[0] == 4 && version[1] >= 2)) //4.2 and up
+            if (version >= "4.2") //4.2 and up
             {
                 m_SyncedLayerAffectsTiming = reader.ReadBoolean();
             }
@@ -125,7 +122,7 @@ namespace AssetStudio
 
         public TransitionConstant(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
             int numConditions = reader.ReadInt32();
             m_ConditionConstantArray = new List<ConditionConstant>();
@@ -135,7 +132,7 @@ namespace AssetStudio
             }
 
             m_DestinationState = reader.ReadUInt32();
-            if (version[0] >= 5) //5.0 and up
+            if (version.Major >= 5) //5.0 and up
             {
                 m_FullPathID = reader.ReadUInt32();
             }
@@ -144,7 +141,7 @@ namespace AssetStudio
             m_UserID = reader.ReadUInt32();
             m_TransitionDuration = reader.ReadSingle();
             m_TransitionOffset = reader.ReadSingle();
-            if (version[0] >= 5) //5.0 and up
+            if (version.Major >= 5) //5.0 and up
             {
                 m_ExitTime = reader.ReadSingle();
                 m_HasExitTime = reader.ReadBoolean();
@@ -158,7 +155,7 @@ namespace AssetStudio
                 m_Atomic = reader.ReadBoolean();
             }
 
-            if (version[0] > 4 || (version[0] == 4 && version[1] >= 5)) //4.5 and up
+            if (version >= "4.5") //4.5 and up
             {
                 m_CanTransitionToSelf = reader.ReadBoolean();
             }
@@ -254,45 +251,43 @@ namespace AssetStudio
 
         public BlendTreeNodeConstant(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
-            if (version[0] > 4 || (version[0] == 4 && version[1] >= 1)) //4.1 and up
+            if (version >= "4.1") //4.1 and up
             {
                 m_BlendType = reader.ReadUInt32();
             }
             m_BlendEventID = reader.ReadUInt32();
-            if (version[0] > 4 || (version[0] == 4 && version[1] >= 1)) //4.1 and up
+            if (version >= "4.1") //4.1 and up
             {
                 m_BlendEventYID = reader.ReadUInt32();
             }
             m_ChildIndices = reader.ReadUInt32Array();
-            if (version[0] < 4 || (version[0] == 4 && version[1] < 1)) //4.1 down
+            if (version < "4.1") //4.1 down
             {
                 m_ChildThresholdArray = reader.ReadSingleArray();
             }
 
-            if (version[0] > 4 || (version[0] == 4 && version[1] >= 1)) //4.1 and up
+            if (version >= "4.1") //4.1 and up
             {
                 m_Blend1dData = new Blend1dDataConstant(reader);
                 m_Blend2dData = new Blend2dDataConstant(reader);
             }
 
-            if (version[0] >= 5) //5.0 and up
+            if (version.Major >= 5) //5.0 and up
             {
                 m_BlendDirectData = new BlendDirectDataConstant(reader);
             }
 
             m_ClipID = reader.ReadUInt32();
-            if (version[0] == 4 && version[1] >= 5) //4.5 - 5.0
+            if (version.Major == 4 && version.Minor >= 5) //4.5 - 5.0
             {
                 m_ClipIndex = reader.ReadUInt32();
             }
 
             m_Duration = reader.ReadSingle();
 
-            if (version[0] > 4
-                || (version[0] == 4 && version[1] > 1)
-                || (version[0] == 4 && version[1] == 1 && version[2] >= 3)) //4.1.3 and up
+            if (version >= "4.1.3") //4.1.3 and up
             {
                 m_CycleOffset = reader.ReadSingle();
                 if (reader.Game.Type.IsArknightsEndfield())
@@ -312,7 +307,7 @@ namespace AssetStudio
 
         public BlendTreeConstant(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
             int numNodes = reader.ReadInt32();
             m_NodeArray = new List<BlendTreeNodeConstant>();
@@ -321,7 +316,7 @@ namespace AssetStudio
                 m_NodeArray.Add(new BlendTreeNodeConstant(reader));
             }
 
-            if (version[0] < 4 || (version[0] == 4 && version[1] < 5)) //4.5 down
+            if (version < "4.5") //4.5 down
             {
                 m_BlendEventArrayConstant = new ValueArrayConstant(reader);
             }
@@ -351,7 +346,7 @@ namespace AssetStudio
 
         public StateConstant(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
             int numTransistions = reader.ReadInt32();
             m_TransitionConstantArray = new List<TransitionConstant>();
@@ -362,7 +357,7 @@ namespace AssetStudio
 
             m_BlendTreeConstantIndexArray = reader.ReadInt32Array();
 
-            if (version[0] < 5 || (version[0] == 5 && version[1] < 2)) //5.2 down
+            if (version < "5.2") //5.2 down
             {
                 int numInfos = reader.ReadInt32();
                 m_LeafInfoArray = new List<LeafInfoConstant>();
@@ -380,41 +375,41 @@ namespace AssetStudio
             }
 
             m_NameID = reader.ReadUInt32();
-            if (version[0] > 4 || (version[0] == 4 && version[1] >= 3)) //4.3 and up
+            if (version >= "4.3") //4.3 and up
             {
                 m_PathID = reader.ReadUInt32();
             }
-            if (version[0] >= 5) //5.0 and up
+            if (version.Major >= 5) //5.0 and up
             {
                 m_FullPathID = reader.ReadUInt32();
             }
 
             m_TagID = reader.ReadUInt32();
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 1)) //5.1 and up
+            if (version >= "5.1") //5.1 and up
             {
                 m_SpeedParamID = reader.ReadUInt32();
                 m_MirrorParamID = reader.ReadUInt32();
                 m_CycleOffsetParamID = reader.ReadUInt32();
             }
 
-            if (version[0] > 2017 || (version[0] == 2017 && version[1] >= 2)) //2017.2 and up
+            if (version >= "2017.2") //2017.2 and up
             {
                 var m_TimeParamID = reader.ReadUInt32();
             }
 
             m_Speed = reader.ReadSingle();
-            if (version[0] > 4 || (version[0] == 4 && version[1] >= 1)) //4.1 and up
+            if (version >= "4.1") //4.1 and up
             {
                 m_CycleOffset = reader.ReadSingle();
             }
             m_IKOnFeet = reader.ReadBoolean();
-            if (version[0] >= 5) //5.0 and up
+            if (version.Major >= 5) //5.0 and up
             {
                 m_WriteDefaultValues = reader.ReadBoolean();
             }
 
             m_Loop = reader.ReadBoolean();
-            if (version[0] > 4 || (version[0] == 4 && version[1] >= 1)) //4.1 and up
+            if (version >= "4.1") //4.1 and up
             {
                 m_Mirror = reader.ReadBoolean();
             }
@@ -478,7 +473,7 @@ namespace AssetStudio
 
         public StateMachineConstant(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
             int numStates = reader.ReadInt32();
             m_StateConstantArray = new List<StateConstant>();
@@ -494,7 +489,7 @@ namespace AssetStudio
                 m_AnyStateTransitionConstantArray.Add(new TransitionConstant(reader));
             }
 
-            if (version[0] >= 5) //5.0 and up
+            if (version.Major >= 5) //5.0 and up
             {
                 int numSelectors = reader.ReadInt32();
                 m_SelectorStateConstantArray = new List<SelectorStateConstant>();
@@ -521,9 +516,9 @@ namespace AssetStudio
 
         public ValueArray(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
-            if (version[0] < 5 || (version[0] == 5 && version[1] < 5)) //5.5 down
+            if (version < "5.5") //5.5 down
             {
                 m_BoolValues = reader.ReadBooleanArray();
                 reader.AlignStream();
@@ -531,7 +526,7 @@ namespace AssetStudio
                 m_FloatValues = reader.ReadSingleArray();
             }
 
-            if (version[0] < 4 || (version[0] == 4 && version[1] < 3)) //4.3 down
+            if (version < "4.3") //4.3 down
             {
                 m_VectorValues = reader.ReadVector4Array();
             }
@@ -543,7 +538,7 @@ namespace AssetStudio
 
                 m_ScaleValues = reader.ReadVector3Array();
 
-                if (version[0] > 5 || (version[0] == 5 && version[1] >= 5)) //5.5 and up
+                if (version >= "5.5") //5.5 and up
                 {
                     m_FloatValues = reader.ReadSingleArray();
                     m_IntValues = reader.ReadInt32Array();

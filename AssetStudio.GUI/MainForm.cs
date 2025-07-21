@@ -962,7 +962,7 @@ namespace AssetStudio.GUI
         {
             //Info
             assetItem.InfoText = "Compression format: ";
-            if (m_AudioClip.version[0] < 5)
+            if (m_AudioClip.version.Major < 5)
             {
                 switch (m_AudioClip.m_Type)
                 {

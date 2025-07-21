@@ -65,10 +65,10 @@ namespace AssetStudio
 
         public SpriteVertex(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
             pos = reader.ReadVector3();
-            if (version[0] < 4 || (version[0] == 4 && version[1] <= 3)) //4.3 and down
+            if (version <= "4.3") //4.3 and down
             {
                 uv = reader.ReadVector2();
             }
@@ -96,15 +96,15 @@ namespace AssetStudio
 
         public SpriteRenderData(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
             texture = new PPtr<Texture2D>(reader);
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 2)) //5.2 and up
+            if (version >= "5.2") //5.2 and up
             {
                 alphaTexture = new PPtr<Texture2D>(reader);
             }
 
-            if (version[0] >= 2019) //2019 and up
+            if (version.Major >= 2019) //2019 and up
             {
                 var secondaryTexturesSize = reader.ReadInt32();
                 secondaryTextures = new List<SecondarySpriteTexture>();
@@ -114,7 +114,7 @@ namespace AssetStudio
                 }
             }
 
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 6)) //5.6 and up
+            if (version >= "5.6") //5.6 and up
             {
                 var m_SubMeshesSize = reader.ReadInt32();
                 m_SubMeshes = new List<SubMesh>();
@@ -141,11 +141,11 @@ namespace AssetStudio
                 reader.AlignStream();
             }
 
-            if (version[0] >= 2018) //2018 and up
+            if (version.Major >= 2018) //2018 and up
             {
                 m_Bindpose = reader.ReadMatrixArray();
 
-                if (version[0] == 2018 && version[1] < 2) //2018.2 down
+                if (version.Major == 2018 && version.Minor < 2) //2018.2 down
                 {
                     var m_SourceSkinSize = reader.ReadInt32();
                     for (int i = 0; i < m_SourceSkinSize; i++)
@@ -157,18 +157,18 @@ namespace AssetStudio
 
             textureRect = new Rectf(reader);
             textureRectOffset = reader.ReadVector2();
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 6)) //5.6 and up
+            if (version >= "5.6") //5.6 and up
             {
                 atlasRectOffset = reader.ReadVector2();
             }
 
             settingsRaw = new SpriteSettings(reader);
-            if (version[0] > 4 || (version[0] == 4 && version[1] >= 5)) //4.5 and up
+            if (version >= "4.5") //4.5 and up
             {
                 uvTransform = reader.ReadVector4();
             }
 
-            if (version[0] >= 2017) //2017 and up
+            if (version.Major >= 2017) //2017 and up
             {
                 downscaleMultiplier = reader.ReadSingle();
             }
@@ -210,28 +210,26 @@ namespace AssetStudio
         {
             m_Rect = new Rectf(reader);
             m_Offset = reader.ReadVector2();
-            if (version[0] > 4 || (version[0] == 4 && version[1] >= 5)) //4.5 and up
+            if (version >= "4.5") //4.5 and up
             {
                 m_Border = reader.ReadVector4();
             }
 
             m_PixelsToUnits = reader.ReadSingle();
-            if (version[0] > 5
-                || (version[0] == 5 && version[1] > 4)
-                || (version[0] == 5 && version[1] == 4 && version[2] >= 2)
-                || (version[0] == 5 && version[1] == 4 && version[2] == 1 && buildType.IsPatch && version[3] >= 3)) //5.4.1p3 and up
+            if (version >= "5.4.2"
+                || (version == "5.4.1" && buildType.IsPatch && int.Parse(version.Extra.Substring(1)) >= 3)) //5.4.1p3 and up
             {
                 m_Pivot = reader.ReadVector2();
             }
 
             m_Extrude = reader.ReadUInt32();
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 3)) //5.3 and up
+            if (version >= "5.3") //5.3 and up
             {
                 m_IsPolygon = reader.ReadBoolean();
                 reader.AlignStream();
             }
 
-            if (version[0] >= 2017) //2017 and up
+            if (version.Major >= 2017) //2017 and up
             {
                 var first = new Guid(reader.ReadBytes(16));
                 var second = reader.ReadInt64();
@@ -244,7 +242,7 @@ namespace AssetStudio
 
             m_RD = new SpriteRenderData(reader);
 
-            if (version[0] >= 2017) //2017 and up
+            if (version.Major >= 2017) //2017 and up
             {
                 var m_PhysicsShapeSize = reader.ReadInt32();
                 m_PhysicsShape = new List<Vector2[]>();

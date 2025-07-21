@@ -16,7 +16,7 @@ namespace AssetStudio
 
     public static class AnimationMuscleTypeExtensions
     {
-        public static HumanoidMuscleType Update(this HumanoidMuscleType _this, int[] version)
+        public static HumanoidMuscleType Update(this HumanoidMuscleType _this, UnityVersion version)
         {
             if (_this < HumanoidMuscleType.Muscles)
             {
@@ -218,9 +218,9 @@ namespace AssetStudio
 
     public static class MuscleTypeExtensions
     {
-        public static MuscleType Update(this MuscleType _this, int[] version)
+        public static MuscleType Update(this MuscleType _this, UnityVersion version)
         {
-            if (!(version[0] > 5 || (version[0] == 5 && version[1] >= 6)))
+            if (!(version >= "5.6"))
             {
                 if (_this >= MuscleType.UpperchestFrontBack)
                 {
@@ -546,44 +546,44 @@ namespace AssetStudio
 
     public static class TDoFBoneTypeExtensions
     {
-        public static TDoFBoneType Update(this TDoFBoneType _this, int[] version)
+        public static TDoFBoneType Update(this TDoFBoneType _this, UnityVersion version)
         {
-            if (!(version[0] > 5 || (version[0] == 5 && version[1] >= 6)))
+            if (!(version >= "5.6"))
             {
                 if (_this >= TDoFBoneType.UpperChest)
                 {
                     _this++;
                 }
             }
-            if (!(version[0] > 2017 || (version[0] == 2017 && version[1] >= 3)))
+            if (!(version >= "2017.3"))
             {
                 if (_this >= TDoFBoneType.Head)
                 {
                     _this++;
                 }
             }
-            if (!(version[0] > 2017 || (version[0] == 2017 && version[1] >= 3)))
+            if (!(version >= "2017.3"))
             {
                 if (_this >= TDoFBoneType.LeftLowerLeg)
                 {
                     _this += 3;
                 }
             }
-            if (!(version[0] > 2017 || (version[0] == 2017 && version[1] >= 3)))
+            if (!(version >= "2017.3"))
             {
                 if (_this >= TDoFBoneType.RightLowerLeg)
                 {
                     _this += 3;
                 }
             }
-            if (!(version[0] > 2017 || (version[0] == 2017 && version[1] >= 3)))
+            if (!(version >= "2017.3"))
             {
                 if (_this >= TDoFBoneType.LeftUpperArm)
                 {
                     _this += 3;
                 }
             }
-            if (!(version[0] > 2017 || (version[0] == 2017 && version[1] >= 3)))
+            if (!(version >= "2017.3"))
             {
                 if (_this >= TDoFBoneType.RightUpperArm)
                 {

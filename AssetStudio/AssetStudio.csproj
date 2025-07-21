@@ -8,6 +8,7 @@
     <Copyright>Copyright © Razmoth 2022; Copyright © Perfare 2018-2022</Copyright>
     <DebugType>embedded</DebugType>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

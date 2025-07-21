@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AssetStudio
+﻿namespace AssetStudio
 {
     public class DataStreamingInfo
     {
@@ -9,8 +7,6 @@ namespace AssetStudio
 
         public DataStreamingInfo(ObjectReader reader)
         {
-            var version = reader.version;
-
             size = reader.ReadUInt32();
             path = reader.ReadAlignedString();
         }
@@ -24,9 +20,9 @@ namespace AssetStudio
 
         public StreamingInfo(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
-            if (version[0] >= 2020) //2020.1 and up
+            if (version >= "2020") //2020.1 and up
             {
                 offset = reader.ReadInt64();
             }
@@ -48,7 +44,7 @@ namespace AssetStudio
 
         public GLTextureSettings(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
 
             m_FilterMode = reader.ReadInt32();
             m_Aniso = reader.ReadInt32();
@@ -57,7 +53,7 @@ namespace AssetStudio
             {
                 var m_TextureGroup = reader.ReadInt32();
             }
-            if (version[0] >= 2017)//2017.x and up
+            if (version >= "2017")//2017.x and up
             {
                 m_WrapMode = reader.ReadInt32(); //m_WrapU
                 int m_WrapV = reader.ReadInt32();
@@ -89,7 +85,7 @@ namespace AssetStudio
             m_Width = reader.ReadInt32();
             m_Height = reader.ReadInt32();
             var m_CompleteImageSize = reader.ReadInt32();
-            if (version[0] >= 2020) //2020.1 and up
+            if (version.Major >= 2020) //2020.1 and up
             {
                 var m_MipsStripped = reader.ReadInt32();
             }
@@ -105,7 +101,7 @@ namespace AssetStudio
             }
             
             m_TextureFormat = (TextureFormat)reader.ReadInt32();
-            if (version[0] < 5 || (version[0] == 5 && version[1] < 2)) //5.2 down
+            if (version < "5.2") //5.2 down
             {
                 m_MipMap = reader.ReadBoolean();
             }
@@ -113,7 +109,7 @@ namespace AssetStudio
             {
                 m_MipCount = reader.ReadInt32();
             }
-            if (version[0] > 2 || (version[0] == 2 && version[1] >= 6)) //2.6.0 and up
+            if (version >= "2.6.0") //2.6.0 and up
             {
                 var m_IsReadable = reader.ReadBoolean();
                 if (reader.Game.Type.IsGI() && HasGNFTexture(reader.serializedType))
@@ -121,27 +117,27 @@ namespace AssetStudio
                     var m_IsGNFTexture = reader.ReadBoolean();
                 }
             }
-            if (version[0] >= 2020) //2020.1 and up
+            if (version.Major >= 2020) //2020.1 and up
             {
                 var m_IsPreProcessed = reader.ReadBoolean();
             }
-            if (version[0] > 2019 || (version[0] == 2019 && version[1] >= 3)) //2019.3 and up
+            if (version >= "2019.3") //2019.3 and up
             {
                 var m_IgnoreMasterTextureLimit = reader.ReadBoolean();
             }
-            if (version[0] == 2022 && version[1] >= 2) //2022.2 and up
+            if (version >= "2022.2") //2022.2 and up
             {
                 reader.AlignStream(); //m_IgnoreMipmapLimit
                 var m_MipmapLimitGroupName = reader.ReadAlignedString();
             }
-            if (version[0] >= 3) //3.0.0 - 5.4
+            if (version.Major >= 3) //3.0.0 - 5.4
             {
-                if (version[0] < 5 || (version[0] == 5 && version[1] <= 4))
+                if (version <= "5.4")
                 {
                     var m_ReadAllowed = reader.ReadBoolean();
                 }
             }
-            if (version[0] > 2018 || (version[0] == 2018 && version[1] >= 2)) //2018.2 and up
+            if (version >= "2018.2") //2018.2 and up
             {
                 var m_StreamingMipmaps = reader.ReadBoolean();
             }
@@ -150,29 +146,29 @@ namespace AssetStudio
             {
                 var m_TextureGroup = reader.ReadInt32();
             }
-            if (version[0] > 2018 || (version[0] == 2018 && version[1] >= 2)) //2018.2 and up
+            if (version >= "2018.2") //2018.2 and up
             {
                 var m_StreamingMipmapsPriority = reader.ReadInt32();
             }
             var m_ImageCount = reader.ReadInt32();
             var m_TextureDimension = reader.ReadInt32();
             m_TextureSettings = new GLTextureSettings(reader);
-            if (version[0] >= 3) //3.0 and up
+            if (version.Major >= 3) //3.0 and up
             {
                 var m_LightmapFormat = reader.ReadInt32();
             }
-            if (version[0] > 3 || (version[0] == 3 && version[1] >= 5)) //3.5.0 and up
+            if (version >= "3.5.0") //3.5.0 and up
             {
                 var m_ColorSpace = reader.ReadInt32();
             }
-            if (version[0] > 2020 || (version[0] == 2020 && version[1] >= 2)
-                || (reader.IsTuanJie && version[0] == 2022 && version[3] >= 13)) //2020.2 and up
+            if (version >= "2020.2"
+                || (reader.IsTuanJie && version.Major == 2022 && int.Parse(version.Extra.Substring(1)) >= 13)) //2020.2 and up
             {
                 var m_PlatformBlob = reader.ReadUInt8Array();
                 reader.AlignStream();
             }
             var image_data_size = reader.ReadInt32();
-            if (image_data_size == 0 && ((version[0] == 5 && version[1] >= 3) || version[0] > 5 || reader.IsTuanJie))//5.3.0 and up
+            if (image_data_size == 0 && (version >= "5.3.0" || reader.IsTuanJie))//5.3.0 and up
             {
                 if (reader.Game.Type.IsGI() && HasExternalMipRelativeOffset(reader.serializedType))
                 {

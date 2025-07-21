@@ -4,9 +4,9 @@ namespace AssetStudio
 {
     public class SerializedTypeHelper
     {
-        private readonly int[] version;
+        private readonly UnityVersion version;
 
-        public SerializedTypeHelper(int[] version)
+        public SerializedTypeHelper(UnityVersion version)
         {
             this.version = version;
         }
@@ -24,7 +24,7 @@ namespace AssetStudio
         {
             nodes.Add(new TypeTreeNode($"PPtr<{type}>", name, indent, false));
             nodes.Add(new TypeTreeNode("int", "m_FileID", indent + 1, false));
-            if (version[0] >= 5) //5.0 and up
+            if (version.Major >= 5) //5.0 and up
             {
                 nodes.Add(new TypeTreeNode("SInt64", "m_PathID", indent + 1, false));
             }
@@ -58,7 +58,7 @@ namespace AssetStudio
             nodes.Add(new TypeTreeNode("float", "value", indent + 4, false));
             nodes.Add(new TypeTreeNode("float", "inSlope", indent + 4, false));
             nodes.Add(new TypeTreeNode("float", "outSlope", indent + 4, false));
-            if (version[0] >= 2018) //2018 and up
+            if (version.Major >= 2018) //2018 and up
             {
                 nodes.Add(new TypeTreeNode("int", "weightedMode", indent + 4, false));
                 nodes.Add(new TypeTreeNode("float", "inWeight", indent + 4, false));
@@ -66,7 +66,7 @@ namespace AssetStudio
             }
             nodes.Add(new TypeTreeNode("int", "m_PreInfinity", indent + 1, false));
             nodes.Add(new TypeTreeNode("int", "m_PostInfinity", indent + 1, false));
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 3)) //5.3 and up
+            if (version >= "5.3") //5.3 and up
             {
                 nodes.Add(new TypeTreeNode("int", "m_RotationOrder", indent + 1, false));
             }
@@ -75,7 +75,7 @@ namespace AssetStudio
         public void AddGradient(List<TypeTreeNode> nodes, string name, int indent)
         {
             nodes.Add(new TypeTreeNode("Gradient", name, indent, false));
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 6)) //5.6 and up
+            if (version >= "5.6") //5.6 and up
             {
                 AddColorRGBA(nodes, "key0", indent + 1);
                 AddColorRGBA(nodes, "key1", indent + 1);
@@ -113,7 +113,7 @@ namespace AssetStudio
             nodes.Add(new TypeTreeNode("UInt16", "atime5", indent + 1, false));
             nodes.Add(new TypeTreeNode("UInt16", "atime6", indent + 1, false));
             nodes.Add(new TypeTreeNode("UInt16", "atime7", indent + 1, false));
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 5)) //5.5 and up
+            if (version >= "5.5") //5.5 and up
             {
                 nodes.Add(new TypeTreeNode("int", "m_Mode", indent + 1, false));
             }
@@ -134,7 +134,7 @@ namespace AssetStudio
             AddGUIStyleState(nodes, "m_OnActive", indent + 1);
             AddGUIStyleState(nodes, "m_OnFocused", indent + 1);
             AddRectOffset(nodes, "m_Border", indent + 1);
-            if (version[0] >= 4) //4 and up
+            if (version.Major >= 4) //4 and up
             {
                 AddRectOffset(nodes, "m_Margin", indent + 1);
                 AddRectOffset(nodes, "m_Padding", indent + 1);
@@ -146,7 +146,7 @@ namespace AssetStudio
             }
             AddRectOffset(nodes, "m_Overflow", indent + 1);
             AddPPtr(nodes, "Font", "m_Font", indent + 1);
-            if (version[0] >= 4) //4 and up
+            if (version.Major >= 4) //4 and up
             {
                 nodes.Add(new TypeTreeNode("int", "m_FontSize", indent + 1, false));
                 nodes.Add(new TypeTreeNode("int", "m_FontStyle", indent + 1, false));
@@ -171,7 +171,7 @@ namespace AssetStudio
                 AddVector2f(nodes, "m_ClipOffset", indent + 1);
                 nodes.Add(new TypeTreeNode("float", "m_FixedWidth", indent + 1, false));
                 nodes.Add(new TypeTreeNode("float", "m_FixedHeight", indent + 1, false));
-                if (version[0] >= 3) //3 and up
+                if (version.Major >= 3) //3 and up
                 {
                     nodes.Add(new TypeTreeNode("int", "m_FontSize", indent + 1, false));
                     nodes.Add(new TypeTreeNode("int", "m_FontStyle", indent + 1, false));

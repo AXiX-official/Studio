@@ -894,11 +894,11 @@ namespace AssetStudio
         public int Length;
         public int Segment;
 
-        public ShaderSubProgramEntry(EndianBinaryReader reader, int[] version)
+        public ShaderSubProgramEntry(EndianBinaryReader reader, UnityVersion version)
         {
             Offset = reader.ReadInt32();
             Length = reader.ReadInt32();
-            if (version[0] > 2019 || (version[0] == 2019 && version[1] >= 3)) //2019.3 and up
+            if (version >= "2019.3") //2019.3 and up
             {
                 Segment = reader.ReadInt32();
             }

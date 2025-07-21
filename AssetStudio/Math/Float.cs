@@ -19,7 +19,7 @@
             return value.Value;
         }
 
-        public YAMLNode ExportYAML(int[] version)
+        public YAMLNode ExportYAML(UnityVersion version)
         {
             return new YAMLScalarNode(Value);
         }

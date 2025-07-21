@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-
-namespace AssetStudio
+﻿namespace AssetStudio
 {
     public sealed class AudioClip : NamedObject
     {
@@ -33,7 +27,7 @@ namespace AssetStudio
 
         public AudioClip(ObjectReader reader) : base(reader)
         {
-            if (version[0] < 5)
+            if (version.Major < 5)
             {
                 m_Format = reader.ReadInt32();
                 m_Type = (FMODSoundType)reader.ReadInt32();
@@ -41,7 +35,7 @@ namespace AssetStudio
                 m_UseHardware = reader.ReadBoolean();
                 reader.AlignStream();
 
-                if (version[0] >= 4 || (version[0] == 3 && version[1] >= 2)) //3.2.0 to 5
+                if (version >= "3.2.0" && version.Major < 5) //3.2.0 to 5
                 {
                     int m_Stream = reader.ReadInt32();
                     m_Size = reader.ReadInt32();

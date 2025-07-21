@@ -5,7 +5,7 @@ namespace AssetStudio
 {
 	public static class IDictionaryExportYAMLExtensions
 	{
-		public static YAMLNode ExportYAML<T>(this IReadOnlyDictionary<int, T> _this, int[] version)
+		public static YAMLNode ExportYAML<T>(this IReadOnlyDictionary<int, T> _this, UnityVersion version)
 			where T : IYAMLExportable
 		{
 			YAMLSequenceNode node = new YAMLSequenceNode(SequenceStyle.BlockCurve);
@@ -18,7 +18,7 @@ namespace AssetStudio
 			return node;
 		}
 
-		public static YAMLNode ExportYAML<T>(this IReadOnlyDictionary<string, T> _this, int[] version)
+		public static YAMLNode ExportYAML<T>(this IReadOnlyDictionary<string, T> _this, UnityVersion version)
 			where T : IYAMLExportable
 		{
 			YAMLSequenceNode node = new YAMLSequenceNode(SequenceStyle.BlockCurve);
@@ -31,7 +31,7 @@ namespace AssetStudio
 			return node;
 		}
 
-		public static YAMLNode ExportYAML<T1, T2>(this IReadOnlyDictionary<Tuple<T1, long>, T2> _this, int[] version)
+		public static YAMLNode ExportYAML<T1, T2>(this IReadOnlyDictionary<Tuple<T1, long>, T2> _this, UnityVersion version)
 			where T1 : IYAMLExportable
 			where T2 : IYAMLExportable
 		{
@@ -50,7 +50,7 @@ namespace AssetStudio
 			return node;
 		}
 
-		public static YAMLNode ExportYAML<T>(this IReadOnlyDictionary<T, int> _this, int[] version)
+		public static YAMLNode ExportYAML<T>(this IReadOnlyDictionary<T, int> _this, UnityVersion version)
 			where T : IYAMLExportable
 		{
 			YAMLSequenceNode node = new YAMLSequenceNode(SequenceStyle.BlockCurve);
@@ -72,7 +72,7 @@ namespace AssetStudio
 			return node;
 		}
 
-		public static YAMLNode ExportYAML<T>(this IReadOnlyDictionary<T, float> _this, int[] version)
+		public static YAMLNode ExportYAML<T>(this IReadOnlyDictionary<T, float> _this, UnityVersion version)
 			where T : IYAMLExportable
 		{
 			YAMLSequenceNode node = new YAMLSequenceNode(SequenceStyle.BlockCurve);
@@ -94,7 +94,7 @@ namespace AssetStudio
 			return node;
 		}
 
-		public static YAMLNode ExportYAML<T1, T2>(this IReadOnlyDictionary<T1, T2> _this, int[] version)
+		public static YAMLNode ExportYAML<T1, T2>(this IReadOnlyDictionary<T1, T2> _this, UnityVersion version)
 			where T1 : IYAMLExportable
 			where T2 : IYAMLExportable
 		{
@@ -117,7 +117,7 @@ namespace AssetStudio
 			return node;
 		}
 
-		public static YAMLNode ExportYAML<T1, T2>(this IReadOnlyDictionary<T1, T2[]> _this, int[] version)
+		public static YAMLNode ExportYAML<T1, T2>(this IReadOnlyDictionary<T1, T2[]> _this, UnityVersion version)
 			where T1 : IYAMLExportable
 			where T2 : IYAMLExportable
 		{

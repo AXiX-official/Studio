@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace AssetStudio
 {
@@ -22,8 +21,8 @@ namespace AssetStudio
 
         public Limit(ObjectReader reader)
         {
-            var version = reader.version;
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 4))//5.4 and up
+            var version = reader.unityVersion;
+            if (version >= "5.4")//5.4 and up
             {
                 m_Min = reader.ReadVector3();
                 m_Max = reader.ReadVector3();
@@ -47,10 +46,10 @@ namespace AssetStudio
 
         public Axes(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
             m_PreQ = reader.ReadVector4();
             m_PostQ = reader.ReadVector4();
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 4)) //5.4 and up
+            if (version >= "5.4") //5.4 and up
             {
                 m_Sgn = reader.ReadVector3();
             }
@@ -176,14 +175,14 @@ namespace AssetStudio
 
         public Human(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
             m_RootX = reader.ReadXForm();
             m_Skeleton = new Skeleton(reader);
             m_SkeletonPose = new SkeletonPose(reader);
             m_LeftHand = new Hand(reader);
             m_RightHand = new Hand(reader);
 
-            if (version[0] < 2018 || (version[0] == 2018 && version[1] < 2)) //2018.2 down
+            if (version < "2018.2") //2018.2 down
             {
                 int numHandles = reader.ReadInt32();
                 m_Handles = new List<Handle>();
@@ -204,7 +203,7 @@ namespace AssetStudio
 
             m_HumanBoneMass = reader.ReadSingleArray();
 
-            if (version[0] < 2018 || (version[0] == 2018 && version[1] < 2)) //2018.2 down
+            if (version < "2018.2") //2018.2 down
             {
                 m_ColliderIndex = reader.ReadInt32Array();
             }
@@ -219,7 +218,7 @@ namespace AssetStudio
             m_FeetSpacing = reader.ReadSingle();
             m_HasLeftHand = reader.ReadBoolean();
             m_HasRightHand = reader.ReadBoolean();
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 2)) //5.2 and up
+            if (version >= "5.2") //5.2 and up
             {
                 m_HasTDoF = reader.ReadBoolean();
             }
@@ -244,11 +243,11 @@ namespace AssetStudio
 
         public AvatarConstant(ObjectReader reader)
         {
-            var version = reader.version;
+            var version = reader.unityVersion;
             m_AvatarSkeleton = new Skeleton(reader);
             m_AvatarSkeletonPose = new SkeletonPose(reader);
 
-            if (version[0] > 4 || (version[0] == 4 && version[1] >= 3)) //4.3 and up
+            if (version >= "4.3") //4.3 and up
             {
                 m_DefaultPose = new SkeletonPose(reader);
 
@@ -259,7 +258,7 @@ namespace AssetStudio
 
             m_HumanSkeletonIndexArray = reader.ReadInt32Array();
 
-            if (version[0] > 4 || (version[0] == 4 && version[1] >= 3)) //4.3 and up
+            if (version >= "4.3") //4.3 and up
             {
                 m_HumanSkeletonReverseIndexArray = reader.ReadInt32Array();
             }
@@ -267,7 +266,7 @@ namespace AssetStudio
             m_RootMotionBoneIndex = reader.ReadInt32();
             m_RootMotionBoneX = reader.ReadXForm();
 
-            if (version[0] > 4 || (version[0] == 4 && version[1] >= 3)) //4.3 and up
+            if (version >= "4.3") //4.3 and up
             {
                 m_RootMotionSkeleton = new Skeleton(reader);
                 m_RootMotionSkeletonPose = new SkeletonPose(reader);

@@ -16,14 +16,13 @@ namespace AssetStudio
         public string fullName;
         public string originalPath;
         public string fileName;
-        public int[] version = { 0, 0, 0, 0 };
         public BuildType buildType;
         public List<Object> Objects;
         public Dictionary<long, Object> ObjectsDic;
 
         public SerializedFileHeader header;
         private byte m_FileEndianess;
-        public string unityVersion = "2.5.0f5";
+        public UnityVersion unityVersion = "2.5.0f5";
         public BuildTarget m_TargetPlatform = BuildTarget.UnknownPlatform;
         private bool m_EnableTypeTree = true;
         public List<SerializedType> m_Types;
@@ -82,7 +81,6 @@ namespace AssetStudio
             {
                 unityVersion = reader.ReadStringToNull();
                 Logger.Verbose($"Unity version {unityVersion}");
-                SetVersion(unityVersion);
             }
             if (header.m_Version >= SerializedFileFormatVersion.Unknown_8)
             {
@@ -239,18 +237,6 @@ namespace AssetStudio
             }
 
             //reader.AlignStream(16);
-        }
-
-        public void SetVersion(string stringVersion)
-        {
-            if (stringVersion != strippedVersion)
-            {
-                unityVersion = stringVersion;
-                var buildSplit = Regex.Replace(stringVersion, @"\d", "").Split(new[] { "." }, StringSplitOptions.RemoveEmptyEntries);
-                buildType = new BuildType(buildSplit[0]);
-                var versionSplit = Regex.Replace(stringVersion, @"\D", ".").Split(new[] { "." }, StringSplitOptions.RemoveEmptyEntries);
-                version = versionSplit.Select(int.Parse).ToArray();
-            }
         }
 
         private SerializedType ReadSerializedType(bool isRefType)

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 using SevenZip;
-using System;
 
 namespace AssetStudio
 {
@@ -179,7 +178,7 @@ namespace AssetStudio
             root.Add(ClassIDType.AnimationClip.ToString(), node);
             return document;
         }
-        public static YAMLMappingNode ExportYAML(this AnimationClip clip, int[] version)
+        public static YAMLMappingNode ExportYAML(this AnimationClip clip, UnityVersion version)
         {
             var node = new YAMLMappingNode();
             node.Add(nameof(clip.m_Name), clip.m_Name);
@@ -203,17 +202,17 @@ namespace AssetStudio
             return node;
         }
 
-        public static int ToSerializedVersion(int[] version)
+        public static int ToSerializedVersion(UnityVersion version)
         {
-            if (version[0] >= 5)
+            if (version.Major >= 5)
             {
                 return 6;
             }
-            if (version[0] > 4 || (version[0] == 4 && version[1] >= 3))
+            if (version >= "4.3")
             {
                 return 4;
             }
-            if (version[0] > 2 || (version[0] == 2 && version[1] >= 6))
+            if (version >= "2.6")
             {
                 return 3;
             }
@@ -236,7 +235,7 @@ namespace AssetStudio
         
         private static Dictionary<uint, string> BuildTOS(this Animator animator)
         {
-            if (animator.version[0] > 4 || (animator.version[0] == 4 && animator.version[1] >= 3))
+            if (animator.version >= "4.3")
             {
                 if (animator.m_HasTransformHierarchy)
                 {

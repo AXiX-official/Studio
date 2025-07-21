@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace AssetStudio
+﻿namespace AssetStudio
 {
     public sealed class PlayerSettings : Object
     {
@@ -12,7 +7,7 @@ namespace AssetStudio
 
         public PlayerSettings(ObjectReader reader) : base(reader)
         {
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 4)) //5.4.0 nad up
+            if (version >= "5.4.0") //5.4.0 nad up
             {
                 var productGUID = reader.ReadBytes(16);
             }
@@ -23,12 +18,12 @@ namespace AssetStudio
             reader.AlignStream();
             int defaultScreenOrientation = reader.ReadInt32();
             int targetDevice = reader.ReadInt32();
-            if (version[0] < 5 || (version[0] == 5 && version[1] < 3)) //5.3 down
+            if (version < "5.3") //5.3 down
             {
-                if (version[0] < 5) //5.0 down
+                if (version.Major < 5) //5.0 down
                 {
                     int targetPlatform = reader.ReadInt32(); //4.0 and up targetGlesGraphics
-                    if (version[0] > 4 || (version[0] == 4 && version[1] >= 6)) //4.6 and up
+                    if (version >= "4.6") //4.6 and up
                     {
                         var targetIOSGraphics = reader.ReadInt32();
                     }
@@ -40,7 +35,7 @@ namespace AssetStudio
                 var useOnDemandResources = reader.ReadBoolean();
                 reader.AlignStream();
             }
-            if (version[0] > 3 || (version[0] == 3 && version[1] >= 5)) //3.5 and up
+            if (version >= "3.5") //3.5 and up
             {
                 var accelerometerFrequency = reader.ReadInt32();
             }
