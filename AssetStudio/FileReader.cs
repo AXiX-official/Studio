@@ -233,9 +233,6 @@ namespace AssetStudio
                     case GameType.CounterSide:
                         reader = DecryptCounterSide(reader);
                         break;
-                    case GameType.PerpetualNovelty:
-                        reader = DecryptPerpetualNovelty(reader);
-                        break;
                     case GameType.XinYueTongXing:
                         reader = DecryptXinYueTongXing(reader);
                         break;

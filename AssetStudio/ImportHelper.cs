@@ -1182,25 +1182,6 @@ namespace AssetStudio
             return new FileReader(reader.FullPath, ms);
         }
         
-        public static FileReader DecryptPerpetualNovelty(FileReader reader)
-        {
-            Logger.Verbose($"Attempting to decrypt file {reader.FileName} with PerpetualNovelty encryption");
-
-            var data = reader.ReadBytes((int)reader.Remaining);
-
-            var key = data[51];
-            
-            for (int i = 50; i < 117; i++)
-            {
-                data[i] ^= key;
-            }
-            
-            MemoryStream ms = new();
-            ms.Write(data);
-            ms.Position = 0;
-            return new FileReader(reader.FullPath, ms);
-        }
-        
         public static FileReader DecryptXinYueTongXing(FileReader reader)
         {
             Logger.Verbose($"Attempting to decrypt file {reader.FileName} with XinYueTongXing encryption");
