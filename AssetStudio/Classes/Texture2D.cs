@@ -100,7 +100,7 @@
                 m_DataStreamData = new DataStreamingInfo(reader);
             }
             
-            m_TextureFormat = (version >= "2023.2.0") ? TextureFormatConverter.ConvertToOld((NewTextureFormat)reader.ReadInt32()) : (TextureFormat)reader.ReadInt32();
+            m_TextureFormat = (TextureFormat)reader.ReadInt32();
             if (version < "5.2") //5.2 down
             {
                 m_MipMap = reader.ReadBoolean();

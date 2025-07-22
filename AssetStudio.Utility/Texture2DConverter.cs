@@ -60,7 +60,6 @@ namespace AssetStudio
                         flag = DecodeRGB565(buff, bytes);
                         break;
                     case TextureFormat.R16: //test pass
-                    case TextureFormat.R16_Alt: //test pass
                         flag = DecodeR16(buff, bytes);
                         break;
                     case TextureFormat.DXT1: //test pass
@@ -212,6 +211,30 @@ namespace AssetStudio
                     case TextureFormat.RGBA64: //test pass
                         flag = DecodeRGBA64(buff, bytes);
                         break;
+                    case TextureFormat.R8_SIGNED:
+                        flag = DecodeR8_SIGNED(buff, bytes);
+                        break;
+                    case TextureFormat.RG16_SIGNED:
+                        flag = DecodeRG16_SIGNED(buff, bytes);
+                        break;
+                    case TextureFormat.RGB24_SIGNED:
+                        flag = DecodeRGB24_SIGNED(buff, bytes);
+                        break;
+                    case TextureFormat.RGBA32_SIGNED:
+                        flag = DecodeRGBA32_SIGNED(buff, bytes);
+                        break;
+                    case TextureFormat.R16_SIGNED:
+                        flag = DecodeR16_SIGNED(buff, bytes);
+                        break;
+                    case TextureFormat.RG32_SIGNED:
+                        flag = DecodeRG32_SIGNED(buff, bytes);
+                        break;
+                    case TextureFormat.RGB48_SIGNED:
+                        flag = DecodeRGB48_SIGNED(buff, bytes);
+                        break;
+                    case TextureFormat.RGBA64_SIGNED:
+                        flag = DecodeRGBA64_SIGNED(buff, bytes);
+                        break;
                 }
             }
             finally
@@ -277,6 +300,19 @@ namespace AssetStudio
             }
             return true;
         }
+        
+        private bool DecodeRGB24_SIGNED(byte[] image_data, byte[] buff)
+        {
+            var size = m_Width * m_Height;
+            for (var i = 0; i < size; i++)
+            {
+                buff[i * 4] = ScaleSigned8ToUnsigned((sbyte)image_data[i * 3 + 2]);
+                buff[i * 4 + 1] = ScaleSigned8ToUnsigned((sbyte)image_data[i * 3 + 1]);
+                buff[i * 4 + 2] = ScaleSigned8ToUnsigned((sbyte)image_data[i * 3 + 0]);;
+                buff[i * 4 + 3] = 255;
+            }
+            return true;
+        }
 
         private bool DecodeRGBA32(byte[] image_data, byte[] buff)
         {
@@ -286,6 +322,18 @@ namespace AssetStudio
                 buff[i + 1] = image_data[i + 1];
                 buff[i + 2] = image_data[i + 0];
                 buff[i + 3] = image_data[i + 3];
+            }
+            return true;
+        }
+        
+        private bool DecodeRGBA32_SIGNED(byte[] image_data, byte[] buff)
+        {
+            for (var i = 0; i < outPutSize; i += 4)
+            {
+                buff[i] = ScaleSigned8ToUnsigned((sbyte)image_data[i + 2]);
+                buff[i + 1] = ScaleSigned8ToUnsigned((sbyte)image_data[i + 1]);
+                buff[i + 2] = ScaleSigned8ToUnsigned((sbyte)image_data[i + 0]);
+                buff[i + 3] = ScaleSigned8ToUnsigned((sbyte)image_data[i + 3]);
             }
             return true;
         }
@@ -324,6 +372,19 @@ namespace AssetStudio
                 buff[i * 4] = 0; //b
                 buff[i * 4 + 1] = 0; //g
                 buff[i * 4 + 2] = DownScaleFrom16BitTo8Bit(BitConverter.ToUInt16(image_data, i * 2)); //r
+                buff[i * 4 + 3] = 255; //a
+            }
+            return true;
+        }
+        
+        private bool DecodeR16_SIGNED(byte[] image_data, byte[] buff)
+        {
+            var size = m_Width * m_Height;
+            for (var i = 0; i < size; i++)
+            {
+                buff[i * 4] = 0; //b
+                buff[i * 4 + 1] = 0; //g
+                buff[i * 4 + 2] = DownScaleFromS16BitTo8Bit(BitConverter.ToInt16(image_data, i * 2)); //r
                 buff[i * 4 + 3] = 255; //a
             }
             return true;
@@ -611,6 +672,19 @@ namespace AssetStudio
             }
             return true;
         }
+        
+        private bool DecodeRG16_SIGNED(byte[] image_data, byte[] buff)
+        {
+            var size = m_Width * m_Height;
+            for (var i = 0; i < size; i++)
+            {
+                buff[i * 4] = 0; //B
+                buff[i * 4 + 1] = ScaleSigned8ToUnsigned((sbyte)image_data[i * 2 + 1]);//G
+                buff[i * 4 + 2] = ScaleSigned8ToUnsigned((sbyte)image_data[i * 2]);//R
+                buff[i * 4 + 3] = 255;//A
+            }
+            return true;
+        }
 
         private bool DecodeR8(byte[] image_data, byte[] buff)
         {
@@ -620,6 +694,19 @@ namespace AssetStudio
                 buff[i * 4] = 0; //B
                 buff[i * 4 + 1] = 0; //G
                 buff[i * 4 + 2] = image_data[i];//R
+                buff[i * 4 + 3] = 255;//A
+            }
+            return true;
+        }
+        
+        private bool DecodeR8_SIGNED(byte[] image_data, byte[] buff)
+        {
+            var size = m_Width * m_Height;
+            for (var i = 0; i < size; i++)
+            {
+                buff[i * 4] = 0; //B
+                buff[i * 4 + 1] = 0; //G
+                buff[i * 4 + 2] = ScaleSigned8ToUnsigned((sbyte)image_data[i]);//R
                 buff[i * 4 + 3] = 255;//A
             }
             return true;
@@ -650,9 +737,22 @@ namespace AssetStudio
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte DownScaleFrom16BitTo8Bit(ushort component)
+        private static byte DownScaleFrom16BitTo8Bit(ushort component)
         {
             return (byte)(((component * 255) + 32895) >> 16);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static byte DownScaleFromS16BitTo8Bit(short value)
+        {
+            float normalized = (value + 32768f) / 65535f;
+            return (byte)(normalized * 255f);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private byte ScaleSigned8ToUnsigned(sbyte value)
+        {
+            return (byte)((value + 128) * 255 / 255);
         }
 
         private bool DecodeRG32(byte[] image_data, byte[] buff)
@@ -662,6 +762,18 @@ namespace AssetStudio
                 buff[i] = 0;                                                                          //b
                 buff[i + 1] = DownScaleFrom16BitTo8Bit(BitConverter.ToUInt16(image_data, i + 2));     //g
                 buff[i + 2] = DownScaleFrom16BitTo8Bit(BitConverter.ToUInt16(image_data, i));         //r
+                buff[i + 3] = byte.MaxValue;                                                          //a
+            }
+            return true;
+        }
+        
+        private bool DecodeRG32_SIGNED(byte[] image_data, byte[] buff)
+        {
+            for (var i = 0; i < outPutSize; i += 4)
+            {
+                buff[i] = 0;                                                                          //b
+                buff[i + 1] = DownScaleFromS16BitTo8Bit(BitConverter.ToInt16(image_data, i + 2));     //g
+                buff[i + 2] = DownScaleFromS16BitTo8Bit(BitConverter.ToInt16(image_data, i));         //r
                 buff[i + 3] = byte.MaxValue;                                                          //a
             }
             return true;
@@ -679,6 +791,19 @@ namespace AssetStudio
             }
             return true;
         }
+        
+        private bool DecodeRGB48_SIGNED(byte[] image_data, byte[] buff)
+        {
+            var size = m_Width * m_Height;
+            for (var i = 0; i < size; i++)
+            {
+                buff[i * 4] = DownScaleFromS16BitTo8Bit(BitConverter.ToInt16(image_data, i * 6 + 4));     //b
+                buff[i * 4 + 1] = DownScaleFromS16BitTo8Bit(BitConverter.ToInt16(image_data, i * 6 + 2)); //g
+                buff[i * 4 + 2] = DownScaleFromS16BitTo8Bit(BitConverter.ToInt16(image_data, i * 6));     //r
+                buff[i * 4 + 3] = byte.MaxValue;                                                          //a
+            }
+            return true;
+        }
 
         private bool DecodeRGBA64(byte[] image_data, byte[] buff)
         {
@@ -688,6 +813,18 @@ namespace AssetStudio
                 buff[i + 1] = DownScaleFrom16BitTo8Bit(BitConverter.ToUInt16(image_data, i * 2 + 2)); //g
                 buff[i + 2] = DownScaleFrom16BitTo8Bit(BitConverter.ToUInt16(image_data, i * 2));     //r
                 buff[i + 3] = DownScaleFrom16BitTo8Bit(BitConverter.ToUInt16(image_data, i * 2 + 6)); //a
+            }
+            return true;
+        }
+        
+        private bool DecodeRGBA64_SIGNED(byte[] image_data, byte[] buff)
+        {
+            for (var i = 0; i < outPutSize; i += 4)
+            {
+                buff[i] = DownScaleFromS16BitTo8Bit(BitConverter.ToInt16(image_data, i * 2 + 4));     //b
+                buff[i + 1] = DownScaleFromS16BitTo8Bit(BitConverter.ToInt16(image_data, i * 2 + 2)); //g
+                buff[i + 2] = DownScaleFromS16BitTo8Bit(BitConverter.ToInt16(image_data, i * 2));     //r
+                buff[i + 3] = DownScaleFromS16BitTo8Bit(BitConverter.ToInt16(image_data, i * 2 + 6)); //a
             }
             return true;
         }
