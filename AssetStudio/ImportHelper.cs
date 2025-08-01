@@ -865,25 +865,48 @@ namespace AssetStudio
             return new FileReader(reader.FullPath, ms);
         }
         
+        private static readonly byte[] GF2OriginalHeader = { 0x55, 0x6E, 0x69, 0x74, 0x79, 0x46, 0x53, 0x00, 0x00, 0x00, 0x00, 0x07, 0x35, 0x2E, 0x78, 0x2E };
+        
+        private static void InternalDecryptGirlsFrontline(ref Span<byte> data, ref int offset)
+        {
+            var key = data[offset..(offset + 0x10)].ToArray();
+            if (key.SequenceEqual(GF2OriginalHeader))
+            {
+                var fileSize = (int)BinaryPrimitives.ReadInt64BigEndian(data[(offset + 30)..(offset + 38)]);
+                offset += fileSize;
+            }
+            else
+            {
+                var keySpan = key.AsSpan();
+                for (int i = 0; i < key.Length; i++)
+                {
+                    keySpan[i] = (byte)(keySpan[i] ^ GF2OriginalHeader[i]);
+                }
+                for (int i = offset; i < offset + 38; i++)
+                {
+                    data[i] ^= key[(i - offset) % 0x10];
+                }
+                var fileSize = (int)BinaryPrimitives.ReadInt64BigEndian(data[(offset + 30)..(offset + 38)]);
+                int size = Math.Min(fileSize, 0x8000);
+                for (int i = offset + 38; i < offset + size; i++)
+                {
+                    data[i] ^= key[(i - offset) % 0x10];
+                }
+                offset += fileSize;
+            }
+        }
+        
         public static FileReader DecryptGirlsFrontline(FileReader reader)
         {
             Logger.Verbose($"Attempting to decrypt file {reader.FileName} with Girls Frontline encryption");
-
-            var originalHeader = new byte[] { 0x55, 0x6E, 0x69, 0x74, 0x79, 0x46, 0x53, 0x00, 0x00, 0x00, 0x00, 0x07, 0x35, 0x2E, 0x78, 0x2E };
-
-            var key = reader.ReadBytes(0x10);
-            for (int i = 0; i < key.Length; i++)
-            {
-                var b = (byte)(key[i] ^ originalHeader[i]);
-                key[i] = b != originalHeader[i] ? b : originalHeader[i];
-            }
-
-            reader.Position = 0;
+            
             var data = reader.ReadBytes((int)reader.Remaining);
-            var size = Math.Min(data.Length, 0x8000);
-            for (int i = 0; i < size; i++)
+            int offset = 0;
+            var dataSpan = data.AsSpan();
+            
+            while (offset < data.Length)
             {
-                data[i] ^= key[i % key.Length];
+                InternalDecryptGirlsFrontline(ref dataSpan, ref offset);
             }
 
             Logger.Verbose("Decrypted Girls Frontline file successfully !!");
