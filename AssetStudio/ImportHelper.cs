@@ -908,9 +908,13 @@ namespace AssetStudio
         
         public static FileReader DecryptGirlsFrontline(FileReader reader)
         {
+            if (!reader.FullPath.EndsWith(".bundle")) return reader;
             Logger.Verbose($"Attempting to decrypt file {reader.FileName} with Girls Frontline encryption");
             
             var data = reader.ReadBytes((int)reader.Remaining);
+
+            if (data.Length >= 3 && data[0] == 'G' && data[1] == 'F' && data[2] == 'F') return reader;
+            
             int offset = 0;
             var dataSpan = data.AsSpan();
             
