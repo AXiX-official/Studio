@@ -114,6 +114,25 @@ namespace AssetStudio
                     {
                         var m_RayTraceProcedural = reader.ReadByte();
                     }
+                    if (version.IsTuanjie) //2022.3.2t3(1.0.0) and up
+                    {
+                        var m_virtualGeometry = reader.ReadByte();
+                        var m_virtualGeometryShadow = reader.ReadByte();
+                        if (version >= "2022.3.48") //2022.3.48t3(1.4.0) and up
+                        {
+                            reader.AlignStream();
+                            var m_ShadingRate = reader.ReadByte();
+                        }
+                    }
+                    if (version >= "2023.2") //2023.2 and up
+                    {
+                        var m_RayTracingAccelStructBuildFlagsOverride = reader.ReadByte();
+                        var m_RayTracingAccelStructBuildFlags = reader.ReadByte();
+                    }
+                    if (version >= "2023.3") //2023.3 and up
+                    {
+                        var m_SmallMeshCulling = reader.ReadByte();
+                    }
                     if (reader.Game.Type.IsGI() || reader.Game.Type.IsGICB3() || reader.Game.Type.IsGICB3Pre())
                     {
                         var m_MeshShowQuality = reader.ReadByte();

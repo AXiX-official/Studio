@@ -5,10 +5,10 @@ namespace AssetStudio;
 
 public class UnityVersion : IComparable<UnityVersion>, IEquatable<UnityVersion>
 {
-    public int Major { get; private set; }
-    public int Minor { get; private set; }
-    public int Patch { get; private set; }
-    public string Extra { get; private set; }
+    public int Major { get; }
+    public int Minor { get; }
+    public int Patch { get; }
+    public string Extra { get; }
     
     private static readonly Regex VersionRegex = new Regex(
         @"^(?<major>\d+)(?:\.(?<minor>\d+))?(?:\.(?<patch>\d+))?(?<extra>[a-zA-Z0-9]*)", 
@@ -19,7 +19,7 @@ public class UnityVersion : IComparable<UnityVersion>, IEquatable<UnityVersion>
         Major = major;
         Minor = minor;
         Patch = patch;
-        Extra = extra ?? string.Empty;
+        Extra = extra;
     }
     
     public UnityVersion(string versionString)
@@ -39,7 +39,7 @@ public class UnityVersion : IComparable<UnityVersion>, IEquatable<UnityVersion>
         return new UnityVersion(versionString);
     }
     
-    public int CompareTo(UnityVersion other)
+    public int CompareTo(UnityVersion? other)
     {
         if (other is null) return 1;
         
@@ -52,7 +52,7 @@ public class UnityVersion : IComparable<UnityVersion>, IEquatable<UnityVersion>
         return Patch.CompareTo(other.Patch); 
     }
     
-    public bool Equals(UnityVersion other)
+    public bool Equals(UnityVersion? other)
     {
         if (other is null) return false;
         return Major == other.Major && 
@@ -60,7 +60,7 @@ public class UnityVersion : IComparable<UnityVersion>, IEquatable<UnityVersion>
                Patch == other.Patch;
     }
     
-    public override bool Equals(object obj) => Equals(obj as UnityVersion);
+    public override bool Equals(object? obj) => Equals(obj as UnityVersion);
     
     public override int GetHashCode()
     {
@@ -86,4 +86,28 @@ public class UnityVersion : IComparable<UnityVersion>, IEquatable<UnityVersion>
     public static bool operator >(UnityVersion left, UnityVersion right) => left.CompareTo(right) > 0;
     public static bool operator <=(UnityVersion left, UnityVersion right) => left.CompareTo(right) <= 0;
     public static bool operator >=(UnityVersion left, UnityVersion right) => left.CompareTo(right) >= 0;
+
+    public bool IsTuanjie => Extra.Contains("t");
+    private static readonly Regex BuildRegex = new Regex(
+        @"^[^\d]*(\d+)", 
+        RegexOptions.Compiled);
+    public int Build
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(Extra))
+            {
+                return 0;
+            }
+            Match match = BuildRegex.Match(Extra);
+            if (match.Success)
+            {
+                if (int.TryParse(match.Groups[1].Value, out int number))
+                {
+                    return number;
+                }
+            }
+            return 0;
+        }
+    }
 }

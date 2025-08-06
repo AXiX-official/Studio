@@ -856,7 +856,7 @@ namespace AssetStudio
         {
             var version = reader.unityVersion;
 
-            if (version >= "2020.2") //2020.2 and up
+            if (version >= "2020.2" && version < "6000") //2020.2 and up
             {
                 int numEditorDataHash = reader.ReadInt32();
                 m_EditorDataHash = new List<Hash128>();
@@ -1139,6 +1139,10 @@ namespace AssetStudio
                 }
 
                 var m_ShaderIsBaked = reader.ReadBoolean();
+                if (version >= "6000")
+                {
+                    var m_AssetGUID = reader.ReadBytes(16);
+                }
                 reader.AlignStream();
             }
             else
