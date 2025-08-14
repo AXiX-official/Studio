@@ -5,7 +5,7 @@
 		<TargetFrameworks>net8.0-windows;net9.0-windows</TargetFrameworks>
 		<UseWindowsForms>true</UseWindowsForms>
 		<ApplicationIcon>Resources\as.ico</ApplicationIcon>
-		<VersionBase>1.38.09</VersionBase>
+		<VersionBase>1.38.10</VersionBase>
 		<Version Condition="'$(CommitHash)' == ''">$(VersionBase)</Version>
 		<Version Condition="'$(CommitHash)' != ''">$(VersionBase)-dev+$(CommitHash)</Version>
 		<AssemblyVersion>$(VersionBase)</AssemblyVersion>
