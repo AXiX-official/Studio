@@ -45,24 +45,6 @@ jobs:
           /p:CommitHash=$env:GIT_HASH `
           /verbosity:minimal
 
-      - name: Build .Net8 CLI
-        run: |
-          msbuild /t:AssetStudio_CLI:publish `
-          /p:Configuration=Release `
-          /p:TargetFramework=net8.0-windows `
-          /p:SelfContained=false `
-          /p:CommitHash=$env:GIT_HASH `
-          /verbosity:minimal
-        
-      - name: Build .Net9 CLI
-        run: |
-          msbuild /t:AssetStudio_CLI:publish `
-          /p:Configuration=Release `
-          /p:TargetFramework=net9.0-windows `
-          /p:SelfContained=false `
-          /p:CommitHash=$env:GIT_HASH `
-          /verbosity:minimal
-
       - name: Upload .Net8 Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -70,18 +52,6 @@ jobs:
           path: AssetStudio.GUI/bin/Release/net8.0-windows/publish
           
       - name: Upload .Net9 Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: net9.0-${{ env.GIT_HASH }}
-          path: AssetStudio.GUI/bin/Release/net9.0-windows/publish
-
-      - name: Upload .Net8 CLI Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: net8.0-${{ env.GIT_HASH }}
-          path: AssetStudio.GUI/bin/Release/net8.0-windows/publish
-          
-      - name: Upload .Net9 CLI Artifact
         uses: actions/upload-artifact@v4
         with:
           name: net9.0-${{ env.GIT_HASH }}
