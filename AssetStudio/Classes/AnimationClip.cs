@@ -1302,6 +1302,80 @@ namespace AssetStudio
         }
     }
 
+    public class QuantizedClip : ACLClip
+    {
+        public int m_FrameCount;
+        public uint m_CurveCount;
+        public float m_SampleRate;
+        public float m_BeginTime;
+        public uint m_NumStatic;
+        public uint m_NumDynamic;
+        public uint m_TypeOffset;
+        public uint m_IndicesOffset;
+        public uint m_StaticOffset;
+        public uint m_FrameSize;
+        public uint m_DynamicOffset;
+        public byte[] m_Data;
+        
+        public QuantizedClip() { }
+
+        public override void Read(ObjectReader reader)
+        {
+            m_FrameCount = reader.ReadInt32();
+            m_CurveCount = reader.ReadUInt32();
+            m_SampleRate = reader.ReadSingle();
+            m_BeginTime = reader.ReadSingle();
+            m_NumStatic = reader.ReadUInt32();
+            m_NumDynamic = reader.ReadUInt32();
+            m_TypeOffset = reader.ReadUInt32();
+            m_IndicesOffset = reader.ReadUInt32();
+            m_StaticOffset = reader.ReadUInt32();
+            m_FrameSize = reader.ReadUInt32();
+            m_DynamicOffset = reader.ReadUInt32();
+            m_Data = reader.ReadUInt8Array();
+        }
+    }
+    
+    public class PredictClip : ACLClip
+    {
+        public int m_FrameCount;
+        public uint m_CurveCount;
+        public float m_SampleRate;
+        public float m_BeginTime;
+        public uint m_NumStatic;
+        public uint m_NumDynamic;
+        public uint m_TypeOffset;
+        public uint m_IndicesOffset;
+        public uint m_StaticOffset;
+        public uint m_RangeOffset;
+        public uint m_BitCntOffset;
+        public uint m_PredictBlockOffset;
+        public uint m_ValueOffsetPerCurveOffset;
+        public uint m_ValueOffset;
+        public byte[] m_Data;
+        
+        public PredictClip() { }
+
+        public override void Read(ObjectReader reader)
+        {
+            m_FrameCount = reader.ReadInt32();
+            m_CurveCount = reader.ReadUInt32();
+            m_SampleRate = reader.ReadSingle();
+            m_BeginTime = reader.ReadSingle();
+            m_NumStatic = reader.ReadUInt32();
+            m_NumDynamic = reader.ReadUInt32();
+            m_TypeOffset = reader.ReadUInt32();
+            m_IndicesOffset = reader.ReadUInt32();
+            m_StaticOffset = reader.ReadUInt32();
+            m_RangeOffset = reader.ReadUInt32();
+            m_BitCntOffset = reader.ReadUInt32();
+            m_PredictBlockOffset = reader.ReadUInt32();
+            m_ValueOffsetPerCurveOffset = reader.ReadUInt32();
+            m_ValueOffset = reader.ReadUInt32();
+            m_Data = reader.ReadUInt8Array();
+        }
+    }
+
     public class Clip
     {
         public ACLClip m_ACLClip = new EmptyACLClip();
@@ -1341,6 +1415,13 @@ namespace AssetStudio
             {
                 m_ACLClip = new LnDACLClip();
                 m_ACLClip.Read(reader);
+            }
+            if (reader.Game.Type.IsGuiLongChao())
+            {
+                var m_QuantizedClip = new QuantizedClip();
+                m_QuantizedClip.Read(reader);
+                var m_PredictClip = new PredictClip();
+                m_PredictClip.Read(reader);
             }
             if (version < "2018.3") //2018.3 down
             {

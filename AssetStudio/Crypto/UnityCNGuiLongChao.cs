@@ -6,7 +6,6 @@ namespace AssetStudio
 {
     public class UnityCNGuiLongChao : IUnityCN
     {
-        public byte[] Index = new byte[0x10];
         public byte[] Sub = new byte[0x10];
         
         public UnityCNGuiLongChao(EndianBinaryReader reader)
@@ -17,7 +16,6 @@ namespace AssetStudio
             reader.AlignStream();
     
             infoBytes = infoBytes.ToUInt4Array();
-            Index = Array.Empty<byte>();
             var subBytes = infoBytes.AsSpan(0, 0x10);
             for (var i = 0; i < subBytes.Length; i++)
             {
