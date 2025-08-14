@@ -3,10 +3,12 @@
     <OutputType>Exe</OutputType>
     <TargetFrameworks>net8.0-windows;net9.0-windows</TargetFrameworks>
 	<ApplicationIcon>Resources\as.ico</ApplicationIcon>
-	<Version>1.38.09</Version>
-	<AssemblyVersion>1.38.09</AssemblyVersion>
-	<FileVersion>1.38.09</FileVersion>
-	<Copyright>Copyright © Razmoth 2022; Copyright © Perfare 2018-2022</Copyright>
+    <VersionBase>1.38.09</VersionBase>
+    <Version Condition="'$(CommitHash)' == ''">$(VersionBase)</Version>
+    <Version Condition="'$(CommitHash)' != ''">$(VersionBase)-dev+$(CommitHash)</Version>
+    <AssemblyVersion>$(VersionBase)</AssemblyVersion>
+    <FileVersion>$(VersionBase)</FileVersion>
+	<Copyright>Copyright © AXiX 2024-2025; Copyright © Razmoth 2022-2024; Copyright © Perfare 2018-2022</Copyright>
 	<BaseOutputPath>..\AssetStudio.GUI\bin</BaseOutputPath>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
