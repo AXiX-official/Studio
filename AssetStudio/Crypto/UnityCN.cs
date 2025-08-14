@@ -1,166 +1,170 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
-using System.Security.Cryptography;
 
 namespace AssetStudio
 {
-    public class UnityCN
+    public sealed unsafe class UnityCN: IUnityCN
     {
         private const string Signature = "#$unity3dchina!@";
+        
+        public UInt32 Value;
+        public readonly byte[] InfoBytes;
+        public readonly byte[] InfoKey;
+        public readonly byte[] SignatureBytes;
+        public readonly byte[] SignatureKey;
 
-        private static ICryptoTransform Encryptor;
+        public readonly byte[] Index = new byte[0x10];
+        public readonly byte[] Sub = new byte[0x10];
+    
+        private GCHandle _subHandle;
+        private GCHandle _indexHandle;
+        private readonly byte* _subPtr;
+        private readonly byte* _indexPtr;
 
-        public byte[] Index = new byte[0x10];
-        public byte[] Sub = new byte[0x10];
-
-        public UnityCN()
-        {
-        }
+        private readonly bool _isIndexSpecial = true;
+        
+        public UnityCN() {}
         
         public UnityCN(EndianBinaryReader reader)
         {
-            reader.ReadUInt32();
-
-            var infoBytes = reader.ReadBytes(0x10);
-            var infoKey = reader.ReadBytes(0x10);
+            Value = reader.ReadUInt32();
+            InfoBytes = reader.ReadBytes(0x10);
+            InfoKey = reader.ReadBytes(0x10);
             reader.Position += 1;
 
-            var signatureBytes = reader.ReadBytes(0x10);
-            var signatureKey = reader.ReadBytes(0x10);
+            SignatureBytes = reader.ReadBytes(0x10);
+            SignatureKey = reader.ReadBytes(0x10);
             reader.Position += 1;
 
-            DecryptKey(signatureKey, signatureBytes);
+            Reset();
+            
+            for (int i = 0; i < Index.Length; i++)
+            {
+                if (Index[i] != i)
+                {
+                    _isIndexSpecial = false;
+                    break;
+                }
+            }
+            
+            _subHandle = GCHandle.Alloc(Sub, GCHandleType.Pinned);
+            _indexHandle = GCHandle.Alloc(Index, GCHandleType.Pinned);
+
+            _subPtr = (byte*)_subHandle.AddrOfPinnedObject();
+            _indexPtr = (byte*)_indexHandle.AddrOfPinnedObject();
+        }
+        
+        ~UnityCN()
+        {
+            if (_subHandle.IsAllocated) _subHandle.Free();
+            if (_indexHandle.IsAllocated) _indexHandle.Free();
+        }
+        
+        public void Reset()
+        {
+            var infoBytes = (byte[])InfoBytes.Clone();
+            var infoKey = (byte[])InfoKey.Clone();
+            var signatureBytes = (byte[])SignatureBytes.Clone();
+            var signatureKey = (byte[])SignatureKey.Clone();
+        
+            XorWithKey(signatureKey, signatureBytes);
 
             var str = Encoding.UTF8.GetString(signatureBytes);
-            Logger.Verbose($"Decrypted signature is {str}");
             if (str != Signature)
             {
                 throw new Exception($"Invalid Signature, Expected {Signature} but found {str} instead");
             }
-
-            DecryptKey(infoKey, infoBytes);
-
-            infoBytes = infoBytes.ToUInt4Array();
-            infoBytes.AsSpan(0, 0x10).CopyTo(Index);
-            var subBytes = infoBytes.AsSpan(0x10, 0x10);
+        
+            XorWithKey(infoKey, infoBytes);
+            var buffer = new byte[infoBytes.Length * 2];
+            for (var i = 0; i < infoBytes.Length; i++)
+            {
+                var idx = i * 2;
+                buffer[idx] = (byte)(infoBytes[i] >> 4);
+                buffer[idx + 1] = (byte)(infoBytes[i] & 0xF);
+            }
+            buffer.AsSpan(0, 0x10).CopyTo(Index);
+            var subBytes = buffer.AsSpan(0x10, 0x10);
             for (var i = 0; i < subBytes.Length; i++)
             {
                 var idx = (i % 4 * 4) + (i / 4);
                 Sub[idx] = subBytes[i];
             }
-
         }
-
-        public static bool SetKey(Entry entry)
+        
+        private void XorWithKey(byte[] key, byte[] data)
         {
-            Logger.Verbose($"Initializing decryptor with key {entry.Key}");
-            try
-            {
-                using var aes = Aes.Create();
-                aes.Mode = CipherMode.ECB;
-                aes.Key = Convert.FromHexString(entry.Key);
-
-                Encryptor = aes.CreateEncryptor();
-                Logger.Verbose($"Decryptor initialized !!");
-            }
-            catch (Exception e)
-            {
-                Logger.Error($"[UnityCN] Invalid key !!\n{e.Message}");
-                return false;
-            }
-            return true;
+            key = IUnityCN._encryptor.TransformFinalBlock(key, 0, key.Length);
+            for (int i = 0; i < 0x10; i++)
+                data[i] ^= key[i];
         }
 
-        public virtual void DecryptBlock(Span<byte> bytes, int size, int index)
+        public void DecryptBlock(Span<byte> bytes, int size, int index)
         {
             var offset = 0;
             while (offset < size)
             {
-                offset += Decrypt(bytes.Slice(offset), index++, size - offset);
+                offset += Decrypt(bytes[offset..], index++, size - offset);
             }
         }
-
-        private void DecryptKey(byte[] key, byte[] data)
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private byte DecryptByteUnsafe(byte* p, int index)
         {
-            if (Encryptor != null)
-            {
-                key = Encryptor.TransformFinalBlock(key, 0, key.Length);
-                for (int i = 0; i < 0x10; i++)
-                    data[i] ^= key[i];
-            }
+            var b = *p;
+            var mb = _subPtr[index & 3]
+                     + _subPtr[((index >> 2) & 3) + 4]
+                     + _subPtr[((index >> 4) & 3) + 8]
+                     + _subPtr[((byte)index >> 6) + 12];
+            *p = _isIndexSpecial ?
+                (byte)(((b & 0xF) - mb) & 0xF | ((b >> 4) - mb) << 4) :
+                (byte)((_indexPtr[b & 0xF] - mb) & 0xF | (_indexPtr[b >> 4] - mb) << 4);
+            return *p;
         }
 
-        protected virtual int DecryptByte(Span<byte> bytes, ref int offset, ref int index)
+        private int Decrypt(Span<byte> bytes, int index, int remaining)
         {
-            var b = Sub[((index >> 2) & 3) + 4] + Sub[index & 3] + Sub[((index >> 4) & 3) + 8] + Sub[((byte)index >> 6) + 12];
-            bytes[offset] = (byte)((Index[bytes[offset] & 0xF] - b) & 0xF | 0x10 * (Index[bytes[offset] >> 4] - b));
-            b = bytes[offset];
-            offset++;
-            index++;
-            return b;
-        }
-
-        protected int Decrypt(Span<byte> bytes, int index, int remaining)
-        {
-            var offset = 0;
-
-            var curByte = DecryptByte(bytes, ref offset, ref index);
-            var byteHigh = curByte >> 4;
-            var byteLow = curByte & 0xF;
-
-            if (byteHigh == 0xF)
+            fixed (byte* ptr = &bytes.GetPinnableReference())
             {
-                int b;
-                do
+                byte* p = ptr;
+                while (p - ptr < remaining)
                 {
-                    b = DecryptByte(bytes, ref offset, ref index);
-                    byteHigh += b;
-                } while (b == 0xFF);
-            }
+                    var innerIndex = index;
+                    var token = DecryptByteUnsafe(p++, innerIndex++);
+                    var literalLength = token >> 4;
+                    var matchLength = token & 0xF;
 
-            offset += byteHigh;
-
-            if (offset < remaining)
-            {
-                DecryptByte(bytes, ref offset, ref index);
-                DecryptByte(bytes, ref offset, ref index);
-                if (byteLow == 0xF)
-                {
-                    int b;
-                    do
+                    if (literalLength == 0xF)
                     {
-                        b = DecryptByte(bytes, ref offset, ref index);
-                    } while (b == 0xFF);
-                }
-            }
+                        int b;
+                        do
+                        {
+                            b = DecryptByteUnsafe(p++, innerIndex++);
+                            literalLength += b;
+                        } while (b == 0xFF);
+                    }
 
-            return offset;
-        }
-
-        public class Entry
-        {
-            public string Name { get; private set; }
-            public string Key { get; private set; }
-
-            public Entry(string name, string key)
-            {
-                Name = name;
-                Key = key;
-            }
-
-            public bool Validate()
-            {
-                var bytes = Convert.FromHexString(Key);
-                if (bytes.Length != 0x10)
-                {
-                    Logger.Warning($"[UnityCN] {this} has invalid key, size should be 16 bytes, skipping...");
-                    return false;
+                    p += literalLength;
+                    if (p - ptr == remaining && matchLength == 0) break;
+                    if (p - ptr >= remaining) throw new Exception("Invalid compressed data");
+                    
+                    DecryptByteUnsafe(p++, innerIndex++);
+                    DecryptByteUnsafe(p++, innerIndex++);
+                    if (matchLength == 0xF)
+                    {
+                        int b;
+                        do
+                        {
+                            b = DecryptByteUnsafe(p++, innerIndex++);
+                        } while (b == 0xFF);
+                    }
+                    index++;
                 }
 
-                return true;
+                return  (int)(p - ptr);
             }
-
-            public override string ToString() => $"{Name} ({Key})";
         }
     }
 }

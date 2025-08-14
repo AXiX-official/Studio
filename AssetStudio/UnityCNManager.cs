@@ -10,15 +10,15 @@ namespace AssetStudio
     {
         public const string KeysFileName = "Keys.json";
 
-        private static List<UnityCN.Entry> Entries = new List<UnityCN.Entry>();
+        private static List<IUnityCN.Entry> Entries = new ();
 
         static UnityCNManager()
         {
             var str = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, KeysFileName));
-            Entries = JsonConvert.DeserializeObject<List<UnityCN.Entry>>(str);
+            Entries = JsonConvert.DeserializeObject<List<IUnityCN.Entry>>(str);
         }
 
-        public static void SaveEntries(List<UnityCN.Entry> entries)
+        public static void SaveEntries(List<IUnityCN.Entry> entries)
         {
             Entries.Clear();
             Entries.AddRange(entries);
@@ -31,7 +31,7 @@ namespace AssetStudio
         {
             if (TryGetEntry(index, out var unityCN))
             {
-                if (UnityCN.SetKey(unityCN))
+                if (IUnityCN.SetKey(unityCN))
                 {
                     Logger.Info($"[UnityCN] Selected Key is {unityCN}");
                 }
@@ -47,7 +47,7 @@ namespace AssetStudio
             }
         }
 
-        public static bool TryGetEntry(int index, out UnityCN.Entry key)
+        public static bool TryGetEntry(int index, out IUnityCN.Entry key)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace AssetStudio
 
             return true;
         }
-        public static UnityCN.Entry[] GetEntries() => Entries.ToArray();
+        public static IUnityCN.Entry[] GetEntries() => Entries.ToArray();
 
         public new static string ToString() => string.Join("\n", GetEntries().Select((x, i) => $"{i}: {x.Name}"));
     }

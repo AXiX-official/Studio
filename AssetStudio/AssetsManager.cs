@@ -51,21 +51,6 @@ namespace AssetStudio
         internal HashSet<string> assetsFileListHash = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         
         public bool autoDetectMultipleBundle = false;
-        
-        public void SetSpecifyUnityVersion(string version)
-        {
-            SpecifyUnityVersion = version;
-        }
-        
-        public void SetGame(string game)
-        {
-            Game = GameManager.GetGame(game);
-        }
-
-        public void SetUnityCNKey(string Name, string Key)
-        {
-            UnityCN.SetKey(new UnityCN.Entry(Name, Key));
-        }
 
         public void LoadFiles(params string[] files)
         {

@@ -33,7 +33,7 @@ namespace AssetStudio.GUI
 
         private void specifyUnityCNList_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            var keys = new List<UnityCN.Entry>();
+            var keys = new List<IUnityCN.Entry>();
             for (int i = specifyUnityCNList.Rows.Count - 1; i >= 0; i--)
             {
                 var row = specifyUnityCNList.Rows[i];
@@ -42,7 +42,7 @@ namespace AssetStudio.GUI
 
                 if (!(string.IsNullOrEmpty(name) || string.IsNullOrEmpty(key)))
                 {
-                    var unityCN = new UnityCN.Entry(name, key);
+                    var unityCN = new IUnityCN.Entry(name, key);
 
                     if (unityCN.Validate())
                     {
@@ -64,7 +64,7 @@ namespace AssetStudio.GUI
                     specifyUnityCNList.Rows.RemoveAt(i);
                 }
             }
-            UnityCNManager.SaveEntries(keys.Reverse<UnityCN.Entry>().ToList());
+            UnityCNManager.SaveEntries(keys.Reverse<IUnityCN.Entry>().ToList());
 
             if (Studio.Game.Type.IsUnityCN())
             {

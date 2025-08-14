@@ -35,7 +35,7 @@ namespace AssetStudio.CLI
                         return;
                     }
 
-                    UnityCN.SetKey(unityCN);
+                    IUnityCN.SetKey(unityCN);
                     Logger.Info($"[UnityCN] Selected Key is {unityCN}");
                 }
 

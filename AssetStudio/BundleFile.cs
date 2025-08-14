@@ -104,7 +104,7 @@ namespace AssetStudio
         }
 
         private Game Game;
-        private UnityCN UnityCN;
+        private IUnityCN UnityCN;
 
         public Header m_Header;
         private List<Node> m_DirectoryInfo;
