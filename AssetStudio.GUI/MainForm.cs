@@ -2541,6 +2541,12 @@ namespace AssetStudio.GUI
             var unitycn = new UnityCNForm();
             unitycn.Show();
         }
+        
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var aboutForm = new About(this);
+            aboutForm.ShowDialog(this);
+        }
 
         #region FMOD
         private void FMODinit()

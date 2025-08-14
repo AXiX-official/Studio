@@ -177,6 +177,7 @@ namespace AssetStudio.GUI
             goToSceneHierarchyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             showOriginalFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             openLogFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -200,7 +201,7 @@ namespace AssetStudio.GUI
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { fileToolStripMenuItem, optionsToolStripMenuItem, modelToolStripMenuItem, exportToolStripMenuItem, filterTypeToolStripMenuItem, debugMenuItem, miscToolStripMenuItem });
+            menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { fileToolStripMenuItem, optionsToolStripMenuItem, modelToolStripMenuItem, exportToolStripMenuItem, filterTypeToolStripMenuItem, debugMenuItem, miscToolStripMenuItem, aboutToolStripMenuItem });
             menuStrip1.Location = new System.Drawing.Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new System.Drawing.Size(1264, 24);
@@ -751,6 +752,13 @@ namespace AssetStudio.GUI
             loggedEventsMenuItem.Text = "Logged events";
             loggedEventsMenuItem.DropDown.Closing += loggedEventsMenuItem_DropDownClosing;
             loggedEventsMenuItem.DropDownClosed += loggedEventsMenuItem_DropDownClosed;
+            //
+            // aboutToolStripMenuItem
+            //
+            aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            aboutToolStripMenuItem.Text = "About";
+            aboutToolStripMenuItem.Click += aboutToolStripMenuItem_Click;
             // 
             // miscToolStripMenuItem
             // 
@@ -1590,6 +1598,7 @@ namespace AssetStudio.GUI
         private System.Windows.Forms.ToolStripMenuItem loadCABMapToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem allowDuplicates;
         private System.Windows.Forms.ToolStripMenuItem openLogFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
     }
 }
 

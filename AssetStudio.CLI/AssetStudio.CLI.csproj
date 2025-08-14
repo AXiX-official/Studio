@@ -29,6 +29,12 @@
     </Compile>
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="..\LICENSE">
+      <Link>LICENSE</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+
   <Target Name="CopyExtraFiles" AfterTargets="AfterBuild">
   	<Copy SourceFiles="$(SolutionDir)AssetStudio.FBXNative\bin\Win32\$(Configuration)\AssetStudio.FBXNative.dll" DestinationFolder="$(TargetDir)x86" ContinueOnError="true" />
   	<Copy SourceFiles="$(SolutionDir)AssetStudio.FBXNative\bin\x64\$(Configuration)\AssetStudio.FBXNative.dll" DestinationFolder="$(TargetDir)x64" ContinueOnError="true" />

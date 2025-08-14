@@ -33,6 +33,9 @@
 		  <AutoGen>True</AutoGen>
 		  <DependentUpon>Settings.settings</DependentUpon>
 		</Compile>
+		<Compile Update="About.cs">
+		  <SubType>Form</SubType>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -122,6 +125,12 @@
 	    <Generator>SettingsSingleFileGenerator</Generator>
 	    <LastGenOutput>Settings.Designer.cs</LastGenOutput>
 	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="..\LICENSE">
+	    <Link>LICENSE</Link>
+	  </EmbeddedResource>
 	</ItemGroup>
 
 	<Target Name="CopyExtraFiles" AfterTargets="AfterBuild">
