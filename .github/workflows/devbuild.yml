@@ -64,25 +64,25 @@ jobs:
           /verbosity:minimal
 
       - name: Upload .Net8 Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: net8.0-${{ env.GIT_HASH }}
           path: AssetStudio.GUI/bin/Release/net8.0-windows/publish
           
       - name: Upload .Net9 Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: net9.0-${{ env.GIT_HASH }}
           path: AssetStudio.GUI/bin/Release/net9.0-windows/publish
 
       - name: Upload .Net8 CLI Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: net8.0-${{ env.GIT_HASH }}
           path: AssetStudio.GUI/bin/Release/net8.0-windows/publish
           
       - name: Upload .Net9 CLI Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: net9.0-${{ env.GIT_HASH }}
           path: AssetStudio.GUI/bin/Release/net9.0-windows/publish
