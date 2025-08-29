@@ -55,14 +55,14 @@
             // 
             // NameField
             // 
-            this.NameField.HeaderText = "Name";
+            this.NameField.HeaderText = "名称";
             this.NameField.Name = "NameField";
             this.NameField.Width = 140;
             // 
             // KeyField
             // 
             this.KeyField.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.KeyField.HeaderText = "Key";
+            this.KeyField.HeaderText = "密钥";
             this.KeyField.Name = "KeyField";
             // 
             // UnityCNForm
@@ -78,7 +78,7 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "UnityCNForm";
+            this.Text = "UnityCN表格";
             this.TopMost = true;
             ((System.ComponentModel.ISupportInitialize)(this.specifyUnityCNList)).EndInit();
             this.ResumeLayout(false);

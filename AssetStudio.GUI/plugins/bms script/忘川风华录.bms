@@ -1,0 +1,54 @@
+﻿# script for extracting separate bundles from bundle files (Forgotten River Fenghua Lu)
+# created by spiritovod
+
+getdstring SIGN 4
+if SIGN != "PM03"
+	print "This is not compatible bundle file"
+	cleanexit
+endif
+
+get TMP_NAME basename
+endian big
+math SHIFT = 128
+math HEAD_SIZE = 42
+
+get FSIZE asize
+math FILES = 0
+for OFFSET = 0 < FSIZE
+	savepos OFFSET
+	if OFFSET >= FSIZE
+		cleanexit
+	endif
+	
+	get SIGN string
+	savepos HEAD
+	get VERSION long
+	get MAJOR string
+	get MINOR string
+	get SIZE longlong
+	get COMP_BLOCKS long
+	get UNCOMP_BLOCKS long
+	get COM_TYPE long
+	get VER byte
+	savepos BLOCKS
+	
+	math COMP_BLOCKS - SHIFT
+	math UNCOMP_BLOCKS - SHIFT
+	math OFFSET + SIZE
+	xmath SIZE "SIZE - HEAD_SIZE - 8"
+	
+	set MEMORY_FILE binary "\x55\x6E\x69\x74\x79\x46\x53\x00"
+	append
+	log MEMORY_FILE HEAD HEAD_SIZE
+	log MEMORY_FILE BLOCKS SIZE
+	append
+	putvarchr MEMORY_FILE 38 COMP_BLOCKS long
+	putvarchr MEMORY_FILE 42 UNCOMP_BLOCKS long
+	
+	string NAME p "%s/%04d.asset" TMP_NAME FILES
+	get SIZE asize MEMORY_FILE
+	log NAME 0 SIZE MEMORY_FILE
+	
+	math FILES + 1
+	goto OFFSET
+next

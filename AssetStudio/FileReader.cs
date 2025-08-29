@@ -11,14 +11,16 @@ namespace AssetStudio
         public string FileName;
         public FileType FileType;
 
-        private static readonly byte[] gzipMagic = { 0x1f, 0x8b };
-        private static readonly byte[] brotliMagic = { 0x62, 0x72, 0x6F, 0x74, 0x6C, 0x69 };
-        private static readonly byte[] zipMagic = { 0x50, 0x4B, 0x03, 0x04 };
-        private static readonly byte[] zipSpannedMagic = { 0x50, 0x4B, 0x07, 0x08 };
-        private static readonly byte[] mhy0Magic = { 0x6D, 0x68, 0x79, 0x30 };
-        private static readonly byte[] blbMagic = { 0x42, 0x6C, 0x62, 0x02 };
-        private static readonly byte[] narakaMagic = { 0x15, 0x1E, 0x1C, 0x0D, 0x0D, 0x23, 0x21 };
-        private static readonly byte[] gunfireMagic = { 0x7C, 0x6D, 0x79, 0x72, 0x27, 0x7A, 0x73, 0x78, 0x3F };
+        private static readonly byte[] gzipMagic = new byte[] { 31, 139 };
+        private static readonly byte[] brotliMagic = new byte[] { 98, 114, 111, 116, 108, 105 };
+        private static readonly byte[] zipMagic = new byte[] { 80, 75, 3, 4 };
+        private static readonly byte[] zipSpannedMagic = new byte[] { 80, 75, 7, 8 };
+        private static readonly byte[] mhy0Magic = new byte[] { 109, 104, 121, 48 };
+        private static readonly byte[] mhy1Magic = new byte[] { 109, 104, 121, 49 };
+        private static readonly byte[] blb2Magic = new byte[] { 66, 108, 98, 2 };
+        private static readonly byte[] blb3Magic = new byte[] { 66, 108, 98, 3 };
+        private static readonly byte[] narakaMagic = new byte[] { 21, 30, 28, 13, 13, 35, 33 };
+        private static readonly byte[] gunfireMagic = new byte[] { 124, 109, 121, 114, 39, 122, 115, 120, 63 };
 
 
         public FileReader(string path) : this(path, File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) { }
@@ -83,14 +85,19 @@ namespace AssetStudio
                             return FileType.ZipFile;
                         }
                         Logger.Verbose($"Parsed signature does not match with expected signature {Convert.ToHexString(zipMagic)} or {Convert.ToHexString(zipSpannedMagic)}");
-                        if (mhy0Magic.SequenceEqual(magic))
+                        if (mhy0Magic.SequenceEqual(magic) || mhy1Magic.SequenceEqual(magic))
                         {
                             return FileType.MhyFile;
                         }
-                        Logger.Verbose($"Parsed signature does not match with expected signature {Convert.ToHexString(mhy0Magic)}");
-                        if (blbMagic.SequenceEqual(magic))
+                        Logger.Verbose($"解析的签名与预期的签名不匹配{Convert.ToHexString(mhy0Magic)} or {Convert.ToHexString(mhy1Magic)}");
+                        if (blb2Magic.SequenceEqual(magic))
                         {
-                            return FileType.BlbFile;
+                            return FileType.Blb2File;
+                        }
+                        Logger.Verbose($"解析的签名与预期的签名不匹配{Convert.ToHexString(blb2Magic)}");
+                        if (blb3Magic.SequenceEqual(magic))
+                        {
+                            return FileType.Blb3File;
                         }
                         Logger.Verbose($"Parsed signature does not match with expected signature {Convert.ToHexString(mhy0Magic)}");
                         magic = ReadBytes(7);
@@ -239,9 +246,18 @@ namespace AssetStudio
                     case GameType.MagicalNutIkuno:
                         reader = DecryptMagicalNutIkuno(reader);
                         break;
+                    case GameType.WuQiMiTu:
+                        reader = DecryptWuQiMiTu(reader);
+                        break;
+                    case GameType.HuoYingRenZhe:
+                        reader = DecryptHuoYingRenZhe(reader);
+                        break;
+                    case GameType.LieHunShiJie:
+                        reader = DecryptLieHunShiJie(reader);
+                        break;
                 }
             }
-            if (autoDetectMultipleBundle || reader.FileType == FileType.BundleFile && game.Type.IsBlockFile() || reader.FileType == FileType.ENCRFile || reader.FileType == FileType.BlbFile)
+            if (reader.FileType == FileType.BundleFile && game.Type.IsBlockFile() || reader.FileType == FileType.ENCRFile || reader.FileType == FileType.Blb2File || reader.FileType == FileType.Blb3File)
             {
                 Logger.Verbose("File might have multiple bundles !!");
                 try
@@ -262,6 +278,10 @@ namespace AssetStudio
                 reader.Position = 0;
             }
 
+            if (reader.FileType == FileType.MhyFile && (game.Type.IsZZZCB1() || game.Type.IsZZZ()))
+            {
+                reader.FileType = FileType.BlockFile;
+            }
             Logger.Verbose("No preprocessing is needed");
             return reader;
         }

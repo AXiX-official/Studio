@@ -23,7 +23,8 @@ namespace AssetStudio
         private bool isNewHeader = false;
 
         public static bool HasPrope(SerializedType type) => type.Match("F622BC5EE0E86D7BDF8C912DD94DCBF5") || type.Match("9255FA54269ADD294011FDA525B5FCAC");
-
+        public static bool HasCullingDistance(SerializedType type) => type.Match("BFA28DBFE9993C2ABE21B3408666CFD3");
+        public static bool HasStreamingMipmapBias(SerializedType type) => type.Match("3086DE02B7269C6DE7E840C57C244649");
         protected Renderer(ObjectReader reader) : base(reader)
         {
             if (version.Major < 5) //5.0 down
@@ -110,7 +111,7 @@ namespace AssetStudio
                     {
                         var m_RayTracingMode = reader.ReadByte();
                     }
-                    if (version.Major >= 2020) //2020.1 and up
+                    if (version.Major >= 2020 || reader.Game.Type.IsZZZ()) //2020.1 and up
                     {
                         var m_RayTraceProcedural = reader.ReadByte();
                     }
@@ -255,6 +256,17 @@ namespace AssetStudio
                 {
                     var RenderFlag = reader.ReadUInt32();
                     reader.AlignStream();
+                }
+                if (reader.Game.Type.IsZZZ())
+                {
+                    var m_NeedHizCulling = reader.ReadBoolean();
+                    var m_HighShadingRate = reader.ReadBoolean();
+                    var m_RayTracingLayerMask = reader.ReadBoolean();
+                    reader.AlignStream();
+                    if (HasCullingDistance(reader.serializedType))
+                    {
+                        var m_CullingDistance = reader.ReadSingle();
+                    }
                 }
             }
         }

@@ -23,7 +23,7 @@ namespace AssetStudio.GUI
 
             switch (loggerEvent)
             {
-                case LoggerEvent.Error:
+                case LoggerEvent.错误:
                     if (ShowErrorMessage)
                     {
                         MessageBox.Show(message);

@@ -45,7 +45,7 @@ namespace AssetStudio
 
         public static void Verbose(string message)
         {
-            if (!Flags.HasFlag(LoggerEvent.Verbose) || Silent)
+            if (!Flags.HasFlag(LoggerEvent.详细) || Silent)
                 return;
 
             try
@@ -58,45 +58,45 @@ namespace AssetStudio
                 }
             }
             catch (Exception) { }
-            if (FileLogging) File.Log(LoggerEvent.Verbose, message);
-            Default.Log(LoggerEvent.Verbose, message);
+            if (FileLogging) File.Log(LoggerEvent.详细, message);
+            Default.Log(LoggerEvent.详细, message);
         }
         public static void Debug(string message)
         {
-            if (!Flags.HasFlag(LoggerEvent.Debug) || Silent)
+            if (!Flags.HasFlag(LoggerEvent.调试) || Silent)
                 return;
 
-            if (FileLogging) File.Log(LoggerEvent.Debug, message);
-            Default.Log(LoggerEvent.Debug, message);
+            if (FileLogging) File.Log(LoggerEvent.调试, message);
+            Default.Log(LoggerEvent.调试, message);
         }
         public static void Info(string message)
         {
-            if (!Flags.HasFlag(LoggerEvent.Info) || Silent)
+            if (!Flags.HasFlag(LoggerEvent.信息) || Silent)
                 return;
 
-            if (FileLogging) File.Log(LoggerEvent.Info, message);
-            Default.Log(LoggerEvent.Info, message);
+            if (FileLogging) File.Log(LoggerEvent.信息, message);
+            Default.Log(LoggerEvent.信息, message);
         }
         public static void Warning(string message)
         {
-            if (!Flags.HasFlag(LoggerEvent.Warning) || Silent)
+            if (!Flags.HasFlag(LoggerEvent.警告) || Silent)
                 return;
 
-            if (FileLogging) File.Log(LoggerEvent.Warning, message);
-            Default.Log(LoggerEvent.Warning, message);
+            if (FileLogging) File.Log(LoggerEvent.警告, message);
+            Default.Log(LoggerEvent.警告, message);
         }
         public static void Error(string message)
         {
-            if (!Flags.HasFlag(LoggerEvent.Error) || Silent)
+            if (!Flags.HasFlag(LoggerEvent.错误) || Silent)
                 return;
 
-            if (FileLogging) File.Log(LoggerEvent.Error, message);
-            Default.Log(LoggerEvent.Error, message);
+            if (FileLogging) File.Log(LoggerEvent.错误, message);
+            Default.Log(LoggerEvent.错误, message);
         }
 
         public static void Error(string message, Exception e)
         {
-            if (!Flags.HasFlag(LoggerEvent.Error) || Silent)
+            if (!Flags.HasFlag(LoggerEvent.错误) || Silent)
                 return;
 
             var sb = new StringBuilder();
@@ -104,8 +104,8 @@ namespace AssetStudio
             sb.AppendLine(e.ToString());
 
             message = sb.ToString();
-            if (FileLogging) File.Log(LoggerEvent.Error, message);
-            Default.Log(LoggerEvent.Error, message);
+            if (FileLogging) File.Log(LoggerEvent.错误, message);
+            Default.Log(LoggerEvent.错误, message);
         }
     }
 }

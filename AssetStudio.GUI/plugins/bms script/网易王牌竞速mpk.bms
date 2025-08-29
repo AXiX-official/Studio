@@ -1,0 +1,71 @@
+# NetEase Ace Racer mpkinfo/mpk (script 0.2)
+
+get EXT extension
+if EXT & "info"
+    # mpkinfo and any other similar extension
+else
+    print "Error: you must open the info file"
+    cleanexit
+endif
+string EXT - "info"
+
+get RES_NAME basename
+
+get VER long    # 1
+get FILES long
+for i = 0 < FILES
+    get NAMESZ short
+    getdstring NAME NAMESZ
+    get OFFSET long
+    get SIZE long
+    get FILENUM long
+    math IS_FOLDER = FILENUM
+    math IS_FOLDER & 1
+    math FILENUM >> 1
+
+    putarray 0 i FILENUM
+    putarray 1 i NAME
+    putarray 2 i OFFSET
+    putarray 3 i SIZE
+    putarray 4 i IS_FOLDER
+next i
+
+sortarray 0 1
+
+math LAST_FILENUM = -1
+for i = 0 < FILES
+    getarray FILENUM    0 i
+    getarray NAME       1 i
+    getarray OFFSET     2 i
+    getarray SIZE       3 i
+    getarray IS_FOLDER  4 i
+
+    if IS_FOLDER == 0   # or SIZE != 0
+        if FILENUM != LAST_FILENUM
+            math LAST_FILENUM = FILENUM
+            if FILENUM == 0
+                string TMP p "%s.%s"   RES_NAME         EXT
+            else
+                string TMP p "%s%d.%s" RES_NAME FILENUM EXT
+            endif
+            open FDSE TMP 0 EXISTS
+        endif
+        if EXISTS != 0
+            goto OFFSET
+            getdstring ALGO 4
+            if ALGO == "ZZZ4"
+                comtype lz4
+                get XSIZE long
+                savepos OFFSET
+                clog NAME OFFSET SIZE XSIZE
+            elif ALGO == "LZMA"
+                comtype lzma
+                get XSIZE long
+                savepos OFFSET
+                clog NAME OFFSET SIZE XSIZE
+            else
+                log NAME OFFSET SIZE
+            endif
+        endif
+    endif
+next i
