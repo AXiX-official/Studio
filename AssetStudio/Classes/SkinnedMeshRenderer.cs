@@ -31,13 +31,16 @@ namespace AssetStudio
             {
                 m_Bones.Add(new PPtr<Transform>(reader));
             }
-
+            if (reader.Game.Type.IsZZZ())
+            {
+                var m_SortingFudge = reader.ReadSingle();
+            }
             if (version >= "4.3") //4.3 and up
             {
                 m_BlendShapeWeights = reader.ReadSingleArray();
             }
 
-            if (reader.Game.Type.IsGIGroup())
+            if (reader.Game.Type.IsGIGroup() || reader.Game.Type.IsZZZ())
             {
                 m_RootBone = new PPtr<Transform>(reader);
                 m_AABB = new AABB(reader);

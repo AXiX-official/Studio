@@ -71,6 +71,7 @@ namespace AssetStudio
 
     public sealed class Material : NamedObject
     {
+        private static bool HasEnabledPassMask(SerializedType type) => type.Match("6BDB1CD05E80C82ABB24930CD37AEE88");
         public PPtr<Shader> m_Shader;
         public UnityPropertySheet m_SavedProperties;
 
@@ -134,7 +135,10 @@ namespace AssetStudio
             {
                 var disabledShaderPasses = reader.ReadStringArray();
             }
-
+            if (reader.Game.Type.IsZZZ() && HasEnabledPassMask(reader.serializedType))
+            {
+                var enabledPassMask = reader.ReadUInt32();
+            }
             m_SavedProperties = new UnityPropertySheet(reader);
 
             //vector m_BuildTextureStacks 2020 and up

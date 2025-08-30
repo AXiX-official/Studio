@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using static AssetStudio.BundleFile;
@@ -101,7 +102,7 @@ namespace AssetStudio
             const int PackSize = 0x880;
             const string PackSignature = "pack";
             const string UnityFSSignature = "UnityFS";
-           
+
             var data = reader.ReadBytes((int)reader.Length);
             var packIdx = data.Search(PackSignature);
             if (packIdx == -1)
@@ -203,7 +204,7 @@ namespace AssetStudio
                         reader.BaseStream.CopyTo(ms, header.size);
                         continue;
                     }
-                    
+
                     throw new InvalidOperationException($"Expected signature {PackSignature} or {UnityFSSignature}, got {signature} instead !!");
                 }
             }
@@ -299,7 +300,7 @@ namespace AssetStudio
                 return new FileReader(reader.FullPath, new MemoryStream(data));
             }
         }
-        
+
         private static long GetBundleFileSize(FileReader reader, int idx)
         {
             reader.Position = idx;
@@ -337,7 +338,7 @@ namespace AssetStudio
             Logger.Verbose("Parsed fake header file successfully !!");
             return new FileReader(reader.FullPath, stream);
         }
-        
+
         public static FileReader DecryptFantasyOfWind(FileReader reader)
         {
             Logger.Verbose($"Attempting to decrypt file {reader.FileName} with Fantasy of Wind encryption");
@@ -385,7 +386,7 @@ namespace AssetStudio
             var data = reader.ReadBytes(encryptedLength);
             for (int i = 0; i < encryptedLength; i++)
             {
-                data[i] ^= key[i % key.Length]; 
+                data[i] ^= key[i % key.Length];
             }
 
             MemoryStream ms = new();
@@ -437,7 +438,7 @@ namespace AssetStudio
             for (int i = 0; i < data.Length; i++)
             {
                 var idx = data[i];
-                data[i] = key[idx]; 
+                data[i] = key[idx];
             }
 
             Logger.Verbose("Decrypted Helix Waltz 2 file successfully !!");
@@ -502,7 +503,7 @@ namespace AssetStudio
 
                 return fileSize % 2 == chunkIndex % 2;
             }
-            
+
             byte[] GetKey(string fileName)
             {
                 const string Key = "KxZKZolAT3QXvsUU";
@@ -599,7 +600,7 @@ namespace AssetStudio
             Logger.Verbose($"Decrypted File info: Flag 0x{flag:X8} | Compressed blockInfo size 0x{compressedBlocksInfoSize:X8} | Decompressed blockInfo size 0x{uncompressedBlocksInfoSize:X8} | Bundle size 0x{size:X8}");
 
             var blocksInfo = reader.ReadBytes((int)compressedBlocksInfoSize);
-            for(int i = 0; i < blocksInfo.Length; i++)
+            for (int i = 0; i < blocksInfo.Length; i++)
             {
                 blocksInfo[i] ^= key[i % key.Length];
             }
@@ -682,7 +683,7 @@ namespace AssetStudio
             if (startIdx != -1 && startIdx != paths.Length - 1)
             {
                 Logger.Verbose("File is in the data folder !!");
-                var path = string.Join(Path.AltDirectorySeparatorChar, paths[(startIdx+1)..]);
+                var path = string.Join(Path.AltDirectorySeparatorChar, paths[(startIdx + 1)..]);
                 var offset = GetLoadAssetBundleOffset(path);
                 if (offset > 0 && offset < reader.Length)
                 {
@@ -804,7 +805,7 @@ namespace AssetStudio
 
             return new FileReader(reader.FullPath, ms);
         }
-        
+
         public static FileReader DecryptProjectSekai(FileReader reader)
         {
             Logger.Verbose($"Attempting to decrypt file {reader.FileName} with Project Sekai encryption");
@@ -842,7 +843,7 @@ namespace AssetStudio
             ms.Position = 0;
             return new FileReader(reader.FullPath, ms);
         }
-        
+
         public static FileReader DecryptCodenameJump(FileReader reader)
         {
             Logger.Verbose($"Attempting to decrypt file {reader.FileName} with Codename Jump encryption");
@@ -905,24 +906,24 @@ namespace AssetStudio
                 offset += fileSize;
             }
         }
-        
+
         public static FileReader DecryptGirlsFrontline(FileReader reader)
         {
             if (!reader.FullPath.EndsWith(".bundle")) return reader;
             Logger.Verbose($"Attempting to decrypt file {reader.FileName} with Girls Frontline encryption");
-            
+
             var data = reader.ReadBytes((int)reader.Remaining);
 
             if (data.Length >= 3 && data[0] == 'G' && data[1] == 'F' && data[2] == 'F') return reader;
-            
+
             int offset = 0;
             var dataSpan = data.AsSpan();
-            
+
             while (offset < data.Length)
             {
                 InternalDecryptGirlsFrontline(ref dataSpan, ref offset);
             }
-            
+
             Logger.Verbose("Decrypted Girls Frontline file successfully !!");
 
             MemoryStream ms = new();
@@ -930,7 +931,7 @@ namespace AssetStudio
             ms.Position = 0;
             return new FileReader(reader.FullPath, ms);
         }
-        
+
         public static FileReader DecryptReverse1999(FileReader reader)
         {
             Logger.Verbose($"Attempting to decrypt file {reader.FileName} with Reverse: 1999 encryption");
@@ -1161,7 +1162,7 @@ namespace AssetStudio
             ms.Position = 0;
             return new FileReader(reader.FullPath, ms);
         }
-        
+
         public static FileReader DecryptCounterSide(FileReader reader)
         {
             Logger.Verbose($"Attempting to decrypt file {reader.FileName} with CounterSide encryption");
@@ -1176,7 +1177,7 @@ namespace AssetStudio
             ulong[] MaskList = new[] { 0UL, 0UL, 0UL, 0UL };
             MaskList[0] = UInt64.Parse(hex.Substring(0, 16), System.Globalization.NumberStyles.HexNumber);
             MaskList[1] = UInt64.Parse(hex.Substring(16, 16), System.Globalization.NumberStyles.HexNumber);
-            MaskList[2] = UInt64.Parse( hex.Substring(0, 8) + hex.Substring(16, 8), System.Globalization.NumberStyles.HexNumber);
+            MaskList[2] = UInt64.Parse(hex.Substring(0, 8) + hex.Substring(16, 8), System.Globalization.NumberStyles.HexNumber);
             MaskList[3] = UInt64.Parse(hex.Substring(8, 8) + hex.Substring(24, 8), System.Globalization.NumberStyles.HexNumber);
             var pos = 0;
             var maskPos = 0;
@@ -1201,68 +1202,66 @@ namespace AssetStudio
                 }
                 maskPos = (maskPos + 1) % 4;
             }
-            
+
             MemoryStream ms = new();
             ms.Write(data);
             ms.Position = 0;
             return new FileReader(reader.FullPath, ms);
         }
-        
+
         public static FileReader DecryptXinYueTongXing(FileReader reader)
         {
-            Logger.Verbose($"Attempting to decrypt file {reader.FileName} with XinYueTongXing encryption");
+            Logger.Verbose($"尝试解密新月同行加密的文件 {reader.FileName}");
 
-            var data = reader.ReadBytes((int)reader.Remaining);
+            var signature = reader.ReadStringToNull(4);
+            reader.Position = 0;
 
-            byte[] salt = Encoding.UTF8.GetBytes(reader.FileName.Replace(".ab", ""));
-
-            using (SHA1 sha1 = SHA1.Create())
+            if (signature == "UnityFS")
             {
-                byte[] hashval = sha1.ComputeHash(Encoding.UTF8.GetBytes("System.Byte[]").Concat(salt).ToArray());
-                for (int i = 0; i < 100 - 1; i++)
-                {
-                    hashval = sha1.ComputeHash(hashval);
-                }
-                byte[] hashder = sha1.ComputeHash(hashval);
-                int index = 1;
-                while (hashder.Length < 32)
-                {
-                    hashder = hashder.Concat(sha1.ComputeHash(new byte[] { (byte)(index + 48) }.Concat(hashval).ToArray())).ToArray();
-                    index++;
-                }
-                byte[] key = hashder.Take(32).ToArray();
-
-                using Aes aes = Aes.Create();
-                aes.Key = key;
-                aes.Mode = CipherMode.ECB;
-                aes.Padding = PaddingMode.None;
-
-                byte[] counter = new byte[16];
-                Array.Copy(salt, 0, counter, 0, Math.Min(salt.Length, 16));
-
-                using MemoryStream ms = new MemoryStream();
-                using CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write);
-                cs.Write(counter, 0, counter.Length);
-                cs.FlushFinalBlock();
-                byte[] encryptedCounter = ms.ToArray();
-                byte[] decryptedData = new byte[data.Length];
-
-                for (int i = 0; i < data.Length; i++)
-                {
-                    decryptedData[i] = (byte)(data[i] ^ encryptedCounter[i % 16]);
-                }
-
-                MemoryStream resultStream = new MemoryStream();
-                resultStream.Write(decryptedData, 0, decryptedData.Length);
-                resultStream.Position = 0;
-                return new FileReader(reader.FullPath, resultStream);
+                Logger.Verbose("文件已经是UnityFS格式，无需解密");
+                return reader;
             }
+
+            try
+            {
+                var encryptedData = reader.ReadBytes((int)reader.Length);
+
+                var fileName = Path.GetFileNameWithoutExtension(reader.FileName);
+
+                var result = DecryptWithDll(encryptedData, fileName);
+
+                if (result == 1)
+                {
+                    Logger.Verbose("新月同行解密成功!!");
+                    return new FileReader(reader.FullPath, new MemoryStream(encryptedData));
+                }
+                else
+                {
+                    Logger.Verbose("解密失败，文件头不匹配");
+                    reader.Position = 0;
+                    return reader;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"解密新月同行文件时出错: {ex.Message}");
+                reader.Position = 0;
+                return reader;
+            }
+        }
+
+        [DllImport("xinyuetongxing.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int decrypt_in_memory(byte[] data, int data_len, string salt);
+
+        private static int DecryptWithDll(byte[] data, string salt)
+        {
+            return decrypt_in_memory(data, data.Length, salt);
         }
 
         public static FileReader DecryptMagicalNutIkuno(FileReader reader)
         {
             Logger.Verbose($"Attempting to decrypt file {reader.FileName} with MagicalNutIkuno encryption");
-            
+
             var sign = reader.ReadBytes(7);
             if (Encoding.UTF8.GetString(sign) == "UnityFS")
             {
@@ -1270,10 +1269,10 @@ namespace AssetStudio
                 reader.Position = 0;
                 return reader;
             }
-            
+
             reader.Position = 0;
             var data = reader.ReadBytes((int)reader.Remaining);
-            byte[] encryptedData = Convert.FromBase64CharArray(Encoding.ASCII.GetChars(data),0, data.Length);
+            byte[] encryptedData = Convert.FromBase64CharArray(Encoding.ASCII.GetChars(data), 0, data.Length);
 
             using Aes aes = Aes.Create();
             aes.Key = Encoding.UTF8.GetBytes("a65376ecf86139e3");
@@ -1290,6 +1289,238 @@ namespace AssetStudio
             resultStream.Write(decryptedData, 0, decryptedData.Length);
             resultStream.Position = 0;
             return new FileReader(reader.FullPath, resultStream);
+        }
+
+        public static FileReader DecryptWuQiMiTu(FileReader reader)
+        {
+            Logger.Verbose($"尝试去解密{reader.FileName}加密的无期迷途");
+
+            var data = reader.ReadBytes((int)reader.Remaining);
+            byte[] result = new byte[data.Length - 50];
+            Array.Copy(data, 50, result, 0, result.Length);
+            byte key = (byte)(result[0] ^ 0x55);
+            if (key != (result[1] ^ 0x6E))
+            {
+                Logger.Verbose("解密失败，密钥无效");
+                reader.Position = 0;
+                return reader;
+            }
+
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i] ^= key;
+            }
+
+            MemoryStream ms = new MemoryStream();
+            ms.Write(result, 0, result.Length);
+            ms.Position = 0;
+            Logger.Verbose("解密无期迷途成功!!");
+            return new FileReader(reader.FullPath, ms);
+        }
+
+        private static void Xor(this Span<byte> data, ReadOnlySpan<byte> key)
+        {
+            var remaining = data.Length;
+            var processed = 0;
+
+            if (key.Length >= 8 && remaining >= 8)
+            {
+                var dataULong = MemoryMarshal.Cast<byte, ulong>(data);
+                var keyULong = MemoryMarshal.Cast<byte, ulong>(key);
+
+                var dataULongCount = dataULong.Length;
+                var keyULongCount = keyULong.Length;
+                for (int i = 0; i < dataULongCount; i++)
+                {
+                    dataULong[i] ^= keyULong[i % keyULongCount];
+                }
+
+                var totalProcessed = dataULongCount * sizeof(ulong);
+                processed += totalProcessed;
+                remaining -= totalProcessed;
+            }
+
+            if (remaining > 0)
+            {
+                for (int i = processed; i < data.Length; i++)
+                {
+                    data[i] ^= key[i % key.Length];
+                }
+            }
+        }
+
+        public static FileReader DecryptHuoYingRenZhe(FileReader reader)
+        {
+            Logger.Verbose($"尝试去解密火影忍者加密的文件{reader.FileName}");
+
+            var MagicVersionMap = new Dictionary<string, int>
+            {
+                ["UnityKHFS"] = 0,
+                ["UnityKHNFS"] = 1,
+                ["UnityKH1FS"] = 2
+            };
+
+            var magic = reader.ReadStringToNull(11);
+            if (!MagicVersionMap.TryGetValue(magic, out var encVersion))
+            {
+                Logger.Verbose($"未知的魔法签名{magic}, 终止操作...");
+                reader.Position = 0;
+                return reader;
+            }
+            reader.Position -= 1;
+
+            var headerData = (stackalloc byte[0x1f]);
+            reader.Read(headerData);
+
+            var blocksSizeBytes = (stackalloc byte[0xc]);
+            reader.Read(blocksSizeBytes);
+
+            var blocksSize = BinaryPrimitives.ReadUInt32BigEndian(blocksSizeBytes);
+
+            reader.Position += encVersion == 0 ? 0xc : 0xb;
+
+            var blocks = new byte[blocksSize];
+            reader.Read(blocks);
+
+            var encSpan = blocks.AsSpan();
+
+            var bigEndianBlocksSize = (stackalloc byte[8]);
+            BinaryPrimitives.WriteUInt64BigEndian(bigEndianBlocksSize, blocksSize);
+
+            switch (encVersion)
+            {
+                case 0:
+                    encSpan.Xor(GetKey(encVersion));
+                    break;
+                case 1:
+                    encSpan.Xor(GetKey(encVersion));
+                    encSpan.Xor(bigEndianBlocksSize);
+                    break;
+                case 2:
+                    var alignedLength = (encSpan.Length % 7 + 7) % encSpan.Length;
+                    Version2Transform(encSpan, 0, encSpan.Length, alignedLength);
+
+                    var currentKey = GetKey(blocksSize % 3 == 0 || blocksSize % 5 == 0 || blocksSize % 7 == 0 ? 1 : 0);
+                    encSpan.Xor(currentKey);
+                    encSpan.Xor(bigEndianBlocksSize);
+
+                    var endOffset = (encSpan.Length % 7 + 1) % alignedLength;
+                    for (int i = 0; i < encSpan.Length; i += alignedLength)
+                        Version2Transform(encSpan, i, alignedLength, endOffset);
+
+                    Version2Transform(encSpan, 0, encSpan.Length, endOffset);
+                    break;
+            }
+
+            var zeroSpan = (stackalloc byte[0xe]);
+            zeroSpan.Clear();
+
+            var ms = new MemoryStream();
+            ms.Write(Encoding.UTF8.GetBytes("UnityFS"));
+            ms.Write(headerData);
+            ms.Write(blocksSizeBytes);
+            ms.Write(zeroSpan);
+            ms.Write(encSpan);
+            reader.BaseStream.CopyTo(ms);
+
+            ms.Position = 0;
+            reader.Dispose();
+
+            Logger.Verbose("解密火影忍者成功!!");
+            return new FileReader(reader.FullPath, ms);
+        }
+
+        private static ReadOnlySpan<byte> GetKey(int keyIndex)
+        {
+            return keyIndex switch
+            {
+                0 => "X@85Pq!6v$lCt7UYsihH3!cPb1P71bo4lX59FXqY!VO$YiYsu!Keu3aVZwi5on5l"u8,
+                1 => "hAi5luE8FlyblDdCTQC9uxnj3rkNwd1swrKI7Mx1aDFEe2B5h#3X&s54%GuSeHf@"u8,
+                _ => throw new UnreachableException()
+            };
+        }
+
+        private static void Version2Transform(Span<byte> data, int offset, int length, int shiftCount)
+        {
+            var lastValidDataIndex = data.Length - 1;
+
+            offset = Math.Min(lastValidDataIndex, offset);
+            var endOffset = Math.Min(lastValidDataIndex, offset - 1 + length);
+            length = endOffset - offset + 1;
+
+            if (2 > length)
+                return;
+
+            var offsetInShift = shiftCount % length;
+            if (offsetInShift == 0)
+                return;
+
+            var shiftedEndOffset = endOffset - offsetInShift;
+
+            shiftedEndOffset = Math.Min(Math.Max(shiftedEndOffset, offset), endOffset);
+
+            Swap(data, offset, Math.Min(lastValidDataIndex, shiftedEndOffset));
+            Swap(data, Math.Min(lastValidDataIndex, shiftedEndOffset + 1), endOffset);
+            Swap(data, offset, endOffset);
+
+            static void Swap(Span<byte> data, int start, int end)
+            {
+                while (end > start)
+                {
+                    (data[end], data[start]) = (data[start], data[end]);
+                    start++;
+                    end--;
+                }
+            }
+        }
+
+        public static FileReader DecryptLieHunShiJie(FileReader reader)
+        {
+            var data = reader.ReadBytes((int)reader.Length);
+            var fileName = reader.FileName;
+            reader.Dispose();
+
+            if (data.Length >= 4 && data[0] == 0x4F && data[1] == 0x64 && data[2] == 0x69 && data[3] == 0x6E)
+            {
+                byte[] bundleSizeBytes = new byte[8];
+                Buffer.BlockCopy(data, 9, bundleSizeBytes, 0, 8);
+                if (BitConverter.IsLittleEndian)
+                    Array.Reverse(bundleSizeBytes);
+                long bundleSizeLong = BitConverter.ToInt64(bundleSizeBytes, 0);
+
+                byte[] blockInfoHeader = new byte[12];
+                Buffer.BlockCopy(data, 17, blockInfoHeader, 0, 12);
+
+                byte[] baseHeader = Convert.FromHexString("556E69747946530000000008352E782E7800323032322E332E3534663100");
+
+                byte[] adjustedSize = BitConverter.GetBytes(bundleSizeLong + 32);
+                if (BitConverter.IsLittleEndian)
+                    Array.Reverse(adjustedSize);
+
+                byte[] zeroPadding = new byte[14];
+
+                byte[] restoredHeader;
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    ms.Write(baseHeader, 0, baseHeader.Length);
+                    ms.Write(adjustedSize, 0, adjustedSize.Length);
+                    ms.Write(blockInfoHeader, 0, blockInfoHeader.Length);
+                    ms.Write(zeroPadding, 0, zeroPadding.Length);
+                    restoredHeader = ms.ToArray();
+                }
+
+                var restoredData = new byte[restoredHeader.Length + (data.Length - 32)];
+                Buffer.BlockCopy(restoredHeader, 0, restoredData, 0, restoredHeader.Length);
+                Buffer.BlockCopy(data, 32, restoredData, restoredHeader.Length, data.Length - 32);
+
+                MemoryStream decryptedStream = new MemoryStream(restoredData);
+                return new FileReader(fileName, decryptedStream);
+            }
+            else
+            {
+                MemoryStream originalStream = new MemoryStream(data);
+                return new FileReader(fileName, originalStream);
+            }
         }
     }
 }

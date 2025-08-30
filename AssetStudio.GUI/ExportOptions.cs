@@ -219,7 +219,7 @@ namespace AssetStudio.GUI
                 sb.Append($"{type.Key}: {(type.Value.Item1 ? '\x2713' : '\x2717')}, {(type.Value.Item2 ? '\x2713' : '\x2717')}\n");
             }
 
-            toolTip.ToolTipTitle = "Type options status:";
+            toolTip.ToolTipTitle = "类型选项状态:";
             toolTip.SetToolTip(typesComboBox, sb.ToString());
         }
 
@@ -231,7 +231,7 @@ namespace AssetStudio.GUI
                 sb.Append($"{uv.Key}: {uvTypesComboBox.Items[uv.Value.Item2]}, {(uv.Value.Item1 ? '\x2713' : '\x2717')}\n");
             }
 
-            toolTip.ToolTipTitle = "UVs options status:";
+            toolTip.ToolTipTitle = "UVs选项状态:";
             toolTip.SetToolTip(uvsComboBox, sb.ToString());
         }
 
@@ -243,14 +243,14 @@ namespace AssetStudio.GUI
                 sb.Append($"{tex.Key}: {texTypeComboBox.Items[tex.Value]}\n");
             }
 
-            toolTip.ToolTipTitle = "Texture options status:";
+            toolTip.ToolTipTitle = "纹理选项状态:";
             toolTip.SetToolTip(texTypeComboBox, sb.ToString());
         }
 
         private void Key_MouseHover(object sender, EventArgs e)
         {
             toolTip.ToolTipTitle = "Value";
-            toolTip.SetToolTip(key, "Key in Hex");
+            toolTip.SetToolTip(key, "十六进制密钥");
         }
 
         private void Reset_Click(object sender, EventArgs e)

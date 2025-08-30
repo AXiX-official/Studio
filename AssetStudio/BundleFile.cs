@@ -1,10 +1,12 @@
-﻿using ZstdSharp;
+﻿using AssetStudio;
 using System;
+using System.Buffers;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
-using System.Collections.Generic;
-using System.Buffers;
+using ZstdSharp;
 
 namespace AssetStudio
 {
@@ -39,6 +41,9 @@ namespace AssetStudio
         Zstd = 5,
         Lz4Lit4 = 4,
         Lz4Lit5 = 5,
+        OodleHSR = 6,
+        OodleMr0k = 7,
+        Oodle = 9,
     }
 
     public class BundleFile
@@ -111,7 +116,7 @@ namespace AssetStudio
         private List<StorageBlock> m_BlocksInfo;
 
         public List<StreamFile> fileList;
-        
+
         private bool HasUncompressedDataHash = true;
         private bool HasBlockInfoNeedPaddingAtStart = true;
 
@@ -194,7 +199,7 @@ namespace AssetStudio
                 case "ENCR":
                     header.version = 6; // is 7 but does not have uncompressedDataHash
                     header.unityVersion = "5.x.x";
-                    header.unityRevision = "2019.4.32f1";
+                    header.unityRevision = "2019.4.34f1";
                     HasUncompressedDataHash = false;
                     break;
                 default:
@@ -350,7 +355,7 @@ namespace AssetStudio
 
                 XORShift128.Init = false;
                 Logger.Verbose($"Bundle header decrypted");
-               
+
                 var encUnityVersion = reader.ReadStringToNull();
                 var encUnityRevision = reader.ReadStringToNull();
                 return;
@@ -436,7 +441,7 @@ namespace AssetStudio
             if ((m_Header.flags & ArchiveFlags.BlocksInfoAtTheEnd) != 0) //kArchiveBlocksInfoAtTheEnd
             {
                 var position = reader.Position;
-                reader.Position = m_Header.size - m_Header.compressedBlocksInfoSize;
+                reader.Position = reader.BaseStream.Length - m_Header.compressedBlocksInfoSize;
                 blocksInfoBytes = reader.ReadBytes((int)m_Header.compressedBlocksInfoSize);
                 reader.Position = position;
             }
@@ -444,7 +449,7 @@ namespace AssetStudio
             {
                 blocksInfoBytes = reader.ReadBytes((int)m_Header.compressedBlocksInfoSize);
             }
-            MemoryStream blocksInfoUncompresseddStream;
+            MemoryStream blocksInfoUncompressedStream;
             var blocksInfoBytesSpan = blocksInfoBytes.AsSpan(0, (int)m_Header.compressedBlocksInfoSize);
             var uncompressedSize = m_Header.uncompressedBlocksInfoSize;
             var compressionType = (CompressionType)(m_Header.flags & ArchiveFlags.CompressionTypeMask);
@@ -453,17 +458,17 @@ namespace AssetStudio
             {
                 case CompressionType.None: //None
                     {
-                        blocksInfoUncompresseddStream = new MemoryStream(blocksInfoBytes);
+                        blocksInfoUncompressedStream = new MemoryStream(blocksInfoBytes);
                         break;
                     }
                 case CompressionType.Lzma: //LZMA
                     {
-                        blocksInfoUncompresseddStream = new MemoryStream((int)(uncompressedSize));
+                        blocksInfoUncompressedStream = new MemoryStream((int)(uncompressedSize));
                         using (var blocksInfoCompressedStream = new MemoryStream(blocksInfoBytes))
                         {
-                            SevenZipHelper.StreamDecompress(blocksInfoCompressedStream, blocksInfoUncompresseddStream, m_Header.compressedBlocksInfoSize, m_Header.uncompressedBlocksInfoSize);
+                            SevenZipHelper.StreamDecompress(blocksInfoCompressedStream, blocksInfoUncompressedStream, m_Header.compressedBlocksInfoSize, m_Header.uncompressedBlocksInfoSize);
                         }
-                        blocksInfoUncompresseddStream.Position = 0;
+                        blocksInfoUncompressedStream.Position = 0;
                         break;
                     }
                 case CompressionType.Lz4: //LZ4
@@ -486,7 +491,7 @@ namespace AssetStudio
                             {
                                 throw new IOException($"Lz4 decompression error, write {numWrite} bytes but expected {uncompressedSize} bytes");
                             }
-                            blocksInfoUncompresseddStream = new MemoryStream(uncompressedBytesSpan.ToArray());
+                            blocksInfoUncompressedStream = new MemoryStream(uncompressedBytesSpan.ToArray());
                         }
                         finally
                         {
@@ -504,43 +509,47 @@ namespace AssetStudio
                 default:
                     throw new IOException($"Unsupported compression type {compressionType}");
             }
-            using (var blocksInfoReader = new EndianBinaryReader(blocksInfoUncompresseddStream))
+            using (EndianBinaryReader blocksInfoReader = new EndianBinaryReader(blocksInfoUncompressedStream, EndianType.BigEndian, false))
             {
                 if (HasUncompressedDataHash)
                 {
-                    var uncompressedDataHash = blocksInfoReader.ReadBytes(16);
+                    byte[] uncompressedDataHash = blocksInfoReader.ReadBytes(16);
                 }
-                var blocksInfoCount = blocksInfoReader.ReadInt32();
-                m_BlocksInfo = new List<StorageBlock>();
-                Logger.Verbose($"Blocks count: {blocksInfoCount}");
+
+                int blocksInfoCount = blocksInfoReader.ReadInt32();
+                m_BlocksInfo = new List<BundleFile.StorageBlock>();
+                Logger.Verbose($"块计数: {blocksInfoCount}");
+
                 for (int i = 0; i < blocksInfoCount; i++)
                 {
-                    m_BlocksInfo.Add(new StorageBlock
+                    m_BlocksInfo.Add(new BundleFile.StorageBlock
                     {
                         uncompressedSize = blocksInfoReader.ReadUInt32(),
                         compressedSize = blocksInfoReader.ReadUInt32(),
                         flags = (StorageBlockFlags)blocksInfoReader.ReadUInt16()
                     });
 
-                    Logger.Verbose($"Block {i} Info: {m_BlocksInfo[i]}");
+                    Logger.Verbose($"块{i} 信息: {m_BlocksInfo[i]}");
                 }
 
-                var nodesCount = blocksInfoReader.ReadInt32();
-                m_DirectoryInfo = new List<Node>();
-                Logger.Verbose($"Directory count: {nodesCount}");
+                int nodesCount = blocksInfoReader.ReadInt32();
+                m_DirectoryInfo = new List<BundleFile.Node>();
+                Logger.Verbose($"目录计数: {nodesCount}");
+
                 for (int i = 0; i < nodesCount; i++)
                 {
-                    m_DirectoryInfo.Add(new Node
+                    m_DirectoryInfo.Add(new BundleFile.Node
                     {
                         offset = blocksInfoReader.ReadInt64(),
                         size = blocksInfoReader.ReadInt64(),
                         flags = blocksInfoReader.ReadUInt32(),
-                        path = blocksInfoReader.ReadStringToNull(),
+                        path = blocksInfoReader.ReadStringToNull(32767)
                     });
 
-                    Logger.Verbose($"Directory {i} Info: {m_DirectoryInfo[i]}");
+                    Logger.Verbose($"目录{i} 信息: {m_DirectoryInfo[i]}");
                 }
             }
+
             if (HasBlockInfoNeedPaddingAtStart && (m_Header.flags & ArchiveFlags.BlockInfoNeedPaddingAtStart) != 0)
             {
                 reader.AlignStream(16);
@@ -577,6 +586,42 @@ namespace AssetStudio
                             SevenZipHelper.StreamDecompress(compressedStream, blocksStream, blockInfo.compressedSize, blockInfo.uncompressedSize);
                             break;
                         }
+                    case CompressionType.OodleHSR:
+                    case CompressionType.OodleMr0k:
+                        {
+                            var compressedSize = (int)blockInfo.compressedSize;
+                            var uncompressedSize = (int)blockInfo.uncompressedSize;
+
+                            var compressedBytes = ArrayPool<byte>.Shared.Rent(compressedSize);
+                            var uncompressedBytes = ArrayPool<byte>.Shared.Rent(uncompressedSize);
+
+                            var compressedBytesSpan = compressedBytes.AsSpan(0, compressedSize);
+                            var uncompressedBytesSpan = uncompressedBytes.AsSpan(0, uncompressedSize);
+
+                            try
+                            {
+                                reader.Read(compressedBytesSpan);
+                                if (compressionType == CompressionType.OodleMr0k && Mr0kUtils.IsMr0k(compressedBytes))
+                                {
+                                    Logger.Verbose($"使用mr0k加密的块,正在解密...");
+                                    compressedBytesSpan = Mr0kUtils.Decrypt(compressedBytesSpan, (Mr0k)Game);
+                                }
+
+                                var numWrite = OodleHelper.Decompress(compressedBytesSpan, uncompressedBytesSpan);
+                                if (numWrite != uncompressedSize)
+                                {
+                                    Logger.Warning($"Oodle解压出错, write {numWrite} bytes but expected {uncompressedSize} bytes");
+                                }
+                            }
+                            finally
+                            {
+                                blocksStream.Write(uncompressedBytesSpan);
+                                ArrayPool<byte>.Shared.Return(compressedBytes, true);
+                                ArrayPool<byte>.Shared.Return(uncompressedBytes, true);
+                            }
+
+                            break;
+                        }
                     case CompressionType.Lz4: //LZ4
                     case CompressionType.Lz4HC: //LZ4HC
                     case CompressionType.Lz4Mr0k when Game.Type.IsMhyGroup(): //Lz4Mr0k
@@ -586,7 +631,26 @@ namespace AssetStudio
 
                             var compressedBytes = ArrayPool<byte>.Shared.Rent(compressedSize);
                             var uncompressedBytes = ArrayPool<byte>.Shared.Rent(uncompressedSize);
+                            if (Game.Type.IsGGZ())
+                            {
+                                var compressedBytesSpan = compressedBytes.AsSpan(0, compressedSize);
+                                var uncompressedBytesSpan = uncompressedBytes.AsSpan(0, uncompressedSize);
 
+                                reader.Read(compressedBytesSpan);
+                                var cipher = Aes.Create();
+                                cipher.Key = "LPC@a*&^b19b61l/"u8.ToArray();
+                                var dec = cipher.DecryptCbc(compressedBytesSpan, new byte[16]);
+                                compressedBytesSpan = compressedBytesSpan[..dec.Length];
+                                dec.CopyTo(compressedBytesSpan);
+                                var numWrite = LZ4.Instance.Decompress(compressedBytesSpan, uncompressedBytesSpan);
+                                if (numWrite != uncompressedSize)
+                                {
+                                    throw new IOException($"Lz4解压出错, write {numWrite} bytes but expected {uncompressedSize} bytes");
+                                }
+                                blocksStream.Write(uncompressedBytesSpan);
+                                break;
+
+                            }
                             try
                             {
                                 var compressedBytesSpan = compressedBytes.AsSpan(0, compressedSize);
@@ -629,7 +693,6 @@ namespace AssetStudio
                             }
                             break;
                         }
-                    case CompressionType.Lz4Inv when Game.Type.IsArknightsEndfield():
                     case CompressionType.Lzham when Game.Type.IsArknights():
                         {
                             var compressedSize = (int)blockInfo.compressedSize;
@@ -644,7 +707,36 @@ namespace AssetStudio
                             try
                             {
                                 reader.Read(compressedBytesSpan);
-                                if (i == 0 && Game.Type.IsArknightsEndfield())
+
+                                var numWrite = LZ4InvArknights.Instance.Decompress(compressedBytesSpan, uncompressedBytesSpan);
+                                if (numWrite != uncompressedSize)
+                                {
+                                    throw new IOException($"Lz4解压错误, write {numWrite} bytes but expected {uncompressedSize} bytes");
+                                }
+                                blocksStream.Write(uncompressedBytesSpan);
+                            }
+                            finally
+                            {
+                                ArrayPool<byte>.Shared.Return(compressedBytes, true);
+                                ArrayPool<byte>.Shared.Return(uncompressedBytes, true);
+                            }
+                            break;
+                        }
+                    case CompressionType.Lz4Inv when (Game.Type.IsArknightsEndfield() || Game.Type.IsWangYue()):
+                        {
+                            var compressedSize = (int)blockInfo.compressedSize;
+                            var uncompressedSize = (int)blockInfo.uncompressedSize;
+
+                            var compressedBytes = ArrayPool<byte>.Shared.Rent(compressedSize);
+                            var uncompressedBytes = ArrayPool<byte>.Shared.Rent(uncompressedSize);
+
+                            var compressedBytesSpan = compressedBytes.AsSpan(0, compressedSize);
+                            var uncompressedBytesSpan = uncompressedBytes.AsSpan(0, uncompressedSize);
+
+                            try
+                            {
+                                reader.Read(compressedBytesSpan);
+                                if (i == 0 && compressedBytesSpan[..32].Count((byte)0xa6) > 5)
                                 {
                                     FairGuardUtils.Decrypt(compressedBytesSpan);
                                 }
@@ -652,7 +744,7 @@ namespace AssetStudio
                                 var numWrite = LZ4Inv.Instance.Decompress(compressedBytesSpan, uncompressedBytesSpan);
                                 if (numWrite != uncompressedSize)
                                 {
-                                    throw new IOException($"Lz4 decompression error, write {numWrite} bytes but expected {uncompressedSize} bytes");
+                                    throw new IOException($"Lz4解压错误, write {numWrite} bytes but expected {uncompressedSize} bytes");
                                 }
                                 blocksStream.Write(uncompressedBytesSpan);
                             }

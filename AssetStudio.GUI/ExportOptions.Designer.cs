@@ -96,24 +96,24 @@ namespace AssetStudio.GUI
             // 
             // OKbutton
             // 
-            OKbutton.Location = new System.Drawing.Point(480, 428);
-            OKbutton.Margin = new Padding(4);
+            OKbutton.Location = new System.Drawing.Point(480, 485);
+            OKbutton.Margin = new Padding(4, 5, 4, 5);
             OKbutton.Name = "OKbutton";
-            OKbutton.Size = new System.Drawing.Size(88, 26);
+            OKbutton.Size = new System.Drawing.Size(88, 29);
             OKbutton.TabIndex = 6;
-            OKbutton.Text = "OK";
+            OKbutton.Text = "确定";
             OKbutton.UseVisualStyleBackColor = true;
             OKbutton.Click += OKbutton_Click;
             // 
             // Cancel
             // 
             Cancel.DialogResult = DialogResult.Cancel;
-            Cancel.Location = new System.Drawing.Point(576, 428);
-            Cancel.Margin = new Padding(4);
+            Cancel.Location = new System.Drawing.Point(576, 485);
+            Cancel.Margin = new Padding(4, 5, 4, 5);
             Cancel.Name = "Cancel";
-            Cancel.Size = new System.Drawing.Size(88, 26);
+            Cancel.Size = new System.Drawing.Size(88, 29);
             Cancel.TabIndex = 7;
-            Cancel.Text = "Cancel";
+            Cancel.Text = "取消";
             Cancel.UseVisualStyleBackColor = true;
             Cancel.Click += Cancel_Click;
             // 
@@ -143,62 +143,62 @@ namespace AssetStudio.GUI
             groupBox1.Controls.Add(convertAudio);
             groupBox1.Controls.Add(panel1);
             groupBox1.Controls.Add(converttexture);
-            groupBox1.Location = new System.Drawing.Point(14, 15);
-            groupBox1.Margin = new Padding(4);
+            groupBox1.Location = new System.Drawing.Point(14, 17);
+            groupBox1.Margin = new Padding(4, 5, 4, 5);
             groupBox1.Name = "groupBox1";
-            groupBox1.Padding = new Padding(4);
-            groupBox1.Size = new System.Drawing.Size(271, 433);
+            groupBox1.Padding = new Padding(4, 5, 4, 5);
+            groupBox1.Size = new System.Drawing.Size(271, 491);
             groupBox1.TabIndex = 9;
             groupBox1.TabStop = false;
-            groupBox1.Text = "Export";
+            groupBox1.Text = "导出";
             // 
             // removeTexNameButton
             // 
-            removeTexNameButton.Location = new System.Drawing.Point(186, 387);
+            removeTexNameButton.Location = new System.Drawing.Point(186, 439);
             removeTexNameButton.Name = "removeTexNameButton";
-            removeTexNameButton.Size = new System.Drawing.Size(71, 23);
+            removeTexNameButton.Size = new System.Drawing.Size(71, 26);
             removeTexNameButton.TabIndex = 41;
-            removeTexNameButton.Text = "Remove";
+            removeTexNameButton.Text = "删除";
             removeTexNameButton.UseVisualStyleBackColor = true;
             removeTexNameButton.Click += RemoveTexNameButton_Click;
             // 
             // addTexNameButton
             // 
-            addTexNameButton.Location = new System.Drawing.Point(199, 358);
+            addTexNameButton.Location = new System.Drawing.Point(199, 406);
             addTexNameButton.Name = "addTexNameButton";
-            addTexNameButton.Size = new System.Drawing.Size(42, 23);
+            addTexNameButton.Size = new System.Drawing.Size(42, 26);
             addTexNameButton.TabIndex = 13;
-            addTexNameButton.Text = "Add";
+            addTexNameButton.Text = "添加";
             addTexNameButton.UseVisualStyleBackColor = true;
             addTexNameButton.Click += AddTexNameButton_Click;
             // 
             // texNameComboBox
             // 
             texNameComboBox.FormattingEnabled = true;
-            texNameComboBox.Location = new System.Drawing.Point(8, 373);
+            texNameComboBox.Location = new System.Drawing.Point(8, 423);
             texNameComboBox.Name = "texNameComboBox";
-            texNameComboBox.Size = new System.Drawing.Size(81, 23);
+            texNameComboBox.Size = new System.Drawing.Size(81, 25);
             texNameComboBox.TabIndex = 38;
             texNameComboBox.SelectedIndexChanged += TexNameComboBox_SelectedIndexChanged;
             // 
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new System.Drawing.Point(9, 355);
+            label10.Location = new System.Drawing.Point(9, 402);
             label10.Margin = new Padding(4, 0, 4, 0);
             label10.Name = "label10";
-            label10.Size = new System.Drawing.Size(142, 15);
+            label10.Size = new System.Drawing.Size(83, 17);
             label10.TabIndex = 36;
-            label10.Text = "Texture mapping options:";
+            label10.Text = "纹理映射选项:";
             // 
             // texTypeComboBox
             // 
             texTypeComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             texTypeComboBox.FormattingEnabled = true;
-            texTypeComboBox.Items.AddRange(new object[] { "Diffuse", "NormalMap", "Specular", "Bump", "Ambient", "Emissive", "Reflection", "Displacement" });
-            texTypeComboBox.Location = new System.Drawing.Point(95, 373);
+            texTypeComboBox.Items.AddRange(new object[] { "漫反射", "法线贴图", "高光", "凹凸", "环境光", "自发光", "反射", "置换" });
+            texTypeComboBox.Location = new System.Drawing.Point(95, 423);
             texTypeComboBox.Name = "texTypeComboBox";
-            texTypeComboBox.Size = new System.Drawing.Size(79, 23);
+            texTypeComboBox.Size = new System.Drawing.Size(79, 25);
             texTypeComboBox.TabIndex = 35;
             texTypeComboBox.SelectedIndexChanged += TexTypeComboBox_SelectedIndexChanged;
             texTypeComboBox.MouseHover += TexTypeComboBox_MouseHover;
@@ -207,21 +207,21 @@ namespace AssetStudio.GUI
             // 
             uvTypesComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             uvTypesComboBox.FormattingEnabled = true;
-            uvTypesComboBox.Items.AddRange(new object[] { "Diffuse", "NormalMap", "Specular", "Bump", "Ambient", "Emissive", "Reflection", "Displacement" });
-            uvTypesComboBox.Location = new System.Drawing.Point(89, 329);
+            uvTypesComboBox.Items.AddRange(new object[] { "漫反射", "法线贴图", "高光", "凹凸", "环境光", "自发光", "反射", "置换" });
+            uvTypesComboBox.Location = new System.Drawing.Point(89, 373);
             uvTypesComboBox.Name = "uvTypesComboBox";
-            uvTypesComboBox.Size = new System.Drawing.Size(106, 23);
+            uvTypesComboBox.Size = new System.Drawing.Size(106, 25);
             uvTypesComboBox.TabIndex = 34;
             uvTypesComboBox.SelectedIndexChanged += uvTypesComboBox_SelectedIndexChanged;
             // 
             // uvEnabledCheckBox
             // 
             uvEnabledCheckBox.AutoSize = true;
-            uvEnabledCheckBox.Location = new System.Drawing.Point(201, 333);
+            uvEnabledCheckBox.Location = new System.Drawing.Point(201, 377);
             uvEnabledCheckBox.Name = "uvEnabledCheckBox";
-            uvEnabledCheckBox.Size = new System.Drawing.Size(60, 19);
+            uvEnabledCheckBox.Size = new System.Drawing.Size(51, 21);
             uvEnabledCheckBox.TabIndex = 33;
-            uvEnabledCheckBox.Text = "Export";
+            uvEnabledCheckBox.Text = "导出";
             uvEnabledCheckBox.UseVisualStyleBackColor = true;
             uvEnabledCheckBox.CheckedChanged += uvEnabledCheckBox_CheckedChanged;
             // 
@@ -230,9 +230,9 @@ namespace AssetStudio.GUI
             uvsComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             uvsComboBox.FormattingEnabled = true;
             uvsComboBox.Items.AddRange(new object[] { "UV0", "UV1", "UV2", "UV3", "UV4", "UV5", "UV6", "UV7" });
-            uvsComboBox.Location = new System.Drawing.Point(8, 329);
+            uvsComboBox.Location = new System.Drawing.Point(8, 373);
             uvsComboBox.Name = "uvsComboBox";
-            uvsComboBox.Size = new System.Drawing.Size(75, 23);
+            uvsComboBox.Size = new System.Drawing.Size(75, 25);
             uvsComboBox.TabIndex = 32;
             uvsComboBox.SelectedIndexChanged += uvsComboBox_SelectedIndexChanged;
             uvsComboBox.MouseHover += uvsComboBox_MouseHover;
@@ -240,32 +240,32 @@ namespace AssetStudio.GUI
             // canExportCheckBox
             // 
             canExportCheckBox.AutoSize = true;
-            canExportCheckBox.Location = new System.Drawing.Point(200, 287);
+            canExportCheckBox.Location = new System.Drawing.Point(209, 323);
             canExportCheckBox.Name = "canExportCheckBox";
-            canExportCheckBox.Size = new System.Drawing.Size(60, 19);
+            canExportCheckBox.Size = new System.Drawing.Size(51, 21);
             canExportCheckBox.TabIndex = 31;
-            canExportCheckBox.Text = "Export";
+            canExportCheckBox.Text = "导出";
             canExportCheckBox.UseVisualStyleBackColor = true;
             canExportCheckBox.CheckedChanged += CanExportCheckBox_CheckedChanged;
             // 
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new System.Drawing.Point(8, 267);
+            label8.Location = new System.Drawing.Point(8, 303);
             label8.Margin = new Padding(4, 0, 4, 0);
             label8.Name = "label8";
-            label8.Size = new System.Drawing.Size(132, 15);
+            label8.Size = new System.Drawing.Size(122, 17);
             label8.TabIndex = 30;
-            label8.Text = "Selected unity type can:";
+            label8.Text = "所选的unity类型可以:";
             // 
             // canParseCheckBox
             // 
             canParseCheckBox.AutoSize = true;
-            canParseCheckBox.Location = new System.Drawing.Point(140, 287);
+            canParseCheckBox.Location = new System.Drawing.Point(152, 323);
             canParseCheckBox.Name = "canParseCheckBox";
-            canParseCheckBox.Size = new System.Drawing.Size(54, 19);
+            canParseCheckBox.Size = new System.Drawing.Size(51, 21);
             canParseCheckBox.TabIndex = 29;
-            canParseCheckBox.Text = "Parse";
+            canParseCheckBox.Text = "解析";
             canParseCheckBox.UseVisualStyleBackColor = true;
             canParseCheckBox.CheckedChanged += CanParseCheckBox_CheckedChanged;
             // 
@@ -274,9 +274,9 @@ namespace AssetStudio.GUI
             typesComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             typesComboBox.FormattingEnabled = true;
             typesComboBox.Items.AddRange(new object[] { ClassIDType.Animation, ClassIDType.AnimationClip, ClassIDType.Animator, ClassIDType.AnimatorController, ClassIDType.AnimatorOverrideController, ClassIDType.AssetBundle, ClassIDType.AudioClip, ClassIDType.Avatar, ClassIDType.Font, ClassIDType.GameObject, ClassIDType.IndexObject, ClassIDType.Material, ClassIDType.Mesh, ClassIDType.MeshFilter, ClassIDType.MeshRenderer, ClassIDType.MiHoYoBinData, ClassIDType.MonoBehaviour, ClassIDType.MonoScript, ClassIDType.MovieTexture, ClassIDType.PlayerSettings, ClassIDType.RectTransform, ClassIDType.Shader, ClassIDType.SkinnedMeshRenderer, ClassIDType.Sprite, ClassIDType.SpriteAtlas, ClassIDType.TextAsset, ClassIDType.Texture2D, ClassIDType.Transform, ClassIDType.VideoClip, ClassIDType.ResourceManager });
-            typesComboBox.Location = new System.Drawing.Point(7, 285);
+            typesComboBox.Location = new System.Drawing.Point(7, 323);
             typesComboBox.Name = "typesComboBox";
-            typesComboBox.Size = new System.Drawing.Size(127, 23);
+            typesComboBox.Size = new System.Drawing.Size(139, 25);
             typesComboBox.TabIndex = 28;
             typesComboBox.SelectedIndexChanged += TypesComboBox_SelectedIndexChanged;
             typesComboBox.MouseHover += TypesComboBox_MouseHover;
@@ -284,55 +284,55 @@ namespace AssetStudio.GUI
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new System.Drawing.Point(7, 311);
+            label6.Location = new System.Drawing.Point(7, 352);
             label6.Margin = new Padding(4, 0, 4, 0);
             label6.Name = "label6";
-            label6.Size = new System.Drawing.Size(119, 15);
+            label6.Size = new System.Drawing.Size(76, 17);
             label6.TabIndex = 27;
-            label6.Text = "UV mapping options:";
+            label6.Text = "UV映射选项:";
             // 
             // minimalAssetMap
             // 
             minimalAssetMap.AutoSize = true;
-            minimalAssetMap.Location = new System.Drawing.Point(7, 129);
+            minimalAssetMap.Location = new System.Drawing.Point(7, 146);
             minimalAssetMap.Name = "minimalAssetMap";
-            minimalAssetMap.Size = new System.Drawing.Size(125, 19);
+            minimalAssetMap.Size = new System.Drawing.Size(99, 21);
             minimalAssetMap.TabIndex = 17;
-            minimalAssetMap.Text = "Minimal AssetMap";
+            minimalAssetMap.Text = "最小资源映射";
             minimalAssetMap.UseVisualStyleBackColor = true;
             // 
             // assetGroupOptions
             // 
             assetGroupOptions.DropDownStyle = ComboBoxStyle.DropDownList;
             assetGroupOptions.FormattingEnabled = true;
-            assetGroupOptions.Items.AddRange(new object[] { "type name", "container path", "source file name", "do not group" });
-            assetGroupOptions.Location = new System.Drawing.Point(7, 240);
-            assetGroupOptions.Margin = new Padding(4);
+            assetGroupOptions.Items.AddRange(new object[] { "类型名称", "容器路径", "源文件名", "不分组" });
+            assetGroupOptions.Location = new System.Drawing.Point(7, 272);
+            assetGroupOptions.Margin = new Padding(4, 5, 4, 5);
             assetGroupOptions.Name = "assetGroupOptions";
-            assetGroupOptions.Size = new System.Drawing.Size(173, 23);
+            assetGroupOptions.Size = new System.Drawing.Size(173, 25);
             assetGroupOptions.TabIndex = 12;
             // 
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new System.Drawing.Point(8, 221);
+            label7.Location = new System.Drawing.Point(8, 250);
             label7.Margin = new Padding(4, 0, 4, 0);
             label7.Name = "label7";
-            label7.Size = new System.Drawing.Size(140, 15);
+            label7.Size = new System.Drawing.Size(188, 17);
             label7.TabIndex = 11;
-            label7.Text = "Group exported assets by";
+            label7.Text = "按以下方式对导出的资源进行分组";
             // 
             // openAfterExport
             // 
             openAfterExport.AutoSize = true;
             openAfterExport.Checked = true;
             openAfterExport.CheckState = CheckState.Checked;
-            openAfterExport.Location = new System.Drawing.Point(7, 78);
-            openAfterExport.Margin = new Padding(4);
+            openAfterExport.Location = new System.Drawing.Point(7, 88);
+            openAfterExport.Margin = new Padding(4, 5, 4, 5);
             openAfterExport.Name = "openAfterExport";
-            openAfterExport.Size = new System.Drawing.Size(153, 19);
+            openAfterExport.Size = new System.Drawing.Size(123, 21);
             openAfterExport.TabIndex = 10;
-            openAfterExport.Text = "Open folder after export";
+            openAfterExport.Text = "导出后打开文件夹";
             openAfterExport.UseVisualStyleBackColor = true;
             // 
             // restoreExtensionName
@@ -340,18 +340,18 @@ namespace AssetStudio.GUI
             restoreExtensionName.AutoSize = true;
             restoreExtensionName.Checked = true;
             restoreExtensionName.CheckState = CheckState.Checked;
-            restoreExtensionName.Location = new System.Drawing.Point(7, 24);
-            restoreExtensionName.Margin = new Padding(4);
+            restoreExtensionName.Location = new System.Drawing.Point(7, 27);
+            restoreExtensionName.Margin = new Padding(4, 5, 4, 5);
             restoreExtensionName.Name = "restoreExtensionName";
-            restoreExtensionName.Size = new System.Drawing.Size(204, 19);
+            restoreExtensionName.Size = new System.Drawing.Size(135, 21);
             restoreExtensionName.TabIndex = 9;
-            restoreExtensionName.Text = "Restore TextAsset extension name";
+            restoreExtensionName.Text = "恢复文本资源扩展名";
             restoreExtensionName.UseVisualStyleBackColor = true;
             // 
             // key
             // 
             key.Hexadecimal = true;
-            key.Location = new System.Drawing.Point(186, 103);
+            key.Location = new System.Drawing.Point(186, 117);
             key.Margin = new Padding(4, 3, 4, 3);
             key.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
             key.Name = "key";
@@ -364,12 +364,12 @@ namespace AssetStudio.GUI
             encrypted.AutoSize = true;
             encrypted.Checked = true;
             encrypted.CheckState = CheckState.Checked;
-            encrypted.Location = new System.Drawing.Point(7, 104);
+            encrypted.Location = new System.Drawing.Point(7, 118);
             encrypted.Margin = new Padding(4, 3, 4, 3);
             encrypted.Name = "encrypted";
-            encrypted.Size = new System.Drawing.Size(166, 19);
+            encrypted.Size = new System.Drawing.Size(159, 21);
             encrypted.TabIndex = 12;
-            encrypted.Text = "Encrypted MiHoYoBinData\r\n";
+            encrypted.Text = "加密的米哈游二进制数据\r\n";
             encrypted.UseVisualStyleBackColor = true;
             // 
             // convertAudio
@@ -377,12 +377,12 @@ namespace AssetStudio.GUI
             convertAudio.AutoSize = true;
             convertAudio.Checked = true;
             convertAudio.CheckState = CheckState.Checked;
-            convertAudio.Location = new System.Drawing.Point(7, 51);
-            convertAudio.Margin = new Padding(4);
+            convertAudio.Location = new System.Drawing.Point(7, 58);
+            convertAudio.Margin = new Padding(4, 5, 4, 5);
             convertAudio.Name = "convertAudio";
-            convertAudio.Size = new System.Drawing.Size(200, 19);
+            convertAudio.Size = new System.Drawing.Size(182, 21);
             convertAudio.TabIndex = 6;
-            convertAudio.Text = "Convert AudioClip to WAV(PCM)";
+            convertAudio.Text = "转换AudioClip到WAV(PCM)";
             convertAudio.UseVisualStyleBackColor = true;
             // 
             // panel1
@@ -391,19 +391,19 @@ namespace AssetStudio.GUI
             panel1.Controls.Add(tojpg);
             panel1.Controls.Add(topng);
             panel1.Controls.Add(tobmp);
-            panel1.Location = new System.Drawing.Point(24, 174);
-            panel1.Margin = new Padding(4);
+            panel1.Location = new System.Drawing.Point(24, 197);
+            panel1.Margin = new Padding(4, 5, 4, 5);
             panel1.Name = "panel1";
-            panel1.Size = new System.Drawing.Size(236, 38);
+            panel1.Size = new System.Drawing.Size(236, 43);
             panel1.TabIndex = 5;
             // 
             // totga
             // 
             totga.AutoSize = true;
-            totga.Location = new System.Drawing.Point(175, 8);
-            totga.Margin = new Padding(4);
+            totga.Location = new System.Drawing.Point(175, 9);
+            totga.Margin = new Padding(4, 5, 4, 5);
             totga.Name = "totga";
-            totga.Size = new System.Drawing.Size(43, 19);
+            totga.Size = new System.Drawing.Size(48, 21);
             totga.TabIndex = 2;
             totga.Text = "Tga";
             totga.UseVisualStyleBackColor = true;
@@ -411,10 +411,10 @@ namespace AssetStudio.GUI
             // tojpg
             // 
             tojpg.AutoSize = true;
-            tojpg.Location = new System.Drawing.Point(113, 8);
-            tojpg.Margin = new Padding(4);
+            tojpg.Location = new System.Drawing.Point(113, 9);
+            tojpg.Margin = new Padding(4, 5, 4, 5);
             tojpg.Name = "tojpg";
-            tojpg.Size = new System.Drawing.Size(49, 19);
+            tojpg.Size = new System.Drawing.Size(54, 21);
             tojpg.TabIndex = 4;
             tojpg.Text = "Jpeg";
             tojpg.UseVisualStyleBackColor = true;
@@ -423,10 +423,10 @@ namespace AssetStudio.GUI
             // 
             topng.AutoSize = true;
             topng.Checked = true;
-            topng.Location = new System.Drawing.Point(58, 8);
-            topng.Margin = new Padding(4);
+            topng.Location = new System.Drawing.Point(58, 9);
+            topng.Margin = new Padding(4, 5, 4, 5);
             topng.Name = "topng";
-            topng.Size = new System.Drawing.Size(46, 19);
+            topng.Size = new System.Drawing.Size(48, 21);
             topng.TabIndex = 3;
             topng.TabStop = true;
             topng.Text = "Png";
@@ -435,10 +435,10 @@ namespace AssetStudio.GUI
             // tobmp
             // 
             tobmp.AutoSize = true;
-            tobmp.Location = new System.Drawing.Point(4, 8);
-            tobmp.Margin = new Padding(4);
+            tobmp.Location = new System.Drawing.Point(4, 9);
+            tobmp.Margin = new Padding(4, 5, 4, 5);
             tobmp.Name = "tobmp";
-            tobmp.Size = new System.Drawing.Size(50, 19);
+            tobmp.Size = new System.Drawing.Size(53, 21);
             tobmp.TabIndex = 2;
             tobmp.Text = "Bmp";
             tobmp.UseVisualStyleBackColor = true;
@@ -448,12 +448,12 @@ namespace AssetStudio.GUI
             converttexture.AutoSize = true;
             converttexture.Checked = true;
             converttexture.CheckState = CheckState.Checked;
-            converttexture.Location = new System.Drawing.Point(7, 153);
-            converttexture.Margin = new Padding(4);
+            converttexture.Location = new System.Drawing.Point(7, 173);
+            converttexture.Margin = new Padding(4, 5, 4, 5);
             converttexture.Name = "converttexture";
-            converttexture.Size = new System.Drawing.Size(123, 19);
+            converttexture.Size = new System.Drawing.Size(110, 21);
             converttexture.TabIndex = 1;
-            converttexture.Text = "Convert Texture2D";
+            converttexture.Text = "转换Texture2D";
             converttexture.UseVisualStyleBackColor = true;
             // 
             // collectAnimations
@@ -461,12 +461,12 @@ namespace AssetStudio.GUI
             collectAnimations.AutoSize = true;
             collectAnimations.Checked = true;
             collectAnimations.CheckState = CheckState.Checked;
-            collectAnimations.Location = new System.Drawing.Point(8, 43);
+            collectAnimations.Location = new System.Drawing.Point(8, 49);
             collectAnimations.Margin = new Padding(4, 3, 4, 3);
             collectAnimations.Name = "collectAnimations";
-            collectAnimations.Size = new System.Drawing.Size(125, 19);
+            collectAnimations.Size = new System.Drawing.Size(75, 21);
             collectAnimations.TabIndex = 24;
-            collectAnimations.Text = "Collect animations";
+            collectAnimations.Text = "收集动画";
             collectAnimations.UseVisualStyleBackColor = true;
             // 
             // groupBox2
@@ -490,11 +490,11 @@ namespace AssetStudio.GUI
             groupBox2.Controls.Add(castToBone);
             groupBox2.Controls.Add(exportAllNodes);
             groupBox2.Controls.Add(eulerFilter);
-            groupBox2.Location = new System.Drawing.Point(292, 15);
-            groupBox2.Margin = new Padding(4);
+            groupBox2.Location = new System.Drawing.Point(292, 17);
+            groupBox2.Margin = new Padding(4, 5, 4, 5);
             groupBox2.Name = "groupBox2";
-            groupBox2.Padding = new Padding(4);
-            groupBox2.Size = new System.Drawing.Size(380, 236);
+            groupBox2.Padding = new Padding(4, 5, 4, 5);
+            groupBox2.Size = new System.Drawing.Size(380, 267);
             groupBox2.TabIndex = 11;
             groupBox2.TabStop = false;
             groupBox2.Text = "Fbx";
@@ -502,12 +502,12 @@ namespace AssetStudio.GUI
             // exportMaterials
             // 
             exportMaterials.AutoSize = true;
-            exportMaterials.Location = new System.Drawing.Point(154, 96);
-            exportMaterials.Margin = new Padding(4);
+            exportMaterials.Location = new System.Drawing.Point(154, 109);
+            exportMaterials.Margin = new Padding(4, 5, 4, 5);
             exportMaterials.Name = "exportMaterials";
-            exportMaterials.Size = new System.Drawing.Size(111, 19);
+            exportMaterials.Size = new System.Drawing.Size(75, 21);
             exportMaterials.TabIndex = 25;
-            exportMaterials.Text = "Export materials";
+            exportMaterials.Text = "导出材质";
             exportMaterials.UseVisualStyleBackColor = true;
             // 
             // exportBlendShape
@@ -515,12 +515,12 @@ namespace AssetStudio.GUI
             exportBlendShape.AutoSize = true;
             exportBlendShape.Checked = true;
             exportBlendShape.CheckState = CheckState.Checked;
-            exportBlendShape.Location = new System.Drawing.Point(7, 69);
-            exportBlendShape.Margin = new Padding(4);
+            exportBlendShape.Location = new System.Drawing.Point(7, 78);
+            exportBlendShape.Margin = new Padding(4, 5, 4, 5);
             exportBlendShape.Name = "exportBlendShape";
-            exportBlendShape.Size = new System.Drawing.Size(124, 19);
+            exportBlendShape.Size = new System.Drawing.Size(99, 21);
             exportBlendShape.TabIndex = 22;
-            exportBlendShape.Text = "Export blendshape";
+            exportBlendShape.Text = "导出混合形状";
             exportBlendShape.UseVisualStyleBackColor = true;
             // 
             // exportAnimations
@@ -528,20 +528,20 @@ namespace AssetStudio.GUI
             exportAnimations.AutoSize = true;
             exportAnimations.Checked = true;
             exportAnimations.CheckState = CheckState.Checked;
-            exportAnimations.Location = new System.Drawing.Point(154, 43);
-            exportAnimations.Margin = new Padding(4);
+            exportAnimations.Location = new System.Drawing.Point(154, 49);
+            exportAnimations.Margin = new Padding(4, 5, 4, 5);
             exportAnimations.Name = "exportAnimations";
-            exportAnimations.Size = new System.Drawing.Size(122, 19);
+            exportAnimations.Size = new System.Drawing.Size(75, 21);
             exportAnimations.TabIndex = 21;
-            exportAnimations.Text = "Export animations";
+            exportAnimations.Text = "导出动画";
             exportAnimations.UseVisualStyleBackColor = true;
             // 
             // scaleFactor
             // 
             scaleFactor.DecimalPlaces = 2;
             scaleFactor.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
-            scaleFactor.Location = new System.Drawing.Point(102, 189);
-            scaleFactor.Margin = new Padding(4);
+            scaleFactor.Location = new System.Drawing.Point(102, 214);
+            scaleFactor.Margin = new Padding(4, 5, 4, 5);
             scaleFactor.Name = "scaleFactor";
             scaleFactor.Size = new System.Drawing.Size(59, 23);
             scaleFactor.TabIndex = 20;
@@ -551,59 +551,59 @@ namespace AssetStudio.GUI
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new System.Drawing.Point(8, 193);
+            label5.Location = new System.Drawing.Point(8, 219);
             label5.Margin = new Padding(4, 0, 4, 0);
             label5.Name = "label5";
-            label5.Size = new System.Drawing.Size(67, 15);
+            label5.Size = new System.Drawing.Size(56, 17);
             label5.TabIndex = 19;
-            label5.Text = "ScaleFactor";
+            label5.Text = "缩放系数";
             // 
             // fbxFormat
             // 
             fbxFormat.DropDownStyle = ComboBoxStyle.DropDownList;
             fbxFormat.FormattingEnabled = true;
             fbxFormat.Items.AddRange(new object[] { "Binary", "Ascii" });
-            fbxFormat.Location = new System.Drawing.Point(271, 125);
-            fbxFormat.Margin = new Padding(4);
+            fbxFormat.Location = new System.Drawing.Point(271, 142);
+            fbxFormat.Margin = new Padding(4, 5, 4, 5);
             fbxFormat.Name = "fbxFormat";
-            fbxFormat.Size = new System.Drawing.Size(70, 23);
+            fbxFormat.Size = new System.Drawing.Size(70, 25);
             fbxFormat.TabIndex = 18;
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new System.Drawing.Point(188, 129);
+            label4.Location = new System.Drawing.Point(188, 146);
             label4.Margin = new Padding(4, 0, 4, 0);
             label4.Name = "label4";
-            label4.Size = new System.Drawing.Size(65, 15);
+            label4.Size = new System.Drawing.Size(54, 17);
             label4.TabIndex = 17;
-            label4.Text = "FBXFormat";
+            label4.Text = "FBX格式";
             // 
             // fbxVersion
             // 
             fbxVersion.DropDownStyle = ComboBoxStyle.DropDownList;
             fbxVersion.FormattingEnabled = true;
             fbxVersion.Items.AddRange(new object[] { "6.1", "7.1", "7.2", "7.3", "7.4", "7.5" });
-            fbxVersion.Location = new System.Drawing.Point(271, 157);
-            fbxVersion.Margin = new Padding(4);
+            fbxVersion.Location = new System.Drawing.Point(271, 178);
+            fbxVersion.Margin = new Padding(4, 5, 4, 5);
             fbxVersion.Name = "fbxVersion";
-            fbxVersion.Size = new System.Drawing.Size(70, 23);
+            fbxVersion.Size = new System.Drawing.Size(70, 25);
             fbxVersion.TabIndex = 16;
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(188, 161);
+            label3.Location = new System.Drawing.Point(188, 182);
             label3.Margin = new Padding(4, 0, 4, 0);
             label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(65, 15);
+            label3.Size = new System.Drawing.Size(54, 17);
             label3.TabIndex = 15;
-            label3.Text = "FBXVersion";
+            label3.Text = "FBX版本";
             // 
             // boneSize
             // 
-            boneSize.Location = new System.Drawing.Point(102, 157);
-            boneSize.Margin = new Padding(4);
+            boneSize.Location = new System.Drawing.Point(102, 178);
+            boneSize.Margin = new Padding(4, 5, 4, 5);
             boneSize.Name = "boneSize";
             boneSize.Size = new System.Drawing.Size(59, 23);
             boneSize.TabIndex = 11;
@@ -612,42 +612,42 @@ namespace AssetStudio.GUI
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(8, 161);
+            label2.Location = new System.Drawing.Point(8, 182);
             label2.Margin = new Padding(4, 0, 4, 0);
             label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(54, 15);
+            label2.Size = new System.Drawing.Size(56, 17);
             label2.TabIndex = 10;
-            label2.Text = "BoneSize";
+            label2.Text = "骨骼大小";
             // 
             // exportSkins
             // 
             exportSkins.AutoSize = true;
             exportSkins.Checked = true;
             exportSkins.CheckState = CheckState.Checked;
-            exportSkins.Location = new System.Drawing.Point(154, 17);
-            exportSkins.Margin = new Padding(4);
+            exportSkins.Location = new System.Drawing.Point(154, 19);
+            exportSkins.Margin = new Padding(4, 5, 4, 5);
             exportSkins.Name = "exportSkins";
-            exportSkins.Size = new System.Drawing.Size(89, 19);
+            exportSkins.Size = new System.Drawing.Size(75, 21);
             exportSkins.TabIndex = 8;
-            exportSkins.Text = "Export skins";
+            exportSkins.Text = "导出皮肤";
             exportSkins.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(8, 129);
+            label1.Location = new System.Drawing.Point(8, 146);
             label1.Margin = new Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(81, 15);
+            label1.Size = new System.Drawing.Size(56, 17);
             label1.TabIndex = 7;
-            label1.Text = "FilterPrecision";
+            label1.Text = "过滤精度";
             // 
             // filterPrecision
             // 
             filterPrecision.DecimalPlaces = 2;
             filterPrecision.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
-            filterPrecision.Location = new System.Drawing.Point(102, 127);
-            filterPrecision.Margin = new Padding(4);
+            filterPrecision.Location = new System.Drawing.Point(102, 144);
+            filterPrecision.Margin = new Padding(4, 5, 4, 5);
             filterPrecision.Name = "filterPrecision";
             filterPrecision.Size = new System.Drawing.Size(59, 23);
             filterPrecision.TabIndex = 6;
@@ -656,12 +656,12 @@ namespace AssetStudio.GUI
             // castToBone
             // 
             castToBone.AutoSize = true;
-            castToBone.Location = new System.Drawing.Point(154, 69);
-            castToBone.Margin = new Padding(4);
+            castToBone.Location = new System.Drawing.Point(154, 78);
+            castToBone.Margin = new Padding(4, 5, 4, 5);
             castToBone.Name = "castToBone";
-            castToBone.Size = new System.Drawing.Size(143, 19);
+            castToBone.Size = new System.Drawing.Size(135, 21);
             castToBone.TabIndex = 5;
-            castToBone.Text = "All nodes cast to bone";
+            castToBone.Text = "所有节点转换为骨骼";
             castToBone.UseVisualStyleBackColor = true;
             // 
             // exportAllNodes
@@ -669,12 +669,12 @@ namespace AssetStudio.GUI
             exportAllNodes.AutoSize = true;
             exportAllNodes.Checked = true;
             exportAllNodes.CheckState = CheckState.Checked;
-            exportAllNodes.Location = new System.Drawing.Point(7, 96);
-            exportAllNodes.Margin = new Padding(4);
+            exportAllNodes.Location = new System.Drawing.Point(7, 109);
+            exportAllNodes.Margin = new Padding(4, 5, 4, 5);
             exportAllNodes.Name = "exportAllNodes";
-            exportAllNodes.Size = new System.Drawing.Size(110, 19);
+            exportAllNodes.Size = new System.Drawing.Size(99, 21);
             exportAllNodes.TabIndex = 4;
-            exportAllNodes.Text = "Export all nodes";
+            exportAllNodes.Text = "导出所有节点";
             exportAllNodes.UseVisualStyleBackColor = true;
             // 
             // eulerFilter
@@ -682,12 +682,12 @@ namespace AssetStudio.GUI
             eulerFilter.AutoSize = true;
             eulerFilter.Checked = true;
             eulerFilter.CheckState = CheckState.Checked;
-            eulerFilter.Location = new System.Drawing.Point(8, 17);
-            eulerFilter.Margin = new Padding(4);
+            eulerFilter.Location = new System.Drawing.Point(8, 19);
+            eulerFilter.Margin = new Padding(4, 5, 4, 5);
             eulerFilter.Name = "eulerFilter";
-            eulerFilter.Size = new System.Drawing.Size(78, 19);
+            eulerFilter.Size = new System.Drawing.Size(87, 21);
             eulerFilter.TabIndex = 3;
-            eulerFilter.Text = "EulerFilter";
+            eulerFilter.Text = "欧拉过滤器";
             eulerFilter.UseVisualStyleBackColor = true;
             // 
             // toolTip
@@ -698,35 +698,35 @@ namespace AssetStudio.GUI
             // 
             // Reset
             // 
-            Reset.Location = new System.Drawing.Point(300, 428);
+            Reset.Location = new System.Drawing.Point(300, 485);
             Reset.Name = "Reset";
-            Reset.Size = new System.Drawing.Size(88, 26);
+            Reset.Size = new System.Drawing.Size(88, 29);
             Reset.TabIndex = 12;
-            Reset.Text = "Reset";
+            Reset.Text = "重置";
             Reset.UseVisualStyleBackColor = true;
             Reset.Click += Reset_Click;
             // 
             // ExportOptions
             // 
             AcceptButton = OKbutton;
-            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             CancelButton = Cancel;
-            ClientSize = new System.Drawing.Size(677, 467);
+            ClientSize = new System.Drawing.Size(677, 529);
             Controls.Add(Reset);
             Controls.Add(groupBox2);
             Controls.Add(groupBox1);
             Controls.Add(Cancel);
             Controls.Add(OKbutton);
             FormBorderStyle = FormBorderStyle.Fixed3D;
-            Margin = new Padding(4);
+            Margin = new Padding(4, 5, 4, 5);
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "ExportOptions";
             ShowIcon = false;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Export options";
+            Text = "导出选项";
             TopMost = true;
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();

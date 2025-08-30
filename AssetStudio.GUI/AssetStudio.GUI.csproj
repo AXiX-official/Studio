@@ -2,15 +2,13 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFrameworks>net8.0-windows;net9.0-windows</TargetFrameworks>
+		<TargetFrameworks>net9.0-windows</TargetFrameworks>
 		<UseWindowsForms>true</UseWindowsForms>
 		<ApplicationIcon>Resources\as.ico</ApplicationIcon>
-		<VersionBase>1.38.10</VersionBase>
-		<Version Condition="'$(CommitHash)' == ''">$(VersionBase)</Version>
-		<Version Condition="'$(CommitHash)' != ''">$(VersionBase)-dev+$(CommitHash)</Version>
-		<AssemblyVersion>$(VersionBase)</AssemblyVersion>
-		<FileVersion>$(VersionBase)</FileVersion>
-		<Copyright>Copyright © AXiX 2024-2025; Copyright © Razmoth 2022-2024; Copyright © Perfare 2018-2022</Copyright>
+		<Version>1.38.08</Version>
+		<AssemblyVersion>1.38.08</AssemblyVersion>
+		<FileVersion>1.38.08</FileVersion>
+		<Copyright>Copyright © Razmoth 2022; Copyright © Perfare 2018-2022</Copyright>
 		<DebugType>embedded</DebugType>
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 	</PropertyGroup>
@@ -34,9 +32,6 @@
 		  <DesignTimeSharedInput>True</DesignTimeSharedInput>
 		  <AutoGen>True</AutoGen>
 		  <DependentUpon>Settings.settings</DependentUpon>
-		</Compile>
-		<Compile Update="About.cs">
-		  <SubType>Form</SubType>
 		</Compile>
 	</ItemGroup>
 
@@ -120,19 +115,72 @@
 		<Reference Include="OpenTK.WinForms">
 			<HintPath>Libraries\OpenTK.WinForms.dll</HintPath>
 		</Reference>
+		<Reference Include="quickbmsbatch">
+		  <HintPath>plugins\quickbmsbatch.dll</HintPath>
+		</Reference>
+		<Reference Include="Super-toolbox">
+		  <HintPath>plugins\Super-toolbox.dll</HintPath>
+		</Reference>
+		<Reference Include="万能二进制提取器">
+		  <HintPath>plugins\万能二进制提取器.dll</HintPath>
+		</Reference>
+		<Reference Include="万能字节移除器">
+		  <HintPath>plugins\万能字节移除器.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="Properties\Settings.settings">
-	    <Generator>SettingsSingleFileGenerator</Generator>
-	    <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-	  </None>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <EmbeddedResource Include="..\LICENSE">
-	    <Link>LICENSE</Link>
-	  </EmbeddedResource>
+		<Content Include="plugins\oo2core_9_win64.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>oo2core_9_win64.dll</Link>
+		</Content>
+		<Content Include="plugins\UnityPlayer.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>UnityPlayer.dll</Link>
+		</Content>
+		<None Update="plugins\pak_explorer.exe">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="plugins\PSound.exe">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="plugins\Quickbms.exe">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="plugins\quickbms_4gb_files.exe">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="plugins\radvideo64.exe">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="plugins\RioX汉化版.exe">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="plugins\Sofdec2Viewer汉化版.exe">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="plugins\USM视频查看工具汉化版.exe">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="plugins\WinAsar汉化版.exe">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="plugins\WinPCK.exe">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="plugins\xinyuetongxing.dll">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</None>
+		<None Update="Properties\Settings.settings">
+			<Generator>SettingsSingleFileGenerator</Generator>
+			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
+		</None>
+		<None Update="xinyuetongxing.dll">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="超级工具箱提取器转换器用途.xlsx">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 	<Target Name="CopyExtraFiles" AfterTargets="AfterBuild">
@@ -143,5 +191,18 @@
 	<Target Name="PublishExtraFiles" AfterTargets="Publish">
 		<Copy SourceFiles="$(TargetDir)x86\AssetStudio.FBXNative.dll" DestinationFolder="$(PublishDir)x86" ContinueOnError="true" />
 		<Copy SourceFiles="$(TargetDir)x64\AssetStudio.FBXNative.dll" DestinationFolder="$(PublishDir)x64" ContinueOnError="true" />
+	</Target>
+	
+	<Target Name="CopyBmsScriptFolder" AfterTargets="AfterBuild">
+		<ItemGroup>
+			<BmsScriptFiles Include="$(ProjectDir)plugins\bms script\**" />
+		</ItemGroup>
+		<Error Condition="!Exists('$(ProjectDir)plugins\bms script')" Text="源文件夹 '$(ProjectDir)plugins\bms script' 不存在。" />
+		<MakeDir Directories="$(OutputPath)plugins\bms script" Condition="!Exists('$(OutputPath)plugins\bms script')" />
+		<Copy SourceFiles="@(BmsScriptFiles)" DestinationFiles="@(BmsScriptFiles->'$(OutputPath)plugins\bms script\%(RecursiveDir)%(Filename)%(Extension)')" ContinueOnError="false" SkipUnchangedFiles="true" Retries="3" RetryDelayMilliseconds="500">
+			<Output TaskParameter="CopiedFiles" ItemName="CopiedBmsScriptFiles" />
+		</Copy>
+		<Message Importance="high" Text="成功复制以下文件到输出目录: @(CopiedBmsScriptFiles)" Condition="'@(CopiedBmsScriptFiles)' != ''" />
+		<Error Condition="'@(CopiedBmsScriptFiles)' == ''" Text="未能复制任何文件到输出目录，请检查源文件夹和权限设置。" />
 	</Target>
 </Project>

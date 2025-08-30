@@ -89,7 +89,7 @@
             {
                 var m_MipsStripped = reader.ReadInt32();
             }
-            
+
             if (reader.IsTuanJie && (version > "2022.3.2" || version.Build >= 8)) //2022.3.2t8(1.1.0) and up
             {
                 var m_WebStreaming = reader.ReadBoolean();
@@ -117,7 +117,7 @@
                     var m_IsGNFTexture = reader.ReadBoolean();
                 }
             }
-            if (version.Major >= 2020) //2020.1 and up
+            if (version.Major >= 2020 || reader.Game.Type.IsZZZ()) //2020.1 and up
             {
                 var m_IsPreProcessed = reader.ReadBoolean();
             }
@@ -150,6 +150,11 @@
             {
                 var m_StreamingMipmapsPriority = reader.ReadInt32();
             }
+            if (reader.Game.Type.IsZZZ())
+            {
+                var m_IsCompressed = reader.ReadBoolean();
+                reader.AlignStream();
+            }
             var m_ImageCount = reader.ReadInt32();
             var m_TextureDimension = reader.ReadInt32();
             m_TextureSettings = new GLTextureSettings(reader);
@@ -173,6 +178,10 @@
                 if (reader.Game.Type.IsGI() && HasExternalMipRelativeOffset(reader.serializedType))
                 {
                     var m_externalMipRelativeOffset = reader.ReadUInt32();
+                }
+                if (reader.Game.Type.IsZZZ())
+                {
+                    var m_ExternalMipRelativeIndex = reader.ReadUInt32();
                 }
                 m_StreamData = new StreamingInfo(reader);
             }

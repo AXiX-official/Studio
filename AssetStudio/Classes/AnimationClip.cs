@@ -808,7 +808,7 @@ namespace AssetStudio
     {
         public uint m_CurveCount;
         public uint m_ConstCurveCount;
-
+        public byte[] m_databaseData;
         public byte[] m_ClipData;
 
         public override bool IsSet => !m_ClipData.IsNullOrEmpty();
@@ -819,6 +819,7 @@ namespace AssetStudio
             m_CurveCount = 0;
             m_ConstCurveCount = 0;
             m_ClipData = Array.Empty<byte>();
+            m_databaseData = Array.Empty<byte>();
         }
         public override void Read(ObjectReader reader)
         {
@@ -837,6 +838,10 @@ namespace AssetStudio
             if (reader.Game.Type.IsSRGroup())
             {
                 m_ConstCurveCount = reader.ReadUInt32();
+            }
+            if (reader.Game.Type.IsZZZ())
+            {
+                m_databaseData = reader.ReadUInt8Array();
             }
         }
     }
@@ -1302,80 +1307,6 @@ namespace AssetStudio
         }
     }
 
-    public class QuantizedClip : ACLClip
-    {
-        public int m_FrameCount;
-        public uint m_CurveCount;
-        public float m_SampleRate;
-        public float m_BeginTime;
-        public uint m_NumStatic;
-        public uint m_NumDynamic;
-        public uint m_TypeOffset;
-        public uint m_IndicesOffset;
-        public uint m_StaticOffset;
-        public uint m_FrameSize;
-        public uint m_DynamicOffset;
-        public byte[] m_Data;
-        
-        public QuantizedClip() { }
-
-        public override void Read(ObjectReader reader)
-        {
-            m_FrameCount = reader.ReadInt32();
-            m_CurveCount = reader.ReadUInt32();
-            m_SampleRate = reader.ReadSingle();
-            m_BeginTime = reader.ReadSingle();
-            m_NumStatic = reader.ReadUInt32();
-            m_NumDynamic = reader.ReadUInt32();
-            m_TypeOffset = reader.ReadUInt32();
-            m_IndicesOffset = reader.ReadUInt32();
-            m_StaticOffset = reader.ReadUInt32();
-            m_FrameSize = reader.ReadUInt32();
-            m_DynamicOffset = reader.ReadUInt32();
-            m_Data = reader.ReadUInt8Array();
-        }
-    }
-    
-    public class PredictClip : ACLClip
-    {
-        public int m_FrameCount;
-        public uint m_CurveCount;
-        public float m_SampleRate;
-        public float m_BeginTime;
-        public uint m_NumStatic;
-        public uint m_NumDynamic;
-        public uint m_TypeOffset;
-        public uint m_IndicesOffset;
-        public uint m_StaticOffset;
-        public uint m_RangeOffset;
-        public uint m_BitCntOffset;
-        public uint m_PredictBlockOffset;
-        public uint m_ValueOffsetPerCurveOffset;
-        public uint m_ValueOffset;
-        public byte[] m_Data;
-        
-        public PredictClip() { }
-
-        public override void Read(ObjectReader reader)
-        {
-            m_FrameCount = reader.ReadInt32();
-            m_CurveCount = reader.ReadUInt32();
-            m_SampleRate = reader.ReadSingle();
-            m_BeginTime = reader.ReadSingle();
-            m_NumStatic = reader.ReadUInt32();
-            m_NumDynamic = reader.ReadUInt32();
-            m_TypeOffset = reader.ReadUInt32();
-            m_IndicesOffset = reader.ReadUInt32();
-            m_StaticOffset = reader.ReadUInt32();
-            m_RangeOffset = reader.ReadUInt32();
-            m_BitCntOffset = reader.ReadUInt32();
-            m_PredictBlockOffset = reader.ReadUInt32();
-            m_ValueOffsetPerCurveOffset = reader.ReadUInt32();
-            m_ValueOffset = reader.ReadUInt32();
-            m_Data = reader.ReadUInt8Array();
-        }
-    }
-
     public class Clip
     {
         public ACLClip m_ACLClip = new EmptyACLClip();
@@ -1415,13 +1346,6 @@ namespace AssetStudio
             {
                 m_ACLClip = new LnDACLClip();
                 m_ACLClip.Read(reader);
-            }
-            if (reader.Game.Type.IsGuiLongChao())
-            {
-                var m_QuantizedClip = new QuantizedClip();
-                m_QuantizedClip.Read(reader);
-                var m_PredictClip = new PredictClip();
-                m_PredictClip.Read(reader);
             }
             if (version < "2018.3") //2018.3 down
             {
@@ -1539,6 +1463,7 @@ namespace AssetStudio
         public bool m_KeepOriginalPositionY;
         public bool m_KeepOriginalPositionXZ;
         public bool m_HeightFromFeet;
+        public bool m_ReducedDeltaValue;
         public static bool HasShortIndexArray(SerializedType type) => type.Match("E708B1872AE48FD688AC012DF4A7A178") || type.Match("055AA41C7639327940F8900103A10356");
         public ClipMuscleConstant() { }
 
@@ -1578,7 +1503,7 @@ namespace AssetStudio
             m_CycleOffset = reader.ReadSingle();
             m_AverageAngularSpeed = reader.ReadSingle();
 
-            if (reader.Game.Type.IsSR() && HasShortIndexArray(reader.serializedType))
+            if ((reader.Game.Type.IsSR() && HasShortIndexArray(reader.serializedType)) || reader.Game.Type.IsZZZ())
             {
                 m_IndexArray = reader.ReadInt16Array().Select(x => (int)x).ToArray();
             }
@@ -1618,6 +1543,10 @@ namespace AssetStudio
             m_KeepOriginalPositionY = reader.ReadBoolean();
             m_KeepOriginalPositionXZ = reader.ReadBoolean();
             m_HeightFromFeet = reader.ReadBoolean();
+            if (reader.Game.Type.IsZZZ())
+            {
+                m_ReducedDeltaValue = reader.ReadBoolean();
+            }
             reader.AlignStream();
         }
         public static ClipMuscleConstant ParseGI(ObjectReader reader)

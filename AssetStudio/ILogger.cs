@@ -9,13 +9,13 @@ namespace AssetStudio
     [Flags]
     public enum LoggerEvent
     {
-        None = 0,
-        Verbose = 1,
-        Debug = 2,
-        Info = 4,
-        Warning = 8,
-        Error = 16,
-        All = Verbose | Debug | Info | Warning | Error,
+        无 = 0,
+        详细 = 1,
+        调试 = 2,
+        信息 = 4,
+        警告 = 8,
+        错误 = 16,
+        全部 = 详细 | 调试 | 信息 | 警告 | 错误,
     }
 
     public interface ILogger
