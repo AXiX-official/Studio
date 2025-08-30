@@ -1,3 +1,11 @@
+# NOTICE: Project has been archived
+
+this fork is no longer maintained, please
+
+1. try other active forks of AssetStudio
+
+2. a new rewrite of AssetStudio: [TinyStudio](https://github.com/AXiX-official/TinyStudio)
+
 # Attention
 
 This is a fork of [Razmoth](https://github.com/Razmoth)‘s [Stduio](https://github.com/RazTools/Studio),
