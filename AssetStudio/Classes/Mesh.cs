@@ -1023,6 +1023,13 @@ namespace AssetStudio
                                     if (m_Skin == null)
                                     {
                                         InitMSkin();
+                                        if (m_Channel.dimension == 1)
+                                        {
+                                            for (var i = 0; i < m_VertexCount; i++)
+                                            {
+                                                m_Skin[i].weight[0] = 1f;
+                                            }
+                                        }
                                     }
                                     for (int i = 0; i < m_VertexCount; i++)
                                     {
