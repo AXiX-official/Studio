@@ -1,10 +1,10 @@
-# NOTICE: Project has been archived
-
-this fork is no longer maintained, please
-
-1. try other active forks of AssetStudio
-
-2. a new rewrite of AssetStudio: [TinyStudio](https://github.com/AXiX-official/TinyStudio)
+> **Note: Limited Maintenance Mode**
+>
+> This project is back from archive to provide **limited maintenance** (critical fixes only) until the new rewrite, [**TinyStudio**](https://github.com/AXiX-official/TinyStudio), is fully ready. New features are developed in TinyStudio.
+>
+> **We recommend the following options:**
+> * Try other **active forks** of AssetStudio.
+> * Follow the development of the new rewrite: [**TinyStudio**](https://github.com/AXiX-official/TinyStudio).
 
 # Attention
 

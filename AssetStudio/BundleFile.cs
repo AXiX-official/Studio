@@ -473,7 +473,7 @@ namespace AssetStudio
                         if (Game.Type.IsPerpetualNovelty())
                         {
                             var key = blocksInfoBytesSpan[1];
-                            for (int j = 0; j < Math.Min(72, blocksInfoBytesSpan.Length); j++)
+                            for (int j = 0; j < Math.Min(68, blocksInfoBytesSpan.Length); j++)
                             {
                                 blocksInfoBytesSpan[j] ^= key;
                             }
