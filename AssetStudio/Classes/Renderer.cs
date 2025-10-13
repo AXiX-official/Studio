@@ -138,6 +138,12 @@ namespace AssetStudio
                         var m_MeshShowQuality = reader.ReadByte();
                     }
                     reader.AlignStream();
+                    if (version >= "6000.2") //6000.2 and up
+                    {
+                        var m_ForceMeshLod = reader.ReadInt16();
+                        reader.AlignStream();
+                        var m_MeshLodSelectionBias = reader.ReadSingle();
+                    }
                 }
                 else
                 {
@@ -246,6 +252,10 @@ namespace AssetStudio
                 //SInt16 m_SortingLayer 5.6 and up
                 var m_SortingOrder = reader.ReadInt16();
                 reader.AlignStream();
+                if (version >= "6000.3") //6000.3 and up
+                {
+                    var m_MaskInteraction = reader.ReadInt32();
+                }
                 if (reader.Game.Type.IsGIGroup() || reader.Game.Type.IsBH3())
                 {
                     var m_UseHighestMip = reader.ReadBoolean();
