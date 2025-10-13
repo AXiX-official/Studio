@@ -94,9 +94,9 @@ namespace AssetStudio.CLI
 
         public OptionsBinder()
         {
-            Silent = new Option<bool>("--silent", "Hide log messages.");
-            LoggerFlags = new Option<LoggerEvent[]>("--logger_flags", "Flags to control toggle log events.") { AllowMultipleArgumentsPerToken = true, ArgumentHelpName = "Verbose|Debug|Info|etc.." };
-            TypeFilter = new Option<string[]>("--types", "Specify unity class type(s)") { AllowMultipleArgumentsPerToken = true, ArgumentHelpName = "Texture2D|Shader:Parse|Sprite:Both|etc.." };
+            Silent = new Option<bool>("--silent", "隐藏日志消息.");
+            LoggerFlags = new Option<LoggerEvent[]>("--logger_flags", "用于控制切换日志事件的标志.") { AllowMultipleArgumentsPerToken = true, ArgumentHelpName = "Verbose|Debug|Info|etc.." };
+            TypeFilter = new Option<string[]>("--types", "指定unity类类型") { AllowMultipleArgumentsPerToken = true, ArgumentHelpName = "Texture2D|Shader:Parse|Sprite:Both|etc.." };
             NameFilter = new Option<Regex[]>("--names", result => 
             {
                 var items = new List<Regex>();
@@ -127,7 +127,7 @@ namespace AssetStudio.CLI
                 }
 
                 return items.ToArray();
-            }, false, "Specify name regex filter(s).") { AllowMultipleArgumentsPerToken = true };
+            }, false, "指定名称正则表达式过滤器.") { AllowMultipleArgumentsPerToken = true };
             ContainerFilter = new Option<Regex[]>("--containers", result =>
             {
                 var items = new List<Regex>();
@@ -158,25 +158,24 @@ namespace AssetStudio.CLI
                 }
 
                 return items.ToArray();
-            }, false, "Specify container regex filter(s).") { AllowMultipleArgumentsPerToken = true };
-            GameName = new Option<string>("--game", $"Specify Game.") { IsRequired = true };
-            KeyIndex = new Option<int>("--key_index", "Specify key index.") { ArgumentHelpName = UnityCNManager.ToString() };
-            MapOp = new Option<MapOpType>("--map_op", "Specify which map to build.");
-            MapType = new Option<ExportListType>("--map_type", "AssetMap output type.");
-            MapName = new Option<string>("--map_name", () => "assets_map", "Specify AssetMap file name.");
-            UnityVersion = new Option<string>("--unity_version", "Specify Unity version.");
-            GroupAssetsType = new Option<AssetGroupOption>("--group_assets", "Specify how exported assets should be grouped.");
-            AssetExportType = new Option<ExportType>("--export_type", "Specify how assets should be exported.");
-            AIFile = new Option<FileInfo>("--ai_file", "Specify asset_index json file path (to recover GI containers).").LegalFilePathsOnly();
-            DummyDllFolder = new Option<DirectoryInfo>("--dummy_dlls", "Specify DummyDll path.").LegalFilePathsOnly();
-            Input = new Argument<FileInfo>("input_path", "Input file/folder.").LegalFilePathsOnly();
-            Output = new Argument<DirectoryInfo>("output_path", "Output folder.").LegalFilePathsOnly();
-            AutoDetectMultipleBundle = new Option<bool>("--auto_detect_multiple_bundle", "Auto detect multiple bundle.");
-            
-            Key = new Option<byte>("--key", result =>
+            }, false, "指定容器正则表达式过滤器.") { AllowMultipleArgumentsPerToken = true };
+            GameName = new Option<string>("--游戏", $"指定游戏.") { IsRequired = true };
+            KeyIndex = new Option<int>("--密钥索引", "指定密钥索引.") { ArgumentHelpName = UnityCNManager.ToString() };
+            MapOp = new Option<MapOpType>("--映射", "指定要构建的映射.");
+            MapType = new Option<ExportListType>("--map_type", "资源映射输出类型.");
+            MapName = new Option<string>("--映射名称", () => "assets_map", "资源映射文件名.");
+            UnityVersion = new Option<string>("--unity版本", "指定Unity版本.");
+            GroupAssetsType = new Option<AssetGroupOption>("--资源分组", "指定导出资产应如何分组.");
+            AssetExportType = new Option<ExportType>("--导出类型", "指定应如何导出资产.");
+            AIFile = new Option<FileInfo>("--ai_文件", "指定资源索引json文件路径(恢复GI容器).").LegalFilePathsOnly();
+            DummyDllFolder = new Option<DirectoryInfo>("--dummy_dlls", "指定DummyDll路径.").LegalFilePathsOnly();
+            Input = new Argument<FileInfo>("输入路径", "输入文件/文件夹.").LegalFilePathsOnly();
+            Output = new Argument<DirectoryInfo>("输出路径", "输出文件夹.").LegalFilePathsOnly();
+
+            Key = new Option<byte>("--密钥", result =>
             {
                 return ParseKey(result.Tokens.Single().Value);
-            }, false, "XOR key to decrypt MiHoYoBinData.");
+            }, false, "解密米哈游二进制数据的异或密钥.");
 
             LoggerFlags.AddValidator(FilterValidator);
             TypeFilter.AddValidator(FilterValidator);
@@ -191,13 +190,13 @@ namespace AssetStudio.CLI
                 }
                 catch (Exception e)
                 {
-                    result.ErrorMessage = "Invalid byte value.\n" + e.Message;
+                    result.ErrorMessage = "无效的字节值.\n" + e.Message;
                 }
             });
 
             GameName.FromAmong(GameManager.GetGameNames());
 
-            LoggerFlags.SetDefaultValue(new LoggerEvent[] { LoggerEvent.Debug, LoggerEvent.Info, LoggerEvent.Warning, LoggerEvent.Error });
+            LoggerFlags.SetDefaultValue(new LoggerEvent[] { LoggerEvent.调试, LoggerEvent.信息, LoggerEvent.警告, LoggerEvent.错误 });
             GroupAssetsType.SetDefaultValue(AssetGroupOption.ByType);
             AssetExportType.SetDefaultValue(ExportType.Convert);
             MapOp.SetDefaultValue(MapOpType.None);
@@ -225,7 +224,7 @@ namespace AssetStudio.CLI
             {
                 if (string.IsNullOrWhiteSpace(val))
                 {
-                    result.ErrorMessage = "Empty string.";
+                    result.ErrorMessage = "空字符串.";
                     return;
                 }
 
@@ -235,7 +234,7 @@ namespace AssetStudio.CLI
                 }
                 catch (ArgumentException e)
                 {
-                    result.ErrorMessage = "Invalid Regex.\n" + e.Message;
+                    result.ErrorMessage = "无效的正则表达式.\n" + e.Message;
                     return;
                 }
             }

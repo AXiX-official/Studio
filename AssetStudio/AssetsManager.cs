@@ -454,7 +454,7 @@ namespace AssetStudio
                         case FileType.BundleFile:
                             LoadBundleFile(subReader, reader.FullPath, offset, false);
                             break;
-                        case FileType.BlbFile:
+                        case FileType.Blb3File:
                             LoadBlbFile(subReader, reader.FullPath, offset, false);
                             break;
                         case FileType.MhyFile:
@@ -561,7 +561,7 @@ namespace AssetStudio
             }
             try
             {
-                var blbFile = new BlbFile(reader, reader.FullPath);
+                var blbFile = new Blb3File(reader, reader.FullPath);
                 foreach (var file in blbFile.fileList)
                 {
                     var dummyPath = Path.Combine(Path.GetDirectoryName(reader.FullPath), file.fileName);
