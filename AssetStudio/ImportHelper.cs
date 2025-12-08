@@ -1291,5 +1291,36 @@ namespace AssetStudio
             resultStream.Position = 0;
             return new FileReader(reader.FullPath, resultStream);
         }
+        
+        public static FileReader DecryptPerpetualNovelty(FileReader reader)
+        {
+            Logger.Verbose($"Attempting to decrypt file {reader.FileName} with PerpetualNovelty encryption");
+            
+            var sign = reader.ReadBytes(7);
+            if (Encoding.UTF8.GetString(sign) != "UnityFS")
+            {
+                reader.Position = 0;
+                return reader;
+            }
+            
+            reader.Position = 0;
+            
+            MemoryStream resultStream = new MemoryStream();
+            
+            var header = reader.ReadBytes(50);
+            var remains = reader.ReadBytes((int)reader.Remaining);
+
+            var key = remains[1];
+            
+            for (int i = 0; i < 68; i++)
+            {
+                remains[i] ^= key;
+            }
+            
+            resultStream.Write(header);
+            resultStream.Write(remains);
+            resultStream.Position = 0;
+            return new FileReader(reader.FullPath, resultStream);
+        }
     }
 }

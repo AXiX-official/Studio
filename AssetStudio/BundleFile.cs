@@ -470,14 +470,14 @@ namespace AssetStudio
                 case CompressionType.Lz4HC: //LZ4HC
                     {
                         var uncompressedBytes = ArrayPool<byte>.Shared.Rent((int)uncompressedSize);
-                        if (Game.Type.IsPerpetualNovelty())
+                        /*if (Game.Type.IsPerpetualNovelty())
                         {
                             var key = blocksInfoBytesSpan[1];
                             for (int j = 0; j < Math.Min(68, blocksInfoBytesSpan.Length); j++)
                             {
                                 blocksInfoBytesSpan[j] ^= key;
                             }
-                        }
+                        }*/
                         try
                         {
                             var uncompressedBytesSpan = uncompressedBytes.AsSpan(0, (int)uncompressedSize);
@@ -615,6 +615,7 @@ namespace AssetStudio
                                 {
                                     OPFPUtils.Decrypt(compressedBytesSpan, reader.FullPath);
                                 }
+                                
                                 var numWrite = LZ4.Instance.Decompress(compressedBytesSpan, uncompressedBytesSpan);
                                 if (numWrite != uncompressedSize)
                                 {
