@@ -419,19 +419,9 @@ namespace AssetStudio
             {
                 reader.AlignStream(16);
             }
-            else if (version is { Major: 2019, Minor: 4 })
+            else if (version is { Major: 2019, Minor: 4 , Patch: >30})
             {
-                var p = reader.Position;
-                var len = 16 - p % 16;
-                var bytes = reader.ReadBytes((int)len);
-                if (bytes.Any(x => x != 0))
-                {
-                    reader.Position = p;
-                }
-                else
-                {
-                    reader.AlignStream(16);
-                }
+                reader.AlignStream(16);
             }
             if ((m_Header.flags & ArchiveFlags.BlocksInfoAtTheEnd) != 0) //kArchiveBlocksInfoAtTheEnd
             {
