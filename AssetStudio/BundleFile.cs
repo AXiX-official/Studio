@@ -419,7 +419,7 @@ namespace AssetStudio
             {
                 reader.AlignStream(16);
             }
-            else if (version is { Major: 2019, Minor: 4 , Patch: >30})
+            else if (version is { Major: 2019, Minor: 4 , Patch: >= 15})
             {
                 reader.AlignStream(16);
             }
